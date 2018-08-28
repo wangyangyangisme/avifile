@@ -1,0 +1,18 @@
+This package has been debianized by Zdenek Kabelac kabi@debian.org on
+Wed, 25 Oct 2000 19:52:19 +0200
+
+URL: http://sourceforge.net/projects/avifile
+This is official home page for the Avifile - CVS is also located there
+
+Freely downloadable binary codecs.
+
+ffmpeg copyright: (c) 2000-2004 Fabrice Bellard et al.
+ffmpeg/libavcodec/ppc/dsputil_altivec.c copyright:
+(c) 2002 Brian Foley
+(c) 2003 Dieter Shirley
+(c) 2003-2004 Romain Dolbeau <romain@dolbeau.org>
+ffmpeg/libavcodec/ppc/mpegvideo_ppc.c copyright:
+(c) 2002 Dieter Shirley
+
+GPL (see /usr/share/common-licenses/GPL)
+and LGPL (see /usr/share/common-licenses/LGPL)

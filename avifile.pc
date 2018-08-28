@@ -1,0 +1,11 @@
+prefix=/var/tmp/avi6
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/avifile-0.7
+
+Name: avifile
+Description: A library for reading and writing of compressed video
+Requires:
+Version: 0.7.45
+Libs: -L${libdir} -laviplay
+Cflags: -I${includedir}

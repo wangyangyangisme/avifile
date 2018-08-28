@@ -1,0 +1,26 @@
+/*
+ $Id: FreeBSD,v 1.1.1.1 2001/01/23 06:17:22 cypher Exp $
+*/
+
+Now FreeBSD Ports available.
+http://www.freebsd.org/cgi/ports.cgi?query=avifile&stype=all
+Thanks MAINTENERS.
+
+
+
+
+- old memo's
+need FreeBSD's package(or ports) egcs & gmake & qt
+
+Found from
+ftp://ftp.freebsd.org/pub/FreeBSD/releases/i386/3.5.1-RELEASE/packages/lang/gcc-2.95.2.tgz
+ftp://ftp.freebsd.org/pub/FreeBSD/releases/i386/3.5.1-RELEASE/packages/devel/gmake-3.79.tgz
+ftp://ftp.freebsd.org/pub/FreeBSD/releases/i386/3.5.1-RELEASE/packages/x11-toolkits/qt-2.1.1.tgz
+
+and symlink /usr/include/machine/soundcard.h -> /usr/include/sys/soundcard.h
+
+%setenv CC /usr/local/bin/gcc295
+%setenv CXX /usr/local/bin/g++295
+%./configure
+%gmake
+

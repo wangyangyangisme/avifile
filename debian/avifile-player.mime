@@ -1,0 +1,5 @@
+video/x-msvideo; /usr/bin/aviplay %s; description="AVI Video Format"; test=test "$DISPLAY" != ""
+video/x-mplayer2; /usr/bin/aviplay %s; description="AVI Video Format"; test=test "$DISPLAY" != ""
+video/x-ms-asf; /usr/bin/aviplay %s; description="AVI Video Format"; test=test "$DISPLAY" != ""
+video/x-ms-wmv; /usr/bin/aviplay %s; description="AVI Video Format"; test=test "$DISPLAY" != ""
+video/x-ms-wma; /usr/bin/aviplay %s; description="AVI Video Format"; test=test "$DISPLAY" != ""

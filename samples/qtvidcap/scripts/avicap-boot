@@ -1,0 +1,140 @@
+#!/bin/bash
+
+# edit these to match your system
+USERNAME=alex
+LOGFILE=/var/log/avicap-boot.log
+AVICAP_DIR=/etc/avicap
+
+# runlevel startup routine taken from Suse's startup scripts
+. /etc/rc.status
+rc_reset
+
+
+echo "avicap-boot: started in runlevel : " ${RUNLEVEL}
+
+check_avicap()
+{
+if [ "$RUNLEVEL" == "" ] ; then
+    RUNLEVEL=3
+fi
+
+echo "avicap-boot: checking for start or power-off"
+
+mkdir -p $AVICAP_DIR
+
+if test ${RUNLEVEL} == S ; then
+# shutdown again in runlevel S/boot time - no need to boot further
+
+   if test -e $AVICAP_DIR/first_shutdown ; then
+	echo "avicp-boot: this system was booted to halt"
+	echo "avicap-boot: shutdown system"
+	echo "avicap-boot: mounting / rw, removing $AVICAP_DIR/first_shutdown"
+	mount -o remount,rw  /
+	sleep 2s
+	rm -f $AVICAP_DIR/first_shutdown
+	sync
+	sleep 2s
+	mount -o remount,ro /
+        echo "avicap-boot: shutdown to soft-off"
+        for i in 10 9 8 7 6 5 4 3 2 1 0 ; do
+                echo "countdown $i for avicap-boot to power-off system"
+                sleep 1s
+        done
+
+	sync
+	echo "avicap-boot: umounting filesystems"
+	sleep 1s
+	umount /proc
+	sleep 1s
+	umount /
+	echo "avicap-boot: now doing actual poweroff.."
+	sleep 1s
+	halt -p -f
+	echo "avicap-boot: you should never see me, power-off failed"
+   fi
+elif test ${RUNLEVEL} -eq 3 ; then
+# || test ${RUNLEVEL} == "" ; then
+# check if we've to start avicap
+   if test -e $AVICAP_DIR/next_recording  ; then
+	echo "avicap-boot will startup X and avicap -timer"
+	echo "==============================" >>$LOGFILE
+	( date ; echo "avicap-boot: starting X/avicap" ) >>$LOGFILE
+      (
+	for i in 10 9 8 7 6 5 4 3 2 1 0 ; do
+		echo "avicap-boot: countdown $i for Avicap start"
+		sleep 1s
+	done
+
+	( date ; echo "avicap-boot: startx" ) >>$LOGFILE
+	( su -l $USERNAME -c "startx" ) 2>&1 >>$LOGFILE &
+
+	sleep 1m
+
+	( date ; echo "avicap-boot: kv4lsetup" ) >>$LOGFILE
+	export DISPLAY=:0.0
+	chmod u+s /usr/local/bin/kv4lsetup
+	/usr/local/bin/kv4lsetup -t=2 2>>$LOGFILE 3>>$LOGFILE 4>>$LOGFILE >>$LOGFILE 
+	sync
+
+	sleep 10s
+
+	( date ; echo "avicap-boot: avicap -timer" ) >>$LOGFILE
+	( su -l $USERNAME -c "DISPLAY=:0.0 avicap -timer 2>&1 >>$LOGFILE"   ) 2>&1 >>$LOGFILE &
+
+	sleep 5s
+
+	rm -f $AVICAP_DIR/next_recording
+
+	sleep 20s
+
+	( date ; echo "avicap-boot: avicap-renicer" ) >>$LOGFILE
+	/home/alex/sbin/avicap-renicer 2>&1 >>$LOGFILE
+
+	unset DISPLAY
+
+	( date ; echo "avicap-boot: done" ) >>$LOGFILE
+	echo "---------------------------" >>$LOGFILE
+      ) &
+  else
+	echo "avicap-boot: normal booting, no pending recordings"
+  fi
+fi
+
+}
+
+
+
+
+
+case "$1" in
+    start)
+	echo "avicap-boot: starting..."
+
+	check_avicap
+
+	rc_status -v
+	;;
+    stop)
+	echo -n "Nothing to stop for Avicap"
+
+	rc_status -v
+	;;
+    restart)
+	## If first returns OK call the second, if first or
+	## second command fails, set echo return value.
+	$0 stop
+	$0 start
+
+	# Remember status and be quiet
+	rc_status
+	;;
+    status)
+	echo -n "No status for Avicap"
+	rc_status -v
+	;;
+    *)
+	echo "Usage: $0 {start|stop|status|restart|reload|force-reload}"
+	exit 1
+	;;
+esac
+rc_exit

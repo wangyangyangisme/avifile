@@ -1,0 +1,54 @@
+INSTALL
+
+To build 'avifile' project
+
+If you are using CVS (i.e. you have checked out project from avifile CVS
+repository from sourceforge.net) there IS NO configure script present.
+That means you have to create one for yourself. This can be
+accomplished with execution of shell script:
+
+   autogen.sh
+
+in the CVS main directory. Be aware that you need relatively well configured
+system to be able to use this script. Note if you believe your system
+is properly configured and avifile's autogen.sh script doesn't create
+usable 'configure' script - please contact avifile maintainer -
+we will ask you for more details and we try to resolve your problem
+(we know there are always some - but we could resolve them only with
+your help) You may try to use CVS snapshot available in download section
+on avifile.sourceforge.net which contains valid configure script.
+
+now if you have valid configure script or you have downloaded 
+the .tgz CVS snapshot you should run script:
+
+   configure
+
+Note: you may use some extra options - check  'configure --help'
+to list them all
+
+after successful configuration (i.e. there are no error/fatal messages)
+just compile and install avifile project with this command
+
+   make -j 2 install
+
+if there is still a problem - please report it - otherwise it
+will not be fixed as your problem is for 90% specific to your
+system - so never expect it will resolve itself.
+
+=============================================
+=== to build RedHat/Mandrake .rpm package ===
+=============================================
+
+   rpm -ba /usr/src/packages/SPECS/avifile.spec
+
+Note: You could find some packages or links to them on
+      avifile.sourceforge.net
+      Moreover avifile.spec file in avifile project is currently out-of-date
+
+====================================
+=== to build Debian .deb package ===
+====================================
+
+   fakeroot debian/rules binary-arch
+
+Note: Unstable Debian contains avifile packages so you may use them.

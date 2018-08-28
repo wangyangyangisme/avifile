@@ -1,0 +1,44 @@
+renaming of utils? - NO
+
+4 Gb limit - may work now with 0.6. DONE
+
+URL mms://208.184.229.32/rollingstone/383/8615.asf crashes BOTH aviplay AND
+asfrecorder ???
+< uncommon packet format, 0x55 in 4th byte of packet > - DONE
+
+Maybe you could add a selector for the frame rate the subtiltles were
+encoded for the {xxx}{xxx} subtitles.
+An external converter is easy to make but it will will be simpler and easy
+to do it in the config panel (even if it needs a restart)
+
+Sync in recompress
+
+Redrawing recompress window only when mouse moves - WHY ???
+
+re-check subtitle/font stuff
+
+verona60?
+
+memory & fd leaks in qualtest
+
+update binaries with dvsd
+
+first call to directshow decoder sometimes fails with 'cannot open dll'
+
+mms:// entry in config causes troubles for Qt open file dialog
+
+local asf files cannot be recompressed into valid avis - necessary functions
+aren't implemented
+
+global labels in inline asm cause troubles when compiling with optimization
+
+playing asf without building table?
+
+put solution for not found <list> either in FAQ, configure.in, or both.
+
+Problem with color depth detect on Riva 128 ( true color ).
+
+Indeo Video 5.0 codec refuses to encode 32-bit data.
+
+All programs crash during loading on some platforms. Can be solved
+on client-side by upgrading libstdc++ library.

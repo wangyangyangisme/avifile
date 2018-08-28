@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Avicap - Howto use shutdown &amp; resume</title>
+                           
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+  <body>
+     
+<h2>HOWTO use shutdown &amp; resume with Avicap</h2>
+<a
+ href="avicap.html">back
+to Avicap Index</a><br>
+<br>
+docu by: Alexander Rawass (<a
+ href="mailto:alexannika@users.sourceforge.net">alexannika@users.sourceforge.net</a>)<br>
+   if anyone can write a better documentation - please do it and tell me<br>
+   <br>
+    this howto describes how you can shutdown,poweroff,resume &amp; reboot
+ your  linux with Avicap, to have a video recording tool with a programmable
+ timer,  that allows your computer to be powered-off in-between recordings<br>
+    <br>
+    
+<ul>
+   <li><a href="#check_bios">Check your BIOS</a></li>
+   <li><a href="#install_nvramwakeup">Install nvram-wakeup</a> &nbsp;</li>
+   <li><a href="#root_scripts">root scripts for your linux</a> &nbsp;</li>
+   <li><a href="#config_shutdown">Configuring Avicap for shutdown &amp; resume</a> 
+&nbsp;</li>
+   <li><a href="#known_problems">known problems</a> &nbsp;<br>
+   </li>
+ 
+</ul>
+ <br>
+     
+<h3><a name="check_bios"></a>Step 1: Check your BIOS </h3>
+   Most modern BIOS have an advanced power management section, which allows
+ you not only to configure sleep/suspend modes, but also on which signals
+your computer should poweron from 'soft-off'<br>
+    <br>
+    Goto to the BIOS, to the advanced power management section<br>
+    Turn on advanced power management on, if you haven't enabled it before, 
+ you might want to set most entries to 'disabled'.<br>
+    <br>
+    For awakening after a soft-off, we need to enable<br>
+    'RTC Alarm Resume from Soft off'<br>
+    <br>
+    Below this, you should be able to set the date and the time to wakeup.<br>
+    <br>
+    If you don't find such entries in your BIOS, well, it won't work for
+you,sorry.<br>
+    <br>
+       
+<h3><a name="install_nvramwakeup"></a>Step 2: Install nvram-wakeup</h3>
+   <a href="http://sourceforge.net/projects/nvram-wakeup"> http://sourceforge.net/projects/nvram-wakeup</a><br>
+    <br>
+    Download the latest version of nvram-wakeup.<br>
+    <br>
+    nvram-wakeup is a tool to set the RTC alarm time in your Bios - WARNING,
+  this may be dangerous, be careful what you do!<br>
+    <br>
+    compile nvram-wakeup.<br>
+    <br>
+    Read the README file. Read it again.<br>
+    <br>
+    Read the README.mb file. Read it twice again!<br>
+    <br>
+    Now you can be lucky, then your motherboard/bios will be supported by 
+nvram-wakeup.<br>
+    <br>
+    If you're unlucky (like me with my Asus K7M motherboard), you'll have 
+to  find out the bytes in your nvram that contain the RTC alarm date.<br>
+    <br>
+    Read the README.mb file again.<br>
+    <br>
+    Maybe you can use the latest CVS version of nvram-wakeup, else you'll 
+have  to run the 'guess' script that's delivered with nvram-wakeup, it's usage
+is described in README.mb<br>
+    <br>
+    If you've now followed the steps in README.mb and you now seem to have
+ a  working configuration for nvram-wakeup, test it yourself, and be aware
+ that  false bytes written in your nvram may you cause to loose your precious
+ bios  settings.<br>
+    <br>
+    All I can say, the guess script worked for me, with a little modification.<br>
+    <br>
+    To use nvram-wakeup with avicap, you should edit 'nvram-wakeup.h' and 
+set  these defines to zero like this:<br>
+   #define WAKEUP_BEFORE&nbsp;&nbsp;&nbsp; 0<br>
+   #define NEED_TO_SHTDWN&nbsp;&nbsp; 0<br>
+   cause these values can be set in Avicap's GUI directly.<br>
+   <br>
+       
+<h3><a name="root_scripts"></a>Step 3: root scripts for your linux</h3>
+    For the shutdown &amp; resume process to work for Avicap, you'll need 
+to  have several shell scripts that will be run via sudo:<br>
+    <br>
+    avicap-shutdown: &nbsp;let's avicap shutdown your computer<br>
+    avicap-setnvram: &nbsp;sets the RTC alarm date in your BIOS via nvram-wakeup<br>
+    avicap-boot: &nbsp; &nbsp;a init script for /etc/init.d that starts your
+  computer either via the normal way, or it starts avicap in timer-mode,
+and  manages the 'twice shutdown' problem.<br>
+    <br>
+   These scripts can be found in avifile/samples/qtvidcap/scripts<br>
+   They will not get installed by 'make install', you have to copy them to
+ their locations for yourself, cause they could do damage to your system
+by  shutting down unexpectedly.<br>
+   <br>
+   avicap-shutdown and avicap-setnvram should be copied to /usr/local/bin<br>
+   <br>
+   avicap-boot should be copied to /etc/init.d<br>
+   <br>
+   You also have to create these links:<br>
+   <br>
+   /etc/init.d/boot.d/S01avicap -&gt; /etc/init.d/avicap-boot<br>
+   /etc/init.d/rc3.d/S99avicap &nbsp;-&gt; /etc/init.d/avicap-boot<br>
+   <br>
+   You HAVE to edit all these scripts manually to suit them to your system
+ - especially avicap-boot is highly customized to my system, my way of booting 
+ and my preferences.<br>
+   <br>
+    You also have to edit with 'visudo' your sudoers file to allow avicap 
+to  call avicap-shutdown and avicap-setnvram, something like this:<br>
+   alex ALL= NOPASSWD: /home/alex/sbin/avicap-shutdown<br>
+   alex ALL= NOPASSWD: /home/alex/sbin/avicap-setnvram<br>
+   <br>
+    Be aware that using these scripts and letting avicap shutdown &amp; resume
+  your computer interferes severely with the running of a full blown unix
+system.<br>
+    <br>
+    The shutdown &amp; resume capabilites should only be used on a 'single-person'
+  workstation, with no running jobs in background.<br>
+    <br>
+    I've prepared such scripts for my system, they might suit you or not, 
+if  you've got better solutions, send them to me.<br>
+    <br>
+    My system is a SuSE 8.1-based system, running kernel 2.4.18 with apm
+enabled   (this is necessary to poweroff your ATX power...<br>
+    <br>
+    I am only booting my system to runlevel 3 (no networking, no graphics).<br>
+    <br>
+    I login in textmode and then do a 'startx' manually.<br>
+    <br>
+    The avicap-reboot script will check at the end of runlevel 3, if it should
+  do nothing or &nbsp;start X and avicap automatically, you have to edit
+this   script to suit it to your system and preferences.<br>
+    <br>
+    On my system, there's a special problem:<br>
+    <br>
+    the setting of the RTC and the resume will only work, if the system is
+ resetted,  after the RTC alarm date in the nvram has been set.<br>
+    <br>
+    So the shutdown &amp; resume will have to shutdown TWICE, once to reboot
+  to make a reset, and the other to actually shutdown.<br>
+    <br>
+    It goes like this:<br>
+    <br>
+    1. Avicap calls 'sudo avicap-setnvram &lt;timestamp&gt;' to set the RTC<br>
+    &nbsp;&nbsp;&nbsp; avicap-setnvram will create a file /etc/avicap/next_recording<br>
+    <br>
+    2. Avicap calls 'sudo avicap-shutdown' to shutdown &amp; reboot my system<br>
+    &nbsp;&nbsp;&nbsp; avicap-shutdown will create a file /etc/avicap/first_shutdown<br>
+    &nbsp;&nbsp;&nbsp; then it will make a shutdown -r (reboot) to reboot 
+the  system<br>
+    <br>
+    3. The system reboots, and shortly after booting, 'avicap-boot' is called 
+ again (in runlevel S)<br>
+   <br>
+    4. If the file /etc/avicap/first_shutdown exists, the file gets removed
+ and the system will go down again with halt -p -f (force power off) to poweroff 
+ the computer.<br>
+    <br>
+    5. The computer is now off, till the time you've set for first recording.<br>
+    <br>
+    6. The RTC alarm will poweron your computer<br>
+    <br>
+    7. My linux will boot in runlevel 3, at the end of runlevel 3 'avicap-boot'
+  is called.<br>
+    <br>
+    8. If the file /etc/avicap/next_recording exists, then it is assumed
+that  the re-boot is a 'timed' reboot done by the RTC alarm.<br>
+    <br>
+    9. avicap-boot will then call 'startx' to start X and KDE (takes a long
+ time...) or Gnome or whatever and then 'avicap -timer'<br>
+    <br>
+    10. and then avicap should start recording as you liked it<br>
+    <br>
+    11. until the recording stops and it is time to go down again<br>
+    <br>
+       
+<h3><a name="config_shutdown"></a>Step 4: Configuring Avicap for shutdown 
+&amp; resume</h3>
+    There's a new Tab in the 'Configure'-Dialog named 'Shutdown&amp;Resume'<br>
+   <br>
+   These options tell avicap when to shutdown:<br>
+     
+<ul>
+     <li> never shut down system<br>
+   avicap will never try to shutdown your system</li>
+     <li>shutdown after last tecording<br>
+   avicap will shutdown (to poweroff) your system only after the last recording, 
+ when there are no pending records<br>
+   you don't need nvram-wakeup for this<br>
+     </li>
+     <li>shutdown in-between recordings<br>
+   avicap will shutdown (first to reboot, then to poweroff) your system with 
+ nvram-wakeup between recordings<br>
+     </li>
+     
+</ul>
+       
+<ul>
+     <li>minimum downtime in min<br>
+   the system will only be shut down in-between recordings, when the system 
+ would be in power-off longer than this time<br>
+   it is probably not sensible to send the system up and down for just 5
+minutes  downtime<br>
+   sensible values could range from 10 to 30 minutes or so<br>
+     </li>
+     <li>boot n mins before recording<br>
+   a unix system can take quite a lot of time to boot and to start X/KDE/Gnome 
+ on top of it.<br>
+   the system will power-on and reboot n mins before the recording should 
+start<br>
+   make sure that time is long enough, if you are not using a journaling
+filesystem,  you should be aware that sometimes booting can be quite long<br>
+   sensible values could range from 5 to 15 minutes</li>
+     <li>gracetime for shutdown in min<br>
+   if avicap decides that a shutdown should be done, it pops up a critical
+ requester, which shows &nbsp;a countdown for gracetime mins<br>
+   press abort in that dialog to abort the shutdown</li>
+     
+</ul>
+   <br>
+   To use that feature, you also have to enable the 'shutdown' checkbox in
+ the main timertable window.<br>
+   That checkbox will always be de-activated when you start avicap normally 
+ (so you have to check it again).<br>
+   If you start avicap with 'avicap -timer', avicap will open the timertable 
+ window, sets that checkbox and starts the timer and waits for the first recording.<br>
+   <br>
+   avicap is started with -timer from avicap-boot, so it will go down if
+the  recording has finished.<br>
+   <br>
+   I advise you strongly to test this feature thoroughly, so that you can 
+be  sure it works for you,too.<br>
+   It would be a shame, if a precious recording is lost - but, alas, Free 
+Software  comes without any warranty, so be warned<br>
+   <br>
+   
+<h3><a name="known_problems"></a>Known Problems</h3>
+   
+<ul>
+    <li>my system is running it's hardware-clock in localtime, so the RTC 
+alarm is also set in localtime, there's code to check if localtime differs 
+from UTC and sets the RTC alarm correctly.<br>
+  I believe. Umpft. Test it yourself.</li>
+    <li>I have no idea what happens if your system (hardware) clock runs
+in  UTC.<br>
+  test it thoroughly and tell me about it</li>
+    <li>I have no idea what happens if the local time switches an hour to 
+the future or back - for example, when we Europeans switch from winter time 
+(CET) to summer time (CEST) or back<br>
+  Your recordings might start at the right time, an hour too late or an hour
+ too early</li>
+    <li>I have no idea what happens when you're flying in an airplane that
+ travels round the world (with or against time), I also don't know what might
+ happen if you fly in a spaceship at 95% light speed, you've been warned,
+the timer might do really crazy things there ;-)))</li>
+    <li>I am using QDateTime for my calculations, I just hope it's clever 
+enough to cope with leapyears and such</li>
+   
+</ul>
+  When you've started Avicap from a shell window, it will show it's output
+ there when nvram-wakeup is setting the RTC alarm, you should see for yourself
+ if the RTC is set correctly.<br>
+  <br>
+  <br>
+   <br>
+  <br>
+ <br>
+</body>
+</html>

@@ -1,0 +1,171 @@
+%define name	avifile
+%define ver     @AVIFILE_MAJOR_VERSION@.@AVIFILE_MINOR_VERSION@.@AVIFILE_MICRO_VERSION@
+%define mjver   @AVIFILE_MAJOR_VERSION@.@AVIFILE_MINOR_VERSION@
+%define rel     1
+%define cvsdate	@AVIFILE_BUILD@-
+%define prefix  /usr
+
+Summary:   AVI file library
+Name:      %name
+Version:   %ver
+Release:   %rel
+Copyright: GPL
+Group:     Development/Libraries
+Source0:   avifile-%{PACKAGE_VERSION}.tar.gz
+Source1:   aviplay.keys
+Source2:   aviplay.mime
+#Patch0:	   avifile-%{PACKAGE_VERSION}-patch0
+URL:       http://avifile.sourceforge.net/
+BuildRoot: /tmp/avifile-%{PACKAGE_VERSION}-root
+Packager:  Mario Mikocevic Mozgy <mozgy@hinet.hr>
+Docdir: %{prefix}/doc
+Requires:  SDL >= 1.2, xvid
+BuildRequires: qt-devel >= 2.2.0
+
+%description
+Avifile is a library that allows programs to read and write compressed
+AVI files (Indeo? Video, DivX :-), etc.) under x86 Linux.
+(De)compression is performed with Win32 DLLs. 
+CVS %{cvsdate}
+
+%package devel
+Summary:  Libraries, includes and more to develop avifile applications
+Group:    Development/Libraries
+Requires: %{name} = %{ver}
+
+%description devel
+Avifile is a library that allows programs to read and write compressed AVI 
+files (Indeo? Video, DivX :-), etc.) under x86 Linux. (De)compression is 
+performed with Win32 DLLs.
+
+This is the libraries, include files and other resources you can use
+to develop avifile applications.
+
+%package utils
+Summary:  Utilities for avifile
+Group:    Applications/Multimedia
+Requires: %{name} qt >= 2.2.0
+Obsoletes:	avifile-qt
+
+%description utils
+Utilities for testing avifile library based on QT toolkit. Contains aviplay,
+avicat, avibench, avicap, avimake, avirecompress, avitype, kv4lsetup
+
+%prep
+%setup
+#%patch0 -p1
+#CFLAGS="$RPM_OPT_FLAGS" ./autogen.sh --prefix=%prefix --enable-release --enable-quiet
+#CFLAGS="$RPM_OPT_FLAGS -mcpu=i386 -fomit-frame-pointer" CXXFLAGS="$RPM_OPT_FLAGS -mcpu=i386 -fomit-frame-pointer" ./autogen.sh
+CFLAGS="$RPM_OPT_FLAGS" ./autogen.sh
+
+%build
+# Needed for snapshot releases.
+#CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --enable-release --enable-quiet --disable-xft
+#CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --enable-release --enable-quiet --enable-lame --with-qt-dir=/usr/lib/qt2
+#CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --enable-release --enable-quiet --disable-samples
+#CFLAGS="$RPM_OPT_FLAGS -mcpu=i386 -fomit-frame-pointer" CXXFLAGS="$RPM_OPT_FLAGS -mcpu=i386 -fomit-frame-pointer" ./configure --prefix=%prefix --enable-release --enable-quiet -disable-vidix
+
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --enable-release --enable-quiet
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+%makeinstall prefix=$RPM_BUILD_ROOT%{prefix} install
+
+####---------------------desktop entries--------------------------
+###mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/X11/applnk/Multimedia/avifile
+###cat >$RPM_BUILD_ROOT/%{_sysconfdir}/X11/applnk/Multimedia/avifile/aviplay.desktop <<EOF
+###[Desktop Entry]
+###Name=Aviplay
+###Exec=aviplay
+###MimeType=video/x-msvideo
+###Terminal=false
+###Type=Application
+###EOF
+###
+###cat >$RPM_BUILD_ROOT/%{_sysconfdir}/X11/applnk/Multimedia/avifile/avirecompress.desktop <<EOF
+###[Desktop Entry]
+###Name=Avirecompress
+###Exec=avirecompress
+###Terminal=false
+###Type=Application
+###EOF
+###
+###cat >$RPM_BUILD_ROOT/%{_sysconfdir}/X11/applnk/Multimedia/avifile/avicap.desktop <<EOF
+###[Desktop Entry]
+###Name=Avicap
+###Exec=avicap
+###Terminal=false
+###Type=Application
+###EOF
+###
+
+%post
+/sbin/ldconfig
+
+%postun 
+/sbin/ldconfig
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-, root, root)
+%doc README COPYING
+%{prefix}/bin/avifile-config
+#%{prefix}/bin/mmxnow-config
+%{prefix}/share/avifile%{mjver}/*
+%{prefix}/lib
+#%{prefix}/lib/avifile%{mjver}/*
+
+%files devel
+%defattr(-, root, root)
+%doc doc/*
+%{prefix}/include/avifile/
+#%{prefix}/include/mmxnow.h
+%{prefix}/share/aclocal/avifile.m4
+
+%files utils
+%{prefix}/bin/aviplay
+%{prefix}/bin/avibench
+%{prefix}/bin/avicap
+%{prefix}/bin/avicat
+%{prefix}/bin/avimake
+%{prefix}/bin/avirecompress
+%{prefix}/bin/avirec
+%{prefix}/bin/avitype
+%{prefix}/bin/kv4lsetup
+%{prefix}/share/man/man1/
+
+%changelog
+* Tue Dec 10 2002 Mario Mikocevic <mozgy@hinet.hr>
+- Updated to 0.7.22
+
+* Wed Nov 06 2002 Mario Mikocevic <mozgy@hinet.hr>
+- Updated to 0.7.18
+
+* Fri May 24 2002 Mario Mikocevic <mozgy@hinet.hr>
+- Fixed compiling for all i[3456]86 archs
+
+* Fri May 03 2002 Mario Mikocevic <mozgy@hinet.hr>
+- Abbandoned DATE in release
+
+* Fri Jan 11 2002 Mario Mikocevic <mozgy@hinet.hr>
+- Rewamped .spec
+
+* Wed Oct 05 2001 Mario Mikocevic <mozgy@hinet.hr>
+- Fixed .spec for daily CVS update
+
+* Wed Sep 12 2001 Mario Mikocevic <mozgy@hinet.hr>
+- Fixed .spec
+
+* Sat Jan 27 2001 Eugene Kuznetsov <divx@euro.ru>
+- Updated to conform to new directory layout
+
+* Tue Oct 02 2000 Eugene Kuznetsov <divx@euro.ru>
+- Merged in contributed .spec  
+- First public release
+
+* Wed Sep 20 2000 Eugene Kuznetsov <divx@euro.ru>
+- First try at an RPM
+

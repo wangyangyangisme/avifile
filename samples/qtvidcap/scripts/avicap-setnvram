@@ -1,0 +1,21 @@
+#!/bin/bash
+
+DATESTR=$1
+
+AVICAP_DIR=/etc/avicap
+
+echo "avicap-setnvram: timestamp=$DATESTR"
+
+mkdir -p $AVICAP_DIR
+
+# edit this to suit your configuration!
+/usr/local/bin/nvram-wakeup -C /etc/nvram-wakeup-k7m.config -s $DATESTR
+
+if test $DATESTR == 0 ; then
+	echo "avicap-setnvram: Wakeup per RTC alarm has been disabled"
+	rm -f $AVICAP_DIR/next_recording
+else
+	echo "avicap-setnvram: Wakeup per RTC alarm enabled"
+	echo $DATESTR >$AVICAP_DIR/next_recording
+fi
+

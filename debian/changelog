@@ -1,0 +1,640 @@
+avifile (1:0.7.44.20051021-1) unstable; urgency=medium
+  * thread were already fixed long time ago - just forget to close
+    this bug (Closes: 223101)
+  * some thing applies to this error (Closes: 220056) - no undefined 
+    symbols are shown to me...
+  * Rebuilt for Qt/KDE transition
+    (Closes: #321550, #324848, #220056, #318233, #320883, #325435)
+  * C++ ABI transition (Closes: #327932, #330012)
+  * Fix gcc-4.0 compilation (Closes: #300179)
+  * Fix some copyright statements (Closes: #324970)
+  * Add s390 to supported platforms (Closes: #175039)
+  * Already fixed, but not closed (Closes: #317889, #328558)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 21 Oct 2005 10:49:49 +0100
+
+avifile (1:0.7.43.20050224-1) unstable; urgency=low
+  * updated to latest ffmpeg
+  * fix packaging (Closes: 252982, 259417, 295486)
+  * fixed xvid plugin (Closes: 225172)
+    it's users responsibility to install this libxvidcore4 library
+    as it is no a part of default debian project.
+    this is just plugin which utilizies this library.
+  * Xserver crashes are really Xserver crashes (Closes: 260808)
+    I affraid you will have to bother the author of your XV driver
+    directly - forwarding this bug to Xserver maintainer won't help you
+    try to use Xorg server - should be doing fairly better job...
+  * fixed the bug with ffmpeg pictures (Closes: 274730)
+    of course some other bugs might appear elsewhere
+  * fixed long time ago (Closes: 274591)
+    there are no defaults and code compiles fine with gcc-4.0
+  * removed COPYING file - the copyright file already proprer links
+    for licencies (Closes: 290069)
+  * only decoding for new API is supported at this moment
+    (Closes: 225081)
+  * fixed link to marillat site (Closes: 264322)
+  * fixed this changlog file so it contains also previous NMU
+  * package should be compilable by any automake tool found in debian
+  * partialy fixed info about some packages (Closes: 209432)
+    but more will come later ;)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 24 Feb 2005 10:49:49 +0100
+
+avifile (1:0.7.42.20050215-1) unstable; urgency=low
+  * fix libmad compilation for X86_64 (Closes: 253504)
+  * quoted AM_PATH_AVIFILE (Closes: 267807)
+  * unless I'm proven with buggy compiler output I'm closing this bug report 
+    as it compiles fine with current gcc-4.0 (Closes: 294473, 285677, 264543)
+  * compiles fine with freetype2 (Closes: 228072)
+  * removed compilation with qt2 (Closes: 245653)
+  * name change fixed (Closes: 202627)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 15 Feb 2005 13:40:44 +0100
+
+avifile (1:0.7.38.20030710-1.2) unstable; urgency=low
+
+  * NMU
+  * Fix avifile.pc to return the right include path (Closes: #205203)
+  * Add missin dependencies in the -dev package. libxft-dev libxrender-dev (Closes: #20
+  * Apply a patch to fix build under amd64 (Closes: #253504)
+  * Move the pkgconfig file to the -dev package nad add replaces.
+
+ -- Christian Marillat <marillat@debian.org>  Thu,  4 Nov 2004 16:23:45 +0100
+
+avifile (1:0.7.38.20030710-1.1) unstable; urgency=low
+
+  * Non-maintainer upload (old RC bug).
+  * debian/control:
+    + Removed g++ from the build dependencies (build essential).
+    + Removed deprecated conditional build dependencies (Closes: #245653).
+    + Uncapitalised short descriptions.
+    + Mention libavifile in the plugins' short descriptions.
+    + Set the debhelper build dependency to (>= 2.0).
+  * debian/avifile-utils.menu:
+    + Quoted strings where appropriate.
+  * autogen.sh:
+    + Specifically call aclocal-1.4 and automake-1.4 because of
+      incompatibilities with newer versions.
+  * lib/video/sub_ft.cpp:
+    + Fixed compilation with recent FreeType versions (Closes: #228072).
+  * plugins/libwin32/loader/ldt_keeper.c:
+    + Applied patch from Daniel Schepler which fixes another build issue.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue,  1 Jun 2004 04:15:30 +0200
+
+avifile (1:0.7.38.20030710-1) unstable; urgency=low
+  * closing report for xvid as its already part of debian (Closes: 191459)
+  * it's been most probably fixed with VCR itself - next time this bug
+    belongs to vcr package - and it's not problem of avifile package
+    to keep vcr uptodate - moreover it already provides package with same
+    usability (Closes: 186313)
+  * modified Description info slightly (Closes: 190710)
+  * surely I know CVS compiles with gcc-3.3 - I'm the developer :)
+    (Closes: 196980)
+  * unless provided with a sample of such problematic movie I can't
+    see such problem with current version. (Closes: 180327)
+  * bashism has been removed from Makefiles. (Closes: 186716)
+  * finaly released new version. (Closes: 189469)
+  * library renamed to use -0.7 (are you know happy now :)? (Closes: 145860)
+  * fixed some documentation files (Closes: 191462)
+    empty manpage template has been deprecated unfortunaly,
+    missing pages will be written when enough time will be found
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 10 Jul 2003 13:40:44 +0200
+
+avifile (0.7.36.20030401-1) unstable; urgency=low
+  * reduced amount of debug messages
+  * support for timertables in Avicap by Alexander Rawass
+  * fixed bashism in vidix Makefile.am (Closes: 186716)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 01 Apr 2003 13:40:44 +0200
+
+avifile (0.7.33.20030314-1) unstable; urgency=low
+  * better usage of shared libraries (smaller vidix part)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 14 Mar 2003 13:40:44 +0200
+
+avifile (0.7.32.20030219-1) unstable; urgency=low
+  * again fixed some stupid bugs with ffmpeg decompression
+  * recompiled with new Qt (Closes: 179723)
+  * aviplay is compiled with -fPIC - non-PIC part
+    were not discovered inside current release (Closes: 176994)
+  * Qt dependencies are somewhat wrong with latest Qt packages
+    (Closes: 179875, 180506)
+  * added manpages instead of undocumented (but there is not big
+    difference)
+  * accepted c102 modification by Andreas Metzler.
+
+ -- Zdenek Kabelac <kabi@debian.org>  Wed, 19 Feb 2003 13:40:44 +0200
+
+avifile (0.7.29.20030204-1) unstable; urgency=low
+  * oops fixed somewhat fatal bug 
+    the lame plugin went in because plugin name change
+    added configure options so it will not happen again this way
+  * aviplay is compiled with fPIC - the only problem
+    is that some parts aren't easily compilable
+    with PIC - also it makes the code slower (Closes: 169474)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Tue, 04 Feb 2003 23:40:44 +0200
+
+avifile (0.7.28.20030129-1) unstable; urgency=low
+  * xvid's been already moved to contrib (Closes: 145024)
+  * it's playing some mpegs (though so far not very
+    comfortable) (Closes: 100809)
+  * linked libavqt with libaviplay (Closes: 176761)
+  * new version, fixed Replaces (Closes: 178390, 178861, 168801, 165243)
+  * subtitles are using special option -sub
+    (updated manpage) (Closes: 178626)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 29 Jan 2003 23:40:44 +0200
+
+avifile (0.7.27.20030122-1) unstable; urgency=low
+  * ok long time has passed from the last update - meanwhile a lot
+    of code has been made - especially the ffmpeg has a lot of
+    improvements.
+  * no user has reported such problem (Closes: 160461)
+    maybe user has some bad local configuration/options
+  * ok xvid/win32 plugins are now in contrib (though I still disagree
+    with this - but when other developer has made somewhat simple NMU
+    let's leave them there for now (Closes: 143356)
+  * divx plugin also moved to separate package which goes
+    into contrib and requires separate instalation of divx4linux.
+    (Closes: 167406)
+  * fixed some compilation options (Closes: 132994)
+    for building use debian/builddeb  - configure will detect
+    configure options best for given platform.
+  * hopefully icon location is now fixed (Closes: 167742)
+    (it looks like some bug for an old version of avifile)
+  * compiled with incorect flags by NMU (Closes: 169134, 169701)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 22 Jan 2003 14:40:44 +0200
+
+avifile (0.7.15.20020816-1.1) unstable; urgency=low
+  * NMU
+  * move avifile-win32-plugin and avifile-xvid-plugin into contrib
+    (closes: #145024).
+
+ -- Robert Bihlmeyer <robbe@debian.org>  Sun, 27 Oct 2002 21:40:44 +0100
+
+avifile (0.7.15.20020816-1) unstable; urgency=low
+  * fixing some memory leaks
+  * better MP3 VBR support
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 16 Aug 2002 14:00:14 +0100
+
+avifile (0.7.14.20020802-1) unstable; urgency=low
+  * heavily updated networking support for asf streaming servers
+  * this cvs snapshot already contains fix for (Closes: 154745)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 2 Aug 2002 14:00:14 +0100
+
+avifile (0.7.12.20020719-1) unstable; urgency=low
+  * many many many (really) fixes again - completely redesigned some internal
+    library parts (and yet it's just half of the work)
+  * fixed support for mjpeg/vp31
+  * slightly better avirecompress
+  * minimalized usage of exception (Closes: 119633, 120828)
+    it's actually not a fix for gcc bug but it works at least
+  * fixed problem with segmentation (Closes: 149242)
+  * liblcms is not avifile dependency (Closes: 153019)
+    hopefully should be fixed with this recompilation
+
+ -- Zdenek Kabelac <kabi@debian.org>  Wed, 19 Jul 2002 22:00:14 +0100
+
+avifile (0.7.7.20020524-1) unstable; urgency=low
+  * fixed build problem (Closes: 147243)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 24 May 2002 15:00:14 +0100
+
+avifile (0.7.6.20020508-1) unstable; urgency=low
+  * removed config.h from avifile include directory (Closes: 146026)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Wed, 08 May 2002 15:00:14 +0100
+
+avifile (0.7.4.20020426-1) unstable; urgency=low
+  * removed dependency for xvid plugin (Closes: 143847)
+    but user still has to install it himself - he might
+    use Christians site for apt-getting package - see Readme
+  * fixed empty source packages (Closes: 144425)
+    currious how just that happened - but at least
+    the netraffic was saved as package had some serious bugs inside
+  * removed any i386 flag from configure (Closes: 1322994)
+    however for packages compilation for given platform user has
+    to specify his CFLAGS/CXXFLAGS - otherwice configure will
+    discover something by itself!
+  * in this release several stupid bugs were fixed - in case
+    there are problems with sound - remove ~/.avirc
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 26 Apr 2002 15:00:14 +0100
+
+avifile (0.7.3.20020419-1) unstable; urgency=low
+  * fixed dependencies (Closes: 141319)
+  * DivX plugins are back (Closes: 142968)
+    - though now it's a bit complicated they are build with divx4 version
+      not divx4 (ffmpeg is better in decoding divx5 movies for now anyway)
+  * rounding applied (Closes: 126231)
+    but the word 'processor' is left in - it looks like this
+    changes with kernel - for Intel there is no such word
+  * CVS has some bugfixes
+  * debian/rules now works on Debian Potato - though some plugin packages
+    will have empty content - but it's surely better then nothing.
+    Also it should be better for cross compilation on non i386 platforms
+  * spelling fixes (Closes: 143265) I would be more then happy
+    if some native English speaker would be checking my texts.
+  * I'm agains any split for contrib / main part of Avifile package
+    (Closes: 143356)  - Avifile win32 plugin is able to run freely available
+    GPL win32 dll codecs - e.g.  XviD, Huffyuv and soon ffmpeg as well.
+    It's only the question how to package such plugins - but they
+    are GPL & source available - but most probably uncompilable on Linux
+    (Win32 compilers are probably needed)
+    I do not want to sound rude here, but avifile development takes me 99%
+    of free time and I do not have more to split project into two parts,
+    maintain them separately just because someone sees only the usage
+    of M$ Wm8 codecs - ok quite long entry...
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 19 Apr 2002 15:00:14 +0100
+
+avifile (0.7.2.20020412-1) unstable; urgency=low
+
+  * using debhelper compatibility mode 3
+  * Fixed icon location in menu files (Closes: 129598)
+  * Fixed >81 chars description length for libavifile (Closes: 130962)
+  * Fixed libmmxnow.so & libavqt.so problem (Closes: 124096)
+    mmxnow is for now still private experimet
+    libavqt is private library used by avifile programs as it's
+    API is not yet finished only the library is distributed with player
+  * Extended win32 plugins description - codecs have to be downloaded
+    separately as they can't be regular part of Debian. (Closes: 138487)
+  * more verbose message when the file can't be open. (Closes: 136075)
+  * fixing build problems for PowerPC (Closes: 136580, 128132)
+    (but likely new might appear with new version
+  * basicaly update to the current CVS version - which means increase
+    of version to 0.7 - library should allow coexistance of older
+    aviplay library in the system - expecting some minor remaing
+    compatibility problems - hard to catch them all at once)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 12 Apr 2002 14:00:14 +0100
+
+avifile (0.6.0.20011220-1.1) unstable; urgency=low
+
+  * Non-Maintainer Upload
+  * debian/rules: call make without -j option
+
+ -- David Schleef <ds@schleef.org>  Fri,  1 Mar 2002 20:36:13 -0800
+
+avifile (0.6.0.20011220-1) unstable; urgency=low
+
+  * fixed spelling error (dll->DLL) (Closes: 124433)
+  * builds on PPC also
+  * improved avicap a bit
+
+ -- Zdenek Kabelac <kabi@debian.org>  Mon, 20 Nov 2001 14:00:14 +0100
+
+avifile (0.6.0.20011207-1) unstable; urgency=low
+
+  * I do not see upside down images - so this bug is
+    currently unreproducible (Closes: 120011)
+    (Though there might be some problems with some codecs - but
+    this are very special and rare to be seen by averidge user -
+    basicaly problematic codecs sits on my hardrive.
+  * Well not it builds on 64bit alpha (Closes: 122205)
+    Yet I have no idea how it works :)
+    Again - if anybody want to help with making it multiplatform...
+  * Missing dependencies were already fixed (Closes: 118660)
+  * slightly modified control file to ensure that some qt-mt library
+    will be installed
+  * this is just a reminder here -
+    one library package has been splited into more parts.
+
+ -- Zdenek Kabelac <kabi@debian.org>  Wed, 7 Nov 2001 14:00:14 +0100
+
+avifile (0.6.0.20011130-1) unstable; urgency=low
+
+  * closing bugs (Closes: 116667, 120429, 121561)
+  * fixed already for some time (Closes: 119052)
+  * unreproducible (Closes: 113287)
+  * hopefully fixed (Closes: 114858)
+  * staying with autoconf (Closes: 119690)
+  * this is problem of sdl-dev (Closes: 120949)
+  * updating mime-types (Closes: 117432)
+  * fixed some spelling problem (Closes: 120708)
+  * added Video hints (Closes: 121028)
+  * added some Conflicts: for new plugins
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 30 Nov 2001 14:00:14 +0100
+
+avifile (0.6.0.20011123-1) unstable; urgency=low
+  * some updates for avicap tool
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 23 Nov 2001 12:34:00 +0100
+
+avifile (0.6.0.20011116-1) unstable; urgency=low
+  * updated build dependencies - added autoconf & automake
+  * fixed bugs introduced in previous release
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 16 Nov 2001 12:34:00 +0100
+
+avifile (0.6.0.20011109-1) unstable; urgency=low
+  * have I mentied I fixed another big set of bugs :)
+  * disabled AC3 audio decoding for mainstream Debian release
+  * created few more packages - and more will come...
+    right now libmad - depend on libmad package - very good MP3 decoder
+    libvorbis - for those who want to play vorbis files - need Vorbis/Ogg
+  * added mime type  (Closes: 117432)
+  * corrected dependency for libavifile (Closes: 118660, 116667)
+  * these bugs are currently not reproducable (Closes: 113287, 114858)
+  * this package is released with these known bugs:
+    Streaming is broken
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 9 Nov 2001 12:34:00 +0100
+
+avifile (0.6.0.20011018-1) unstable; urgency=low
+  * debian/control -  adding gettext dependency for AM_LC_MESSAGES
+    (it's not used right now, but probably will be)
+  * some building fixes for non-debian systems
+  * eliminating usage of STL - using internal avm::string & avm::vector
+  * recompiled with new SDL
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 18 Oct 2001 22:34:00 +0200
+
+avifile (0.6.0.20011002-1) unstable; urgency=low
+  * various coredumps in gui should be mostly fixed (Closes: 114167)
+  * divx.dll seems to work - though it's not yet perfect
+  * x2divx should work again (Closes: 112079)
+    thought we have introduces minor change in infotypes which
+    requires minor updates on tools
+  * fixed few minor problems with vorbis plugin
+  * again closing bug closed in REJECTed release (Closes: 109947, 110046)
+  * I'm plaining to make it architecture-any (Closes: 112803)
+    (But I do need help - I'm only i386 programmer - so please send me
+    bugreports preferably together with fixes
+  * changed audio timing (but it's still experimental - so it's disabled
+    for debian release - CVS has this enable - but with problems with
+    scrambled asf streams)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Tue, 02 Oct 2001 22:34:00 +0200
+
+avifile (0.6.0.20010907-1) unstable; urgency=low
+  * switch to  arch any - let's just get more bugreports...
+  * vorbis plugin
+  * someone doesn't like my idea of adding empty packages ahead :(
+    so for now still without libmmxnow (one of the last such packages)
+  * dependency for libqt removed from libavifile (Closes: 110362)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 07 Sep 2001 12:34:00 +0200
+
+avifile (0.6.0.20010831-1) unstable; urgency=low
+  * compiled again with -march=i586 - we do not need any extra optimalizations
+    (Closes: 109947)
+  * new video scheduling code
+  * fixed couple things which just get broken during some last updates
+  * extra Audio stream support
+  * added build depend to libqt-mt (Closes: 110046)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 31 Aug 2001 12:34:00 +0200
+
+avifile (0.6.0.20010824-1) unstable; urgency=low
+  * lot of new features - especially better support for X11 rendering
+    with ffmpeg
+  * ac3 pass-through for SBLive
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 24 Aug 2001 12:34:00 +0200
+
+avifile (0.6.0.20010817-1) unstable; urgency=low
+  * stupid fix - actually added those renamed avirecompress, avicap
+    and avibench tools
+  * fixed some menu and building scripts
+  * just recompilation was needed - already fixed in previous release
+    (Closes: 106953,107096)
+  * fixed avifile-config (Closes: 108748)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 17 Aug 2001 12:34:00 +0200
+
+avifile (0.6.0.20010810-1) unstable; urgency=low
+  * improved versioning (Closes: 106647)
+  * no svgalib depedency for now (Closes: 106526)
+  * building with Qt2 - should be much more stable for now
+    and we should stay binary compatible for more than one week :)
+  * support AC3, ALaw, uLaw audio streams supported
+  * renaming some applications -> avirecompress, avicap, avibench
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 10 Aug 2001 12:34:00 +0200
+
+avifile (0.6.0.20010803-1) unstable; urgency=low
+  * rebuild with latest Qt (Closed: 106953, 107096)
+  * oh my god what they have made to autoconf - anyway you will be
+    probably unable to recompile this package with current autoconf
+    package - so enjoy this binary release
+    (if you find libtool.m4 from previous autoconf package - it might
+    be really useful)
+    anyway avifile work with autoconf2.50 without problems
+    complain elsewhere (Closes: 107348)
+  * better versioning for library to complain Debian policy
+    (using 0.6 - not just 0 because 0.7 will be probably incompatible with 0.6)
+    (Closes: 106645)
+  * not my problem (Closes: 106998)
+  * I've no idea what is the reason for the fault in testing -
+    I'm closing it as it's obviously bug elsewhere (Closes: 107350)
+    I would suspect author is using some broken automake/autoconf
+    (as is present in current unstable)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 3 Aug 2001 12:34:00 +0200
+
+avifile (0.6.0.20010719-1) unstable; urgency=low
+  * /usr/local/lib/win32 supported
+  * libmp3lamebin is able to encode mp3 if you have libmp3lame instaled
+    on your system (/usr/lib, /usr/local/lib or anywhere in LD_LIBRARY_PATH)
+  * cleanup in makefiles and autoconfigure scripts
+    support for autoconf2.50 (Closes: 104262)
+  * previous build was made with old /var/lib/dpkg/info (Closes: 104273)
+  * using inttypes.h (Closes: 102659)
+  * lot of fixes in qtrecompresor
+
+ -- Zdenek Kabelac <kabi@debian.org>  Mon, 19 Jul 2001 12:34:00 +0200
+
+avifile (0.6.0.20010709-1) unstable; urgency=low
+  * add ffmpeg - playing OpenDiv through YV12 hw acceleration
+  * I believe recompilation fixes (Closes: 103886, 104097)
+  * libarts-dev is actually not a depedency problem of avifile
+    but rather libsdl1.2-dev itself as this is the library which
+    actually needs libarts (Closes: 104027, 104028, 103072)
+    but its not a problem add this dependency for some time
+  * fixed problem with WIN32_PATH (Closes: 102934)
+  * rebuild with latest SDL package (Closes: 102100)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Mon, 07 Jul 2001 17:34:00 +0200
+
+avifile (0.6.0.20010629-1) unstable; urgency=low
+  * new scheduler
+  * should be even more smooth - using various priorities for various threads
+  * added few more tools - avicat, avitype, avimake - for now without
+    manpages
+  * has been reject because of dpkg bug
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 29 Jun 2001 17:34:00 +0200
+
+avifile (0.6.0.20010622-1) unstable; urgency=low
+  * fixed some upgrade info  Joye Hess (Closes: #101061)
+  * improtant fixes to make playing almost enjoyable even
+    on very slow P200MMX machine (this is really slow machine)
+  * direct rendering is supported also for x11 rendering
+    (in non buffered mode)
+  * very fast file seeking
+  * better support for streamed .asf files over the network
+  * libGLUT was not the problem in avifile (Closes: 100763)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 22 Jun 2001 12:34:00 +0200
+
+avifile (0.6.0.20010614-1) unstable; urgency=low
+  * (Closes: #97198) - currently the mp3 encoder is not builded
+    (which effectivly ruins the usage of qtrecompress - well
+     I've not inveted stupid american law..)
+  * as usually 100% better playing...
+  * supporting more formats (uncompressed YUY2, YV12)
+  * kv4lsetup is now suid (Closes: #99057)
+  * using Qt3 libraries - for they they are not fully integrated
+    so some unmet dependecies are overridden
+    assume this will require recompilation when everything will be
+    cleaned
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 14 Jun 2001 12:34:00 +0200
+
+avifile (0.6.0.20010518-1) unstable; urgency=low
+  * (Closes: #97853) - integer overflow
+  * new video image scheduling - much more precise
+  * cripled qtrecompress - for now we are not  shipping lame encoder - as
+    some people 'believe' this is illegal - but I'm expecting those people
+    will send me some good reason for their believing....
+
+ -- Zdenek Kabelac <kabi@debian.org>  Fri, 18 May 2001 12:34:00 +0100
+
+avifile (0.6.0.20010503-1) unstable; urgency=low
+
+  * fixed many many bugs
+  * aviplayer is also faster now
+  * added some 'or' packages to building dependencies so
+    Woody users could use the same package
+    (Closes: #95972)
+  * added some info about DLL codecs to postinst (Closes: #94560)
+  * TODO is original file from CVS archive (Closes: 94555)
+  * (Closes: #95518) this release should probably fix this problem
+    if not please prepare problematic short cuted version of this file.
+  * (Closes: #95114) this package contains soon to be stable version
+    and I don't see the point in packaging old broken software
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 03 May 2001 12:34:00 +0200
+
+avifile (0.6.0.20010426-1) unstable; urgency=low
+
+  * fixed few more bugreports
+  * this should be soon stable release
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 26 Apr 2001 12:34:00 +0100
+
+avifile (0.6.0.20010419-1) unstable; urgency=low
+
+  * CVS date: 2001/04/19 (this message is boring so its the last one)
+  * (Closes: #94196) - player moved to section Viewers from Tools
+    Janos Holanyi <csani@lme.linux.hu>
+  * audio & seek are now quite good
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 19 Apr 2001 12:34:00 +0100
+
+avifile (0.6.0.20010412-1) unstable; urgency=low
+
+  * CVS date: 2001/04/12
+  * (Closes: #92349) - I believe this was a problem with wierd GCC version
+    used for build and should no longer be present
+  * few more files are now cleaned in debian/rules
+  * few sample programs should be at least able to run
+    (qtrecompress, qtvidcap)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 12 Apr 2001 12:34:00 +0100
+
+avifile (0.6.0.20010405-1) unstable; urgency=low
+
+  * CVS date: 2001/04/05
+  * (Closes: #92437) thanks to Ilya Konstantinov for pointing out this problem
+  * audio should be in sync with video most of this time now
+    (yet some problematic .avis' still exist)
+    if you have such please report...
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 05 Apr 2001 12:34:00 +0100
+
+avifile (0.6.0.20010329-1) unstable; urgency=low
+
+  * CVS date: 2001/03/29
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 29 Mar 2001 12:34:00 +0100
+
+avifile (0.6.0.20010322-1) unstable; urgency=low
+
+  * CVS date: 2001/03/22
+  * see ChangeLog file
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 22 Mar 2001 12:34:00 +0100
+
+avifile (0.6.0.20010315-1) unstable; urgency=low
+
+  * CVS date: 2001/03/15
+  * changed naming convention for package
+  * updated man page for avifile
+  * cleans in debian/rules
+  * cleaned manpages mess a bit (Closes: #86757)
+  * forgotton .so lib files are now back in place for -dev package
+    static libraries aren't really need and they woudln't
+    work anyway (Closes: #88808)
+  * there will be zero lenght diffs comming now with this package for
+    a while as the maintainer (kabi@debian.org) has got the write access
+    to CVS so all the changes should be in CVS tree too.
+  * fixed build dependency libgl-dev - removed not needed (Closes: #86966)
+  * limited to i386 architecture only for this moment (Closes: #88236)
+  * fixed many many many bugs & problems I've discovered
+    now its almost equal to 0.53 version (on SMP computer it's faster)
+    the video playback is smother, audio is still a bit off sometimes
+  * fixed build dependency for libsdl
+  * fixed build dependency for pnmtopng - removed
+
+ -- Zdenek Kabelac <kabi@debian.org>  Thu, 15 Mar 2001 12:33:53 +0100
+
+avifile (0.6.0-2) unstable; urgency=low
+
+  * changes to debian/rules (added -dev package and various other tweaks
+    to reflect changes in Makefiles
+  * configure is using --enable-release -enable-quite --prefix /usr
+  * renamed package name of libaviplay to libavifile to stay consistent
+  * added few more lines to aviplay's man page
+  * using CVS source from 2001/02/12
+
+ -- Zdenek Kabelac <kabi@debian.org>  Sat, 10 Feb 2001 00:41:59 +0100
+
+avifile (0.6.0-1) unstable; urgency=low
+
+  * using latest CVS source for version 0.6 (2001/01/30) (with 1 fix)
+  * added some tricks to rules for reasonable good installation
+
+ -- Zdenek Kabelac <kabi@debian.org>  Sat, 10 Feb 2001 00:41:54 +0100
+
+avifile (0.53-1) unstable; urgency=low
+
+  * using latest source 0.53.1 (however original directory is 0.53)
+    (CVS tree is not the latest source at this moment)
+
+ -- Zdenek Kabelac <kabi@debian.org>  Wed,  4 Jan 2001 14:53:28 +0100
+
+avifile (20001030-1) unstable; urgency=low
+
+  * separated libraries to separate package libaviplay
+  * updated CVS
+
+ -- Zdenek Kabelac <kabi@debian.org>  Wed,  3 Jan 2001 21:53:12 +0100
+
+avifile (20001025-1) unstable; urgency=low
+
+  * initial release
+
+ -- Zdenek Kabelac <kabi@debian.org>  Wed, 25 Oct 2000 19:52:19 +0200
+
+Local variables:
+mode: debian-changelog
+End:

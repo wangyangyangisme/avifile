@@ -1,0 +1,239 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+
+#
+# This version is for a multibinary package. It also allows you to build any
+# of the binary packages independantly, via binary-<package> targets.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# This is the debhelper compatability version to use.
+export DH_COMPAT=2
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+#
+# ok looks like this script is becoming a little bit overcomplicated
+# however if anyone know how to simplify this let me know: kabi@debian.org
+#
+
+INST = install -p
+package = avifile
+version = -0.7
+aviversion = $(package)$(version)
+libraries = lib$(aviversion)c2
+#DH2 using normal name
+#tmp
+devel = lib$(aviversion)-dev
+player = $(package)-player
+utils = $(package)-utils
+madplugin = $(package)-mad-plugin
+mjpegplugin = $(package)-mjpeg-plugin
+vorbisplugin = $(package)-vorbis-plugin
+win32plugin = $(package)-win32-plugin
+xvidplugin = $(package)-xvid-plugin
+divxplugin = $(package)-divx-plugin
+
+allplugins = $(madplugin) $(mjpegplugin) $(vorbisplugin) $(win32plugin) $(xvidplugin) $(divxplugin)
+
+installprefix = $(PWD)/debian/$(libraries)
+
+allpackages= debian/$(player) debian/$(utils)
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+        CFLAGS += -g
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+        INSTALL_PROGRAM += -s
+endif
+
+build: build-stamp
+build-stamp: configure-stamp
+	@dh_testdir
+	$(MAKE)
+	touch build-stamp
+
+cleanB:
+	@dh_testdir
+	@dh_clean
+#	rm -rf core `find debian/* -type d ! -name CVS`
+
+clean: cleanB
+	@dh_testdir
+	@if [ -f Makefile ]; then $(MAKE) maintainer-clean ; fi
+# remove various files which should not be in tar.gz
+	@rm -rf core `find . -name "*~" -o -name Makefile.in -o -regex '.*\.bbg?' -o -name '*.gcov' -o -name '.#*' -o -name '*.out' `
+	@rm -rf debian/docs .snprj build-stamp configure-stamp
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	@echo "---=== Debian package is build with Lame support ===---"
+	@echo "           library is being linked at runtime"
+	@echo "for the full usage user has to install mp3lame library"
+	./autogen.sh --clean
+#        --linkac
+
+# !!BUILTIN LAME ENCODER IS NOT COMPILED FOR DEBIAN PACKAGE!!
+# Note: we use wrapping plugin for mp3lame library instead - so better
+# way is to install latest version of lame library from CVS instead
+#
+# remove --disable-lame to get this compiled
+
+#        rm config.cache
+#	CFLAGS="-g -O2 -march=i586" CXXFLAGS="-g -O2 -march=i586"
+# if you wish to build packege without AC3 support: --disable-ffmpeg-ac3
+	./configure --prefix=/usr --disable-lame --enable-lame-bin \
+	--enable-quiet --enable-release --disable-dependency-tracking \
+	--host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
+	touch configure-stamp
+
+
+install: build
+	dh_testdir
+	dh_testroot
+	@echo ":: Preparing packages"
+#	@find doc -type f | egrep -v "CVS| |Makefile|cvsignore|\.1"  >debian/docs
+#	@echo "plugins/libac3pass/README.ac3pass" >>debian/docs
+	dh_installdirs
+
+# this has been all tricky way to fix some problems with makefile - no longer needed
+#	@make DESTDIR=$(prefix) datadir=debian/$(player)/usr/share install
+	@make DESTDIR=$(installprefix) pkgdocdir=/usr/share/doc/$(libraries) install
+# remove COPYING file - using debian common licencies
+	@rm debian/$(libraries)/usr/share/doc/$(libraries)/COPYING
+
+# ok some 'smart people' invented ugly 32color palette and there is no easy way
+# to convert our icon to this format - so handmade work was necessary
+#	@if [ -x /usr/bin/pngtopnm -a -x /usr/bin/ppmtoxpm ] ; then pngtopnm $(installprefix)/usr/share/$(aviversion)/test.png | ppmtoxpm >$(installprefix)/usr/share/$(aviversion)/test.xpm ; fi
+	@cp bin/test.xpm $(installprefix)/usr/share/$(aviversion)/test.xpm
+	@$(INST) -s $(installprefix)/usr/bin/aviplay debian/$(player)/usr/bin/
+
+	@if [ -x $(installprefix)/usr/bin/kv4lsetup ] ; then $(INST) -s -m 4755 $(installprefix)/usr/bin/kv4lsetup debian/$(utils)/usr/bin/ ; fi
+	@for i in avibench avirecompress avicap avicat avimake avirec avitype ; do \
+	   if [ -x $(installprefix)/usr/bin/$$i ] ; then $(INST) -s $(installprefix)/usr/bin/$$i debian/$(utils)/usr/bin/ ; fi ; done
+
+	@$(INST) $(installprefix)/usr/bin/avifile-config debian/$(devel)/usr/bin/
+	@mv $(installprefix)/usr/include debian/$(devel)/usr
+	@mv $(installprefix)/usr/lib/pkgconfig debian/$(devel)/usr/lib
+
+	@find $(installprefix)/usr/lib/$(aviversion)/ -name '*.la' | xargs rm
+
+# libqavm will be a part of aviplay package for now
+# - it's API is not yet stable
+	@rm $(installprefix)/usr/lib/libqavm*.so
+	@rm $(installprefix)/usr/lib/libqavm*.la
+	@mv $(installprefix)/usr/lib/libqavm* debian/$(player)/usr/lib
+	@mv $(installprefix)/usr/man/man1/aviplay* debian/$(player)/usr/share/man/man1
+	@mv $(installprefix)/usr/share/$(aviversion) debian/$(player)/usr/share/
+
+	@mv $(installprefix)/usr/man/man1/avifile-config* debian/$(devel)/usr/share/man/man1
+	@mv $(installprefix)/usr/lib/*.so debian/$(devel)/usr/lib
+	@mv $(installprefix)/usr/lib/*.la debian/$(devel)/usr/lib
+	for i in $(allplugins) ; do \
+		mkdir -p debian/$$i/usr/lib/$(aviversion) ; done
+	@mv $(installprefix)/usr/lib/$(aviversion)/mad* debian/$(madplugin)/usr/lib/$(aviversion)/
+	if test -e $(installprefix)/usr/lib/$(aviversion)/osmjpeg.so ; then mv $(installprefix)/usr/lib/$(aviversion)/osmjpeg* debian/$(mjpegplugin)/usr/lib/$(aviversion)/ ; fi
+	if test -e $(installprefix)/usr/lib/$(aviversion)/vorbis_audio.so ; then mv $(installprefix)/usr/lib/$(aviversion)/vorbis* debian/$(vorbisplugin)/usr/lib/$(aviversion)/ ; fi
+	if test -e $(installprefix)/usr/lib/$(aviversion)/win32.so ; then mv $(installprefix)/usr/lib/$(aviversion)/win32* debian/$(win32plugin)/usr/lib/$(aviversion)/ ; fi
+	if test -e $(installprefix)/usr/lib/$(aviversion)/xvid4.so ; then mv $(installprefix)/usr/lib/$(aviversion)/xvid* debian/$(xvidplugin)/usr/lib/$(aviversion)/ ; fi
+	if test -e $(installprefix)/usr/lib/$(aviversion)/divx4.so ; then mv $(installprefix)/usr/lib/$(aviversion)/divx4* debian/$(divxplugin)/usr/lib/$(aviversion)/ ; fi
+
+	@mv $(installprefix)/usr/man/man1/* debian/$(utils)/usr/share/man/man1
+
+# clean some files from library package
+	@rm -rf debian/$(libraries)/usr/bin debian/$(libraries)/usr/man
+	@rm -f debian/$(libraries)/usr/lib/*.so
+	@rm -rf core `find debian/$(libraries) -name "*.a"`
+
+	mkdir -p debian/$(libraries)/usr/share/lintian/overrides
+# construct lintian's override file for libavifile
+# (yep it's never ending fight...)
+#	@for i in `find debian/$(libraries)/usr/lib/ -type f -name *.so* -printf '%f '` ; do \
+#		libn=usr/lib/$(aviversion)/$$i ;\
+#		echo "installing override for: $$libn" ;\
+#		echo -e "$(libraries): shlib-with-non-pic-code $$libn\n$(libraries): no-shlibs-control-file $$libn" >>debian/$(libraries)/usr/share/lintian/overrides/$(libraries) ;\
+#	done
+	@for i in $(libraries) $(utils); do \
+		mkdir -p debian/$$i/usr/share/lintian/overrides ;\
+		cp -a debian/$$i.lintian debian/$$i/usr/share/lintian/overrides/$$i ; \
+	done
+#	@for i in $(allplugins); do \
+#		mkdir -p debian/$$i/usr/share/lintian/overrides ;\
+#		n=`echo $$i | sed -e 's/avifile-\(.*\)-plugin/\1/'` ;\
+#		libn=usr/lib/$(aviversion)/lib$$n.so ;\
+#		echo -e "$$i: shlib-with-non-pic-code $$libn\n$$i: no-shlibs-control-file $$libn" >debian/$$i/usr/share/lintian/overrides/$$i ; \
+#	done
+
+binary-indep:
+# There are no architecture-independent files to be uploaded
+# generated by this package.  If there were any they would be
+# made here.
+
+binary-arch: cleanB build install
+	dh_testdir
+	dh_testroot
+	dh_installdocs
+	dh_installchangelogs -k ChangeLog
+	dh_installexamples
+
+# this way we are saving few inodes and making it more user friendly
+# as doc is concentrated in one directory
+# I don't like the idea to use .link file - this is simplier
+	-@for i in $(player) $(utils) $(devel) $(allplugins) ; do \
+		rm -rf debian/$$i/usr/share/doc/$$i ;\
+		ln -s $(libraries) debian/$$i/usr/share/doc/$$i ;\
+        done
+	dh_installmime
+	dh_installmenu
+	dh_installcron
+#	dh_installman
+#        -ptmp
+#DH2	@dh_movefiles
+	dh_compress
+	@chmod +x debian/$(player)/usr/share/$(aviversion)/scripts/*
+	dh_fixperms -Xkv4lsetup -Xavicap-boot -Xavicap-setnvram -Xavicap-shutdown
+	dh_strip
+
+	dh_makeshlibs -V
+	dh_installdeb
+
+# add svgalib dependency - not needed - SDL maintainer solved this problem
+#	if ! grep svgalib-dummyg1 debian/substvars >/dev/null ; then \
+#		mv debian/substvars debian/substvars-unhacked ; \
+#		sed -e 's/svgalibg1\( *([^)]*)\)\{0,1\}/& | svgalib-dummyg1\1/'
+#		rm debian/substvars-unhacked; \
+#	fi
+
+# trick to allow build empty packages
+# avoid problem with  trailing ','
+	@for i in $(allplugins) ; do if test ! -e debian/$$i.substvars ; then \
+		echo "shlibs:Depends=libavifile-0.7c2 (>= 1:0.7.43.20050224-1), libc6" > debian/$$i.substvars ; \
+	fi ; done
+
+	dh_shlibdeps -Xxvid4 -Xdivx4 -ldebian/$(libraries)/usr/lib:debian/$(player)/usr/lib
+
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb -v
+
+checkscripts:
+	@echo ":: Checking scripts"
+
+# Below here is fairly generic really
+binary: binary-indep binary-arch
+
+source diff:
+	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
+
+.PHONY: binary binary-arch binary-indep clean install

@@ -1,0 +1,32 @@
+.TH "k4vlsetup" "1" "12 February 2003" "Zdenek Kabelac" ""
+.SH "NAME"
+k4vlsetup \- setup grabbing card
+.SH "SYNOPSIS"
+.B k4vlsetup
+.RI [options]
+.SH "DESCRIPTION"
+.B k4vlsetup
+
+kv4lsetup must either be called as root or run setuid root
+
+if kv4lsetup doesn't run as root, it cannot set the address of the framebuffer correctly,
+so avicap will crash - it might even crash your computer
+
+kv4lsetup will be started automatically by avicap
+
+.SH "OPTIONS"
+\fB\-h \-\-help\fR
+Show help message
+.TP 
+\fB\-t=<number> \-\-verbose=<number>\fR
+be verbose
+use 0 for no verbosity,
+    1 for normal
+and 2 for more verboseness
+.TP 
+\fB\-l \-\-device  <v4l-device>\fR
+sets your v4l device (usually /dev/video)
+.TP 
+.BR 
+.SH "SEE ALSO"
+\fBavicap(1)\fR

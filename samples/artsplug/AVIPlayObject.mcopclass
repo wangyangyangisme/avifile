@@ -1,0 +1,7 @@
+Interface=AVIPlayObject,Arts::PlayObject
+Author="Eugene Kuznetsov <divx@euro.ru>"
+URL="http://divx.euro.ru/"
+Extension=avi,
+MimeType=video/x-msvideo,
+Library=libarts_aviplay_plugin.so
+

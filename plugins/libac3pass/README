@@ -1,0 +1,22 @@
+
+play-ac3 -- play Dolby Digital AC3 streams with Emu10k1 OSS drivers
+
+  1. Make sure you have ac3pass.bin in /usr/local/share/emu10k1.
+     If not, do a 'make install' in utils/as10k1.
+  2. Type 'make load'
+  3. If everything goes well, you should be able to play AC3 streams
+     with './play-ac3 <stream name>'. You can also feed data from stdin,
+     eg. 'extract_ac3 stream.vob | ./play-ac3 -'.
+
+     Use 'play-raw' to play raw PCM streams. The stream must be 16-bit
+     stereo with 48 kHz sampling rate. 
+
+     Note: You first have to enable digital pass-through with
+     'emu-config -t x', where x indicates which S/PDIF ports to use for 
+     playback. (1 = Port 0, 2 = Port 1 and 4 = Port 2) E.g. 'emu-config -t 7'
+     enables all the three S/PDIF ports. If you choose not to use port 0,
+     you have to change the line that the AC3pass patch is bound to (see
+     Makefile)
+
+--
+Juha Yrjölä <jyrjola@cc.hut.fi>

@@ -1,0 +1,66 @@
+
+
+  Theoretically, performance of video output should be only limited by 
+bandwidth of CPU <-> Video bus ( for PCI bus it's 133 Mb/s or 5 ms for
+drawing of 640x480x16 picture ). Unfortunately, this value is rarely
+achieved. Actual performance is affected by many factors and can vary 
+from 20 to 250 Mb/s.
+  You can determine this value for your system by running 'benchmark'
+tool. Type:
+    benchmark <your-AVI-file>  (try also with options -yuv and -direct)
+and it'll perform quick measurement of most typical timings. In the end,
+it'll print video output speed in megabytes per second. If the resulting
+value for your system is higher than 50 Mb/s, then there's nothing for
+you to worry about, because your X server has some kind of output
+acceleration.
+  In case of this performance being worse than 30 Mb/s, you'll probably
+need to turn on write-combining for video card. This should generally be
+done by X server, but some servers ( for example, X server for XFree86 
+3.3.6 with s3_savage driver ) don't do it ( shame on them ). Here I'll
+describe how it could be done by hands in case of Linux.
+   1. Your processor should have MTRR registers ( Pentium Pro, Pentium II
+or maybe some compatible processors ). Your kernel should be compiled 
+with MTRR support: in kernel configuration menu, select 'Processor type
+and features' ->'MTRR (Memory Type Range Register) support'.
+   2. Run X and log its output somewhere:
+
+ startx >./startx.log 2>&1   
+
+  Look into the log and find a line similar to this:
+  
+(--) SVGA: PCI: S3 Savage4 rev 2, Memory @ 0xe5000000, 0xd8000000
+
+  Here 0xe5000000 and 0xd8000000 are virtual addresses of your video 
+memory. You'll need one of them. 
+  2a. Alternatively, you can look at /proc/pci and find section related to 
+your video card ( "VGA compatible controller" ). Take the first address 
+from the line saying about "prefetchable 32 bit memory".
+
+  3. Type as root:
+ 
+  echo "base=<your-base> size=0x800000 type=write-combining" >>/proc/mtrr
+  
+replacing <your-base> with address received in step 2 and 0x800000 ( which
+is equal to 8 Mb ) with size of your video memory.
+
+ That's it. If you did everything properly, you should notice significant
+increase in output performance. For me it increased output bandwidth from
+ 20 to 36 Mb/s ( 1.8x ), and I had reports about 3x..4x increase!
+ 
+ In case that you chose wrong address from list in step 2, do the following:
+
+ cat /proc/mtrr
+ 
+ Find the line that was added by you. Suppose it starts with "reg02",
+  then type:
+
+ echo "disable=2" >>/proc/mtrr
+
+ and repeat step 3 with another address.
+ 
+ It is a good idea to put command from step 3 somewhere in startup scripts,
+because that base address does not change when you restart computer, but do
+not forget to remove it when changing hardware configuration.
+
+ You can find details about using /proc/mtrr in Linux kernel sources, file
+Documentation/mtrr.txt.

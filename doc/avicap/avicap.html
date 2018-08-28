@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Avicap User Documentation</title>
+                                                                        
+                 
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+  <body>
+                         
+<h2>Avicap User Documentation</h2>
+      <a href="http://avifile.sourceforge.net">to Avifile Homepage</a> &nbsp; 
+  &nbsp; &nbsp; &nbsp; <a
+ href="http://avifile.sourceforge.net/avicap/avicap.html">to Avicap Homepage</a><br>
+      <br>
+      docu by: Alexander Rawass (<a
+ href="mailto:alexannika@users.sourceforge.net">alexannika@users.sourceforge.net</a>)<br>
+             if anyone can write a better documentation - please do it and
+ tell   me<br>
+           <br>
+           Avicap is a capturing tool for video4linux that allows to record 
+ in  realtime    with various (DivX-)codecs.<br>
+             Avicap also contains a programmable timertable, so that Avicap 
+ can   be  used  like a VCR/PVR.<br>
+             Avicap also allows to automatically shutdown/poweroff and resume/poweron 
+      your computer in-between programmed recordings.<br>
+     Avicap also displays EPG (Electronic Program Guide) Information, that
+ can highlight or block programs to the regexp of your choice.<br>
+   <br>
+             Avicap is part of the <a
+ href="http://avifile.sourceforge.net">avifile   library</a><br>
+       <br>
+        Sections in this documentations:         
+<ul>
+          <li><a href="#features">Features</a><br>
+           </li>
+          <li><a href="#usage">Usage</a> &nbsp;</li>
+          <li><a href="#performance">Performance?</a> &nbsp;</li>
+        <li><a href="configuration.html">Configuring Avicap</a> &nbsp;<br>
+        </li>
+          <li><a href="timertable.html">Programmable Timertable</a> &nbsp;</li>
+       <li><a href="epg.html">EPG Electronic Program Guide</a> &nbsp;<br>
+       </li>
+          <li><a href="shutdown_resume.html">Shutdown &amp; Resume mode</a> 
+ &nbsp;</li>
+          <li><a href="#future_plans">Plans for the future</a> &nbsp;</li>
+      <li><a href="#screenshots">Screenshots</a> &nbsp;<br>
+      </li>
+               
+</ul>
+                          
+<h3><a name="features"></a>Features:</h3>
+                         
+<ul>
+               <li>video4linux grabber interface</li>
+               <li>Qt GUI, full control of recordings via GUI</li>
+               <li>lot of different codecs for encoding:</li>
+                                                   
+  <ul>
+                 <li>windows dlls (including DivX3.11a, Huffyuv etc)</li>
+                 <li><a href="http://www.xvid.org/">XVid</a> native</li>
+                 <li><a href="http://www.divx.com/divx/linux/">Divx4Linux</a> 
+  native</li>
+                 <li><a href="http://ffmpeg.sourceforge.net/">FFMpeg</a>
+native</li>
+                                                   
+  </ul>
+              <li>encoding thread buffers frames when system load is high</li>
+              <li>perfect A/V-sync<br>
+              </li>
+               <li>automatically segments recording at given size</li>
+              <li>you can change saturation/brightness/etc while recording<br>
+              </li>
+               <li>not hundreds of commandline options ;-))</li>
+             <li>no Digital UnRights Management ;-)</li>
+             <li>distributed under the GPL/LGPL license - it's Free Software!<br>
+             </li>
+               <li><a href="timertable.html">programmable timertable</a>&nbsp;</li>
+       <li><a href="epg.html">EPG Electronic Program Guide</a> &nbsp;<br>
+   it can highlight or block programs by regexp</li>
+   <li><a href="configuration.html#password_lock">password lock</a> to enforce
+blocking of programs <br>
+   </li>
+               <li><a href="shutdown_resume.html">shutdown &amp;  resume</a>
+  option   to  shutdown/poweroff and resume/poweron your computer  between
+ recordings</li>
+          <li><a href="configuration.html#dirpool">Directory Pool</a>, to 
+use   all  your free space on all partitions automatically<br>
+          </li>
+                         
+</ul>
+                         
+<h3><br>
+        </h3>
+               
+<h3><a name="usage"></a>Usage:</h3>
+             start avicap with 'avicap'<br>
+             <br>
+             A window will come up, showing the currently selected channel
+ (if   you've    used a v4l app before), or with noise, because no channel
+ has been  set yet.<br>
+             Best to go to the Configuration Dialog and set the correct settings
+    for   your video device.<br>
+             <br>
+             When you click the right mouse button, a menu will pop up with 
+ those    entries:<br>
+                         
+<ul>
+               <li>Configuration<br>
+             there you can select your video device, input, color space and 
+ grabbing     size</li>
+               <li>Xawtv station<br>
+             If you have a valid xawtv configuration file with channels set,
+  then   Avicap   will use that file to show you a channel list in this menu</li>
+               <li>Picture Properties<br>
+             changes saturation,brightness,etc</li>
+               <li>Timertable<br>
+             opens the window to show the <a href="timertable.html">programmable
+    timertable</a></li>
+               <li>Electronic Program Guide<br>
+   opens up the window of the <a href="epg.html">EPG Electronic Program Guide</a> 
+ &nbsp;<br>
+   the timertable window will also be opened<br>
+     </li>
+     <li>Capture AVI<br>
+             capture an avi manually<br>
+             a new window will come up, click 'start' to start the recording</li>
+                         
+</ul>
+             <br>
+            If you start avicap with 'avicap -timer' , the timertable window
+  will   automatically  open and start the timer to wait for pending recordings.<br>
+            <br>
+                       
+<h3><a name="performance"></a>Performance?</h3>
+            My system is an Athlon550 with TNT2pro graphics card, running 
+SuSE8.1     with  kernel-2.4.18 with apm enabled, I am using nvidia's proprietary 
+drivers    (shame  on me!).<br>
+            I've got 384MB ram and a bttv-compatible TV-card, I am using
+the   v4l/bttv     driver in the kernel.<br>
+            My harddisks are set to Ultra-DMA 2 mode, they can write 30MB/sec 
+  and   read  20MB/sec.<br>
+            My Motherboard is a Asus K7M which has got a 'RTC Alarm Resume
+ from   Soft-off'.<br>
+            <br>
+            I record at 384x288 pixel, in YV12 or RGB24 color mode, 25fps 
+PAL.<br>
+            My preferred codec at the moment is native XVid, at 3Mbit/sec 
+for   perfect    quality, with halfpel interpol. and lum. masking turned on<br>
+            <br>
+            I have to nice avicap to a lower priority (-15) to not get any
+ framedrops      in recording (whatever I &nbsp;do else with my system),
+the  recording  takes    up 65-75% of my CPU time - great!<br>
+            <br>
+            Avicap can record stable in the background without any framedrops,
+   I  can   read/write Emails in kmail and surf the net with galeon without
+  suffering    from framedrops.<br>
+            <br>
+            If I also nice up gcc, I can also compile source code (nice -15 
+ make).<br>
+            <br>
+            I can also watch other avis with <a
+ href="http://www.mplayerhq.hu/homepage/">mplayer</a> while I am recording, 
+     but I have to nice mplayer up, so mplayer gets it's framedrops - but 
+NO   framedrops  in the recording, which is more important.<br>
+            <br>
+            Hey, that's quite a good performance for a nowadays slow 550MHz 
+ CPU   -  thanks  especially to the xvid team for their codec :-)))<br>
+            <br>
+            Can anyone tell me which processor I need to record with xvid/divx/ffmpeg
+      in PAL-fullscreen (786x576) in superb quality - cause that's the only
+  thing    I'll need a newer/faster CPU for? :-)))<br>
+            <br>
+                       
+<h3>more documentation: </h3>
+                       
+<ul>
+               <li><a href="configuration.html">Configuring Avicap</a> &nbsp;<br>
+        </li>
+        <li><a href="timertable.html">Avicaps programmable timertable</a></li>
+       <li><a href="epg.html">EPG Electronic Program Guide</a> &nbsp;<br>
+       </li>
+               <li><a href="shutdown_resume.html">Shutdown &amp; Resume mode</a></li>
+                         
+</ul>
+             <br>
+                     
+<h3><a name="future_plans"></a>Plans for the future:</h3>
+                     
+<ul>
+             <li>Fullscreen/Maximize mode with xvideo overlay</li>
+             <li>record while zapping through channels</li>
+                                    
+</ul>
+           <br>
+                         
+<ul>
+                             
+</ul>
+                  
+<h3><a name="screenshots"></a>Screenshots</h3>
+    <a
+ href="http://avifile.sourceforge.net/avicap/screenshots/timertable.png"><img
+ src="http://avifile.sourceforge.net/avicap/screenshots/timertable-small.png"
+ alt="timertable screenshot" width="152" height="182">
+     </a>Screenshot of the programmable Timertable<br>
+    There, you can see my list of recordings for the next time.<br>
+    The current recording is highlighted red, the next pending recording
+is  highlighted green.<br>
+    <br>
+    <br>
+       <a
+ href="http://avifile.sourceforge.net/avicap/screenshots/epgwindow.png"><img
+ src="http://avifile.sourceforge.net/avicap/screenshots/epgwindow-small.png"
+ alt="screenshot epgwindow">
+    </a> Screenshot of the EPG (Electronic Program Guide) Window<br>
+      Here you can see a typical day on german television.<br>
+     <br>
+    <br>
+   <br>
+  <br>
+ <br>
+</body>
+</html>

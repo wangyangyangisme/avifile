@@ -1,0 +1,1121 @@
+dnl -*- m4 -*-
+dnl Process this file with autoconf to produce a configure script.
+dnl
+dnl avifile - library for parsing reading playing audio/video files
+dnl Copyright (C) 2000-2003 Eugene Kuznetsov, Zdenek Kabelac
+dnl
+dnl stupid idea - works just with 2.52 AC_INIT(avifileX.Y, X.Y.Z, avifile@prak.org)
+dnl AC_CONFIG_SRCDIR(acinclude.m4)
+
+AC_INIT(acinclude.m4)
+
+dnl info file says that it is a good idea to put AC_REVISION before AC_INIT
+dnl unfortunately it triggers a bug in autoconf 2.13 :( Quote:
+dnl ***BUG in Autoconf--please report*** AC_DISABLE_FAST_INSTALL
+dnl AC_REVISION(disabled - I no longer like the file modification after commit)
+
+configure_options="$@"
+echo "avifile configure options: $configure_options"
+
+AC_CONFIG_AUX_DIR(admin)
+
+# libtool versioning
+#
+# +1 : ? : +1  == new interface that does not break old one
+# +1 : ? : 0   == new interface that breaks old one
+#  ? : ? : 0   == no new interfaces, but breaks apps
+#  ? :+1 : ?   == just some internal changes, nothing breaks but might work
+#		  better
+# CURRENT: REVISION : AGE
+#
+# ok theory was nice - but let's just do it more simple :)
+AVIFILE_MAJOR_VERSION=0
+AVIFILE_MINOR_VERSION=7
+AVIFILE_MICRO_VERSION=45
+AC_SUBST(AVIFILE_MAJOR_VERSION)
+AC_SUBST(AVIFILE_MINOR_VERSION)
+AC_SUBST(AVIFILE_MICRO_VERSION)
+
+if test -z "$CFLAGS" ; then have_user_cflags=no ; else have_user_cflags=yes ; fi
+if test -z "$CXXFLAGS" ; then have_user_cxxflags=no ; else have_user_cxxflags=yes ; fi
+
+dnl Detect the canonical host and target build environment
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
+dnl Setup for automake
+AM_INIT_AUTOMAKE(avifile-0.7, $AVIFILE_MAJOR_VERSION.$AVIFILE_MINOR_VERSION.$AVIFILE_MICRO_VERSION )
+
+AM_CONFIG_HEADER(include/config.h)
+
+dnl Checks for programs.
+AC_PROG_CXX
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
+AC_PROG_AWK
+
+AC_CC_VERSION
+
+AC_LANG_C
+
+aviconfigure=
+aviunconfigure=
+enable_x86opt=yes
+enable_win32=yes
+
+case "$target" in
+  i586-*)
+    DEFAULT_FLAGS="i586"
+    ;;
+  i686-*)
+    DEFAULT_FLAGS="i686"
+    ;;
+  i?86-*)
+    # Default for all other x86 (i386 and i486)
+    DEFAULT_FLAGS="i386"
+    ;;
+  *)
+    DEFAULT_FLAGS=
+    enable_x86opt=no
+    enable_win32=no
+    ;;
+esac
+
+case "$target" in
+  i?86*)
+    if test x$ac_cv_prog_gcc = xyes ; then
+	case $GCC_VERSION in
+	    2*) GCCOPT=cpu ;;
+	    *) GCCOPT=tune ;;
+	esac
+        DEFAULT_FLAGS="-m$GCCOPT=$DEFAULT_FLAGS -march=$DEFAULT_FLAGS -ffast-math -fomit-frame-pointer"
+    fi
+    AC_DEFINE(ARCH_X86, 1, [Define if you want to build on x86 architecture.])
+    AC_DEFINE(HAVE_MMX, 1, [Define if you want to build with mmx code.])
+    ;;
+  ia64*)
+    AC_DEFINE(ARCH_IA64, 1, [Define if you want to build on ia86 architecture.])
+    ;;
+  x86_64*)
+    AC_DEFINE(ARCH_X86_64, 1, [Define if you want to build on x86_64 architecture.])
+    ;;
+  alpha*)
+    AC_DEFINE(ARCH_ALPHA, 1, [Define if you want to build on alpha architecture.])
+    enable_alphaopt=yes
+    ;;
+  arm*)
+    AC_DEFINE(ARCH_ARM, 1, [Define if you want to build on arm architecture.])
+    enable_armopt=yes
+    ;;
+  sparc*)
+    AC_DEFINE(ARCH_SPARC, 1, [Define if you want to build on sparc architecture.])
+    ;;
+  mips*)
+    AC_DEFINE(ARCH_MIPS, 1, [Define if you want to build on mips architecture.])
+    enable_mipsopt=yes
+    ;;
+  ppc*|powerpc*)
+    AC_DEFINE(ARCH_POWERPC, 1, [Define if you want to build on ppc architecture.])
+    enable_ppcopt=yes
+    ;;
+  s390*)
+    AC_DEFINE(ARCH_S390, 1, [Define if you want to build on s390 architecture.])
+    enable_s390opt=yes
+    ;;
+esac
+
+AC_DEFINE(_LARGEFILE_SOURCE, 1, [Define if you want to use _LARGEFILE_SOURCE.])
+AC_DEFINE(_FILE_OFFSET_BITS, 64, [Define if you want to use 64bit file support.])
+
+AC_CHECK_GNU_EXTENSIONS(AC_DEFINE(_GNU_SOURCE, 1, [Define if you want to build GNU  support.]), [])
+
+test x$have_user_cflags = xno && CFLAGS="$CFLAGS $DEFAULT_FLAGS"
+test x$have_user_cxxflags = xno && CXXFLAGS="$CXXFLAGS $DEFAULT_FLAGS"
+
+dnl Check if compiler supports -finline-limit
+AC_TRY_CFLAGS("-finline-limit-200", CINLINEFLAGS="-finline-limit-200", CINLINEFLAGS="")
+AC_SUBST(CINLINEFLAGS)
+
+dnl Check if compiler supports -fno-exceptions -fno-rtti
+AC_ARG_ENABLE(rtti, [  --enable-rtti           build plugins with rtti and exceptions. (default=no)],
+	      [], enable_rtti=no)
+if test x$enable_rtti = xyes ; then
+    CXXRTTIEXCEPT="-fno-exceptions -fno-rtti"
+    AC_TRY_CXXFLAGS($CXXRTTIEXCEPT, [], CXXRTTIEXCEPT="")
+else
+    CXXRTTIEXCEPT=""
+fi
+AC_SUBST(CXXRTTIEXCEPT)
+
+dnl Use -Wall if we have gcc.
+changequote(,)dnl
+
+if test "x$GCC" = "xyes"; then
+    CFLAGS="$CFLAGS -pipe "
+    CXXFLAGS="$CXXFLAGS -pipe "
+
+    case " $CPPFLAGS " in
+    *[\ \	]\-Wall[\ \	]*) ;;
+    *) CPPFLAGS="$CPPFLAGS -Wall -Wno-unused" ;;
+    esac
+fi
+
+dnl for testing change optimalization to -O0
+COPTFLAGS=$CFLAGS
+CXXOPTFLAGS=$CXXFLAGS
+CFLAGS=`echo $CFLAGS | sed s/\-O[1-9]/\-O0/`
+CXXFLAGS=`echo $CXXFLAGS | sed s/\-O[1-9]/\-O0/`
+changequote([,])dnl
+
+dnl
+dnl Libtool
+dnl
+dnl AC_LIBTOOL_DLOPEN
+AM_DISABLE_STATIC
+AM_PROG_LIBTOOL
+dnl automatic updating of libtool configuration files
+dnl not needed with automake AC_SUBST(LIBTOOL_DEPS)
+dnl using rather hack for .lo creation AM_PROG_AS
+
+
+dnl
+dnl Endianess - use standard WORDS_BIGENDIAN (for PowerPC)
+dnl
+dnl with older autoconf produces warning
+AC_C_BIGENDIAN
+
+dnl Checks for libraries.
+dnl Replace main with a function in -ldl:
+AC_CHECK_LIB(dl, dlopen)
+AC_CHECK_LIB(posix4, nanosleep)
+AC_CHECK_LIB(socket, socket)
+AC_CHECK_LIB(nsl, gethostbyname)
+AC_CHECK_LIB(kstat, kstat_open)
+AC_CHECK_LIB(c, lseek64, AC_DEFINE(HAVE_LSEEK64, 1, [Define if you have 'lseek64' function.]))
+dnl AC_SUBST(LIBSOCKET)
+dnl AC_SUBST(LIBNSL)
+
+dnl Replace main with a function in pthread libs:
+dnl some defaults
+I386_LDADD=
+build_avicap=no
+build_avirecomp=no
+AC_DEFINE(_REENTRANT, 1, [Define if you want to use pthreads.])
+PTHREAD_CFLAGS=
+PTHREAD_LIBS="-lpthread"
+
+dnl Library linking
+case "$target" in
+  # untested
+  -*-*-solaris*) AVIFILE_RLD_FLAGS="-R\${exec_prefix}/lib" ;;
+  # untested
+  *openbsd) AVIFILE_RLD_FLAGS="-Wl,-rpath,\${exec_prefix}/lib" ;;
+  # linux, freebsd, bsdi
+  *) AVIFILE_RLD_FLAGS="-Wl,-rpath,\${exec_prefix}/lib" ;;
+esac
+AC_SUBST(AVIFILE_RLD_FLAGS)
+
+case "$target" in
+  *-*-freebsd*)
+    AC_DEFINE(_THREAD_SAFE, 1, [Define if you want to use pthreads on freebsd.])
+    PTHREAD_CFLAGS="-I/usr/local/include $PTHREAD_CFLAGS"
+    PTHREAD_LIBS="-pthread"
+    ;;
+  i?86-*-netbsd*) I386_LDADD=-li386 ;;
+  *-*-solaris*) ;;
+  *)
+    build_avicap=yes
+    build_avirecomp=yes
+    ;;
+esac
+AC_SUBST(I386_LDADD)
+# LIBS="$pthread_lib $LIBS -Wl,rpath,/usr/X11/lib"
+AVILIBDEPLIB="$pthread_lib $LIBS -lm"
+AC_SUBST(PTHREAD_LIBS)
+AC_SUBST(PTHREAD_CFLAGS)
+AC_SUBST(AVILIBDEPLIB)
+
+AC_CACHE_CHECK([for pthreads], ac_cv_val_pthread,
+    AC_TRY_LINK([ #include <pthread.h> ],[
+      pthread_attr_t type;
+      pthread_attr_init(&type);
+    ],[ ac_cv_val_pthread=yes ], [ ac_cv_val_pthread=no ])
+)
+
+dnl AC_CHECK_FILE
+dnl Checks for header files.
+AC_HEADER_STDC
+
+case "$target" in
+    *-linux*)
+	AC_CHECK_HEADER(linux/ioctl.h, , AC_MSG_ERROR([Linux kernel headers are not found! You cannot build this application without them.]))
+	;;
+esac
+
+AC_CHECK_HEADERS(fcntl.h limits.h malloc.h unistd.h stdint.h assert.h \
+	sys/types.h sys/ioctl.h sys/ioccom.h sys/time.h sys/mman.h )
+
+dnl check for valid header sys/sysinfo.h
+AC_CACHE_CHECK([for valid sysinfo struct], ac_cv_val_sysinfo_valid,
+    [AC_TRY_COMPILE([#include <sys/sysinfo.h>], [ struct sysinfo s_info; ],
+	[ ac_cv_val_sysinfo_valid=yes ], [ ac_cv_val_sysinfo_valid=no ])
+    ])
+if test x$ac_cv_val_sysinfo_valid = xyes; then
+    AC_DEFINE(HAVE_SYSINFO, 1, [Define if you have struct sysinfo in <sys/sysinfo.h> header file.])
+fi
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+AC_TYPE_OFF_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+dnl AC_CHECK_MEMBERS([struct stat.st_rdev])
+AC_HEADER_TIME
+AC_STRUCT_TM
+
+dnl Checks for library functions.
+AC_FUNC_ALLOCA
+dnl AC_FUNC_ERROR_AT_LINE
+dnl AC_FUNC_FORK
+AC_PROG_GCC_TRADITIONAL
+AC_HEADER_MAJOR
+dnl AC_FUNC_MALLOC
+AC_FUNC_MEMCMP
+dnl AC_FUNC_MKTIME
+AC_FUNC_MMAP
+AC_FUNC_SETVBUF_REVERSED
+AC_TYPE_SIGNAL
+dnl AC_FUNC_STAT
+dnl AC_FUNC_STRTOD
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS(ftime gettimeofday strdup strstr setenv unsetenv memalign \
+  scandir opendir nanosleep localtime_r asctime_r vsscanf)
+
+AC_CACHE_CHECK([for extra asctime_r argument], ac_cv_val_asctime_t_long,
+    [AC_TRY_COMPILE([#include <time.h>],[ int main(int a, char* b[]) { char* c = asctime_r((struct tm*)0, (char*)0, 0); return 0; } ],
+	[ ac_cv_val_asctime_t_long=yes ], [ ac_cv_val_asctime_t_long=no ])
+    ])
+if test x$ac_cv_val_asctime_t_long = xyes ; then
+    AC_DEFINE(HAVE_ASCTIME_R_LONG, 1, [Define if you have long 3 params asctime_t in <time.h> header file.])
+fi
+
+AC_ARG_WITH(acdir, [  --with-acdir=path       use path for autogen.sh.],
+	    with_acdir="--acdir $withval", with_acdir="")
+
+AC_WITH_DMALLOCTH
+
+dnl =========================
+dnl Build with profiling info
+dnl =========================
+AC_ARG_ENABLE(profiling, [  --enable-profiling      compile with profiling info for gprof. (default=no)],
+	      [], enable_profiling=no)
+
+dnl ===============================
+dnl Use some extra warning
+dnl - we should slowly fix them all
+dnl ===============================
+AC_ARG_ENABLE(warnings, [  --enable-warnings       build with scary gcc warnings. (default=no)],
+	      [], enable_warnings=no)
+
+if test x$enable_warnings = xyes -a x$GCC = xyes ; then
+    CPPFLAGS="$CPPFLAGS\
+ -Wwrite-strings\
+ -Wcast-qual\
+ -Wbad-function-cast\
+ -Wpointer-arith\
+ -Wstrict-prototypes\
+ -Wmissing-prototypes\
+ -Wmissing-declarations\
+ -Wnested-externs\
+ -Wtraditional\
+ -Wconversion\
+ -Wcomment\
+ -Wcast-align\
+ -Winline\
+ -Wshadow\
+ -Wredundant-decls\
+ -Wid-clash-31 -pedantic "
+fi
+
+
+dnl =======================
+dnl Enable fast compilation
+dnl =======================
+AC_ARG_ENABLE(fast_build, [  --enable-fast-build     useful for one-time build. (default=no)],
+	      [], enable_fast_build=no)
+
+
+dnl ==========================
+dnl Check whathever to build
+dnl debug or optimized version
+dnl ==========================
+AC_ARG_ENABLE(release, [  --enable-release        turn on more optimizations. (default=yes)],
+	      [], enable_release=yes)
+
+if test x$enable_x86opt = xyes ; then
+    if (echo $GCC_VERSION | grep '2.91' 2>&1 >/dev/null )  ; then
+	AC_MSG_WARN([
+*** outdated version of GCC compiler is used, compilation may fail
+*** - upgrade to 2.95.3 or better is recommended])
+	enable_x86opt=no
+    fi;
+fi;
+
+dnl ===========================
+dnl Check for Freetype2 library
+dnl ===========================
+AC_ARG_ENABLE(freetype2, [  --enable-freetype2      support. (autodetected)],
+	      [], enable_freetype2=yes)
+if test x$enable_freetype2 = xyes ; then
+    AC_CHECK_FT2(2.0, AC_DEFINE(HAVE_LIBFREETYPE, 1, [Define if you have libfreetype library (-lfreetype)]),
+		 enable_freetype2=no)
+fi
+
+dnl ========================
+dnl Check X Window libraries
+dnl ========================
+AC_PATH_XTRA
+
+if test x$have_x = xyes ; then
+    X_MYLIBS="$X_LIBS $X_PRE_LIBS -lXext -lX11 $X_EXTRA_LIBS"
+    save_CPPFLAGS=$CPPFLAGS
+    save_LDFLAGS=$LDFLAGS
+    save_LIBS=$LIBS
+    dnl use -I path for X11 header files
+    CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+    LDFLAGS="$LDFLAGS $X_LIBS"
+    LIBS=""
+    AC_CHECK_LIB(Xi, XGetExtensionVersion, [], [], $X_MYLIBS)
+    AC_CHECK_LIB(Xxf86dga, XF86DGAQueryExtension, [], [], $X_MYLIBS)
+    AC_CHECK_LIB(Xxf86vm, XF86VidModeSwitchMode, [], [], $X_MYLIBS)
+
+dnl =====================
+dnl Check for Xft library
+dnl =====================
+    AC_ARG_ENABLE(xft, [  --enable-xft            build with Xft. (autodetected)],
+		  [], enable_xft=yes)
+    AC_ARG_WITH(xft-config,[  --with-xft-config=PATH  where xft-config is installed. (optional)],
+		XFT_CONFIG="${with_xft_config}/xft-config", [])
+
+    dnl this is another funny modification of the Xft2 installation
+    dnl after roughly 3 months they have again changed configuration
+    dnl and Debian is properly supporting only pkg-config
+    PKG_CHECK_MODULES(XFT, xft, [], AC_MSG_RESULT(reverting to use xft-config))
+
+    if test -z "$XFT_LIBS"; then
+	dnl xft2 is a bit tricky and introduces  xft-config
+	if test -z "$XFT_CONFIG" -a -z "$XFT_LIBS" ; then
+	    AC_CHECK_PROGS(XFT_CONFIG, xft-config, "")
+	    if test -n "$XFT_CONFIG"; then
+		 XFT_CONFIG=`which $XFT_CONFIG`
+		 AC_MSG_RESULT([setting XFT_CONFIG to $XFT_CONFIG])
+	    fi
+	fi
+
+	if test -n "$XFT_CONFIG" ; then
+	    XFT_CFLAGS=`$XFT_CONFIG --cflags | sed -e 's!-I/usr/include[[^/]]!!g' -e 's!-I/usr/include$!!g'`
+	    XFT_LIBS=`$XFT_CONFIG --libs`
+	else
+	    XFT_CFLAGS=""
+	    XFT_LIBS=""
+	fi
+    fi
+
+    save_xft_CPPFLAGS=$CPPFLAGS
+    CPPFLAGS="$CPPFLAGS $XFT_CFLAGS"
+    AC_CHECK_HEADER(X11/Xft/Xft.h, [], enable_xft=no)
+    CPPFLAGS=$save_xft_CPPFLAGS
+    if test x$enable_xft = xyes; then
+	save_xft_LIBS=$LIBS
+	LIBS="$LIBS $XFT_LIBS"
+	AC_CHECK_LIB(Xft, XftDrawStringUtf8,
+		     [ test -z "$XFT_LIBS" && XFT_LIBS="-lXft"
+		       AC_DEFINE(HAVE_LIBXFT, 1, [Define if you have libXft.])
+		     ], [], $X_MYLIBS)
+	LIBS=$save_xft_LIBS
+    fi
+    AC_SUBST(XFT_CFLAGS)
+    AC_SUBST(XFT_LIBS)
+
+dnl ======================
+dnl Check for Xv extension
+dnl ======================
+    AC_ARG_ENABLE(xv, [  --enable-xv             build with Xv extension. (autodetected)],
+		  [], enable_xv=yes)
+    if test x$enable_xv = xyes; then
+	AC_CHECK_HEADER(X11/extensions/Xv.h, [], enable_xv=no)
+    fi
+    if test x$enable_xv = xyes; then
+	AC_CHECK_LIB(Xv, XvCreateImage, [], [], $X_MYLIBS)
+    fi
+
+dnl ============================
+dnl Check for Xinerama extension
+dnl ============================
+    AC_ARG_ENABLE(xinerama, [  --enable-xinerama       build with Xinerama extension. (autodetected)],
+		  [], enable_xinerama=yes)
+    if test x$enable_xinerama = xyes; then
+	AC_CHECK_HEADER(X11/extensions/Xinerama.h, [], enable_xinerama=no,
+			[ #include <X11/Xlib.h> ])
+    fi
+    if test x$enable_xinerama = xyes; then
+	AC_CHECK_LIB(Xinerama, XineramaQueryExtension, [], [], $X_MYLIBS)
+    fi
+
+dnl ========================
+dnl Check for DPMS extension
+dnl ========================
+    AC_ARG_ENABLE(dpms, [  --enable-dpms           do not support DPMS. (autodetected)],
+		  [], enable_dpms=yes)
+    if test x$enable_dpms = xyes ; then
+	AC_CHECK_HEADER(X11/extensions/dpms.h, [], enable_dpms=no,
+			[ #include <X11/Xlib.h> ] )
+    fi
+    dnl Check for usable DPMS header file
+    if test x$enable_dpms = xyes ; then
+	AC_DEFINE(HAVE_DPMS, 1, [Define if you have DPMS support.])
+
+	AC_CACHE_CHECK([whether system has DPMS fce in X11/extensions/dpms.h],
+		       ac_cv_val_OK_DPMS_H,
+		[AC_TRY_COMPILE([
+		  #include <X11/Xlib.h>
+		  #include <X11/extensions/dpms.h>
+		], [ void* x = (void*) DPMSQueryExtension; ],
+		ac_cv_val_OK_DPMS_H=yes, ac_cv_val_OK_DPMS_H=no)
+		])
+	if test x$ac_cv_val_OK_DPMS_H = xyes; then
+	    AC_DEFINE(HAVE_OK_DPMS_H, 1, [Define if you have correct 'X11/extensions/dpms.h' header file.])
+	fi
+	AC_CHECK_LIB(Xdpms, DPMSQueryExtension, [], [], $X_MYLIBS)
+    fi
+
+    X_LIBS="$X_LIBS $X_PRE_LIBS $LIBS -lXext -lX11 $X_EXTRA_LIBS"
+    CPPFLAGS=$save_CPPFLAGS
+    LDFLAGS=$save_LDFLAGS
+    LIBS=$save_LIBS
+fi dnl have_x
+
+
+dnl ====================
+dnl Check for Qt library
+dnl ====================
+AC_ARG_WITH(qt, [  --with-qt               build with Qt utils. (autodetected)],
+	    [], with_qt=yes)
+dnl no X means no Qt
+test x$have_x != xyes && with_qt=no
+
+if test x$with_qt = xyes ; then
+    AC_PATH_QT(200, test -z "$qt_version" && qt_version=0
+	       AC_DEFINE_UNQUOTED(HAVE_LIBQT, $qt_version, [Define if using 'Qt' libraries.]),
+	       with_qt=no)
+else
+    AC_MSG_RESULT([compilation of Qt utils disabled])
+fi
+
+if test x$with_qt = xyes ; then
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    save_CXXFLAGS=$CXXFLAGS
+    save_LIBS=$LIBS
+    CXXFLAGS="$CXXFLAGS $QT_CFLAGS $X_CFLAGS"
+    LIBS="$LIBS $QT_LIBS $X_LIBS $PTHREAD_LIBS"
+    AC_CACHE_CHECK([for multithreading support in Qt],
+	ac_cv_val_with_qt_multi,
+	[ AC_TRY_LINK([
+	    #define QT_THREAD_SUPPORT
+	    #include <qapplication.h> ],
+	    [ qApp->wakeUpGuiThread(); ],
+	    [ ac_cv_val_with_qt_multi=yes ],
+	    [ ac_cv_val_with_qt_multi=no ])
+    ])
+    CXXFLAGS=$save_CXXFLAGS
+    LIBS=$save_LIBS
+
+    if test x$ac_cv_val_with_qt_multi != xyes ; then
+	AC_MSG_WARN([
+*** Your Qt installation does not support multi-threading!
+*** Avifile will be compiled - however it might crash mysteriously
+*** Instalation of threaded Qt library version (qt-mt) is recommended
+*** When rebuilding Qt use configure option '-thread'.])
+    fi
+
+    AC_MSG_CHECKING(Qt version for Avicap)
+    if test $qt_version -ge 220 ; then
+	AC_MSG_RESULT([yes])
+    else
+	AC_MSG_RESULT([no (needs Qt 2.2.0 or better)])
+	build_avicap=no
+    fi
+    AC_LANG_RESTORE
+fi
+
+
+dnl ======================
+dnl Check for Jpeg library
+dnl ======================
+AC_CHECK_HEADER(jpeglib.h, have_jpeglib=yes, have_jpeglib="no ")
+if test x$have_jpeglib = xyes; then
+dnl default action left - saving $LIBS is necessary
+    save_LIBS=$LIBS
+    AC_CHECK_LIB(jpeg, jpeg_start_compress, , have_jpeglib="no ")
+    LIBS=$save_LIBS
+fi
+
+
+dnl =======================
+dnl Check for iconv support
+dnl =======================
+AC_ICONV([], AC_DEFINE(HAVE_ICONV, 1, [Define if you have 'iconv_open' function.]))
+
+
+dnl =====================
+dnl Check for SDL library
+dnl =====================
+AC_ARG_WITH(sdl, [  --with-sdl              build with SDL. (autodetected)],
+	    [], with_sdl=yes)
+
+if test x$with_sdl != xyes; then
+    with_sdl="no  (video rendering unavailable as requested!)"
+    AC_MSG_WARN([
+*** there will be NO video rendering without SDL support!])
+else
+    SDL_MIN_VERSION=1.0.0
+    save_CFLAGS=$CFLAGS
+    save_CPPFLAGS=$CPPFLAGS
+    save_LIBS=$LIBS
+    LIBS=
+    AM_PATH_SDL($SDL_MIN_VERSION,
+		AC_DEFINE(HAVE_LIBSDL, 1, [Define if using 'SDL' library (-lsdl).]),
+		with_sdl="no  (*** no SDL => no video rendering! ***)"
+		AC_MSG_WARN([Could not find SDL >= $SDL_MIN_VERSION!]) )
+    CFLAGS=$save_CFLAGS
+    CPPFLAGS=$save_CPPFLAGS
+    LIBS=$save_LIBS
+fi
+
+
+dnl =========================
+dnl Check v4l video interface
+dnl =========================
+AC_CHECK_V4L([], build_avicap=no)
+
+
+dnl =========================
+dnl Check OSS audio interface
+dnl =========================
+AC_CHECK_OSS(AC_DEFINE(HAVE_OSS, 1, [Define if you want to have OSS audio support compiled.]))
+
+
+dnl =============================
+dnl Check for Sun audio interface
+dnl =============================
+AC_ARG_ENABLE(sunaudio, [  --enable-sunaudio       support the Sun audio API. (autodetect)],
+	      [], enable_sunaudio=yes)
+if test x$enable_sunaudio = xyes; then
+    AC_CACHE_CHECK([for Sun audio support], ac_cv_val_have_sun_audio,
+	[AC_TRY_COMPILE([
+	      #include <sys/param.h>
+	      #include <sys/audioio.h>
+	    ],[
+	      audio_info_t audio_info;
+	      AUDIO_INITINFO(&audio_info);
+	    ],[ ac_cv_val_have_sun_audio=yes ], [ ac_cv_val_have_sun_audio=no ])
+	])
+    enable_sunaudio=$ac_cv_val_have_sun_audio
+    if test x$enable_sunaudio = xyes; then
+	AC_DEFINE(HAVE_SUNAUDIO, 1, [Define if you want to have Sun audio support.])
+    fi
+fi
+
+
+dnl =====================
+dnl Check for A52 support
+dnl =====================
+A52_CFLAGS=""
+A52_LIBS=""
+AC_ARG_WITH(a52_prefix, [  --with-a52-prefix=PFX   where liba52 is installed. (optional)],
+	    A52_CFLAGS="-I$withval/include"
+	    A52_LIBS="-L$withval/lib -la52" )
+AC_ARG_ENABLE(a52, [  --enable-a52            build a52 AC3 support. (autodetected)],
+	      [], enable_a52=yes)
+if test x$enable_a52 = xyes ; then
+    save_LIBS=$LIBS
+    LIBS="$LIBS $A52_LIBS"
+    AC_CHECK_LIB(a52, a52_frame, [],
+		 [ enable_a52=no ; A52_CFLAGS="" ; A52_LIBS="" ],
+		 [ -lm ])
+    LIBS=$save_LIBS
+else
+    A52_CFLAGS=""
+    A52_LIBS=""
+fi
+AC_SUBST(A52_CFLAGS)
+AC_SUBST(A52_LIBS)
+
+
+dnl ================================
+dnl Check for Ac3 passthrough plugin
+dnl ================================
+dnl tested and works only with SBLive
+AC_ARG_ENABLE(ac3passthrough, [  --enable-ac3passthrough AC3 passthrough plugin (SBlive only). (autodetected)],
+	      [], enable_ac3passthrough=yes)
+test x$enable_oss != xyes && enable_ac3passthrough=no
+
+
+dnl ==============================
+dnl Check if build Lame bin plugin
+dnl ==============================
+dnl NOTE:
+dnl this kind of construction is necesary if we want to prevent
+dnl automatic library inclusion by AUTOMAKE
+AC_ARG_ENABLE(lame, [  --enable-lame           build included OLD lame3.70 plugin. (default=yes)],
+	      [], enable_lame=yes)
+AC_ARG_ENABLE(lamebin, [  --enable-lamebin        dlopen libmp3lame at runtime. (default=no)],
+	      [], enable_lamebin=no)
+AC_CHECK_LIB(mp3lame, lame_decode_init,
+	     [ enable_lame_bin=yes
+	       AC_DEFINE(HAVE_LIBMP3LAME, 1, [Define if you have 'mp3lame' library (-lmp3lame).]) ],
+	     [], [ -lm ])
+
+
+dnl ======================================
+dnl Check for Win32 dll libraries & plugin
+dnl ======================================
+AC_ARG_ENABLE(win32, [  --enable-win32          build Win DLLs plugin. (default=arch specific)])
+AC_ARG_WITH(win32_path, [  --with-win32-path=PATH  where Windows DLL files are located. (=/usr/lib/win32)],
+	    WIN32_PATH=$withval, WIN32_PATH="/usr/lib/win32")
+AC_SUBST(WIN32_PATH)
+test ! -d $WIN32_PATH && AC_MSG_WARN([Directory: $WIN32_PATH does not exist - install binaries!])
+
+AC_ARG_ENABLE(loader-out, [  --enable-loader-out     enable verbose Win32 loader output. (default=no)],
+    test x$enableval = xyes && AC_DEFINE(DETAILED_OUT, 1, [Define if you want to see detailed out of Win32 loader.]))
+
+AC_ARG_ENABLE(timing, [  --enable-timing         show ALL process timings in library. (default=no)],
+    test x$enableval = xyes && AC_DEFINE(TIMING, 1, [Define if you want to have timing code in library.]))
+
+AC_ARG_ENABLE(quiet, [  --enable-quiet          quiet library. (default=no)],
+    test x$enableval = xyes && AC_DEFINE(QUIET, 1, [Define if you want to have quiet library.]))
+
+AC_ARG_ENABLE(x86opt, [  --enable-x86opt         enable x86 optimizations (MMX,MMX2,SSE,3DNow).],
+	      [], enable_x86opt=yes)
+
+
+dnl ======================
+dnl Check for zlib library
+dnl ======================
+AC_ARG_WITH(zlib, [  --with-zlib             build with z library. (autodetected)],
+	    [], with_zlib=yes)
+if test x$with_zlib = xyes ; then
+    AC_FIND_ZLIB([AC_DEFINE(HAVE_LIBZ, 1, [Define if you have z library (-lz)])], [])
+fi
+
+
+dnl ==============================
+dnl Check for Ogg/Vorbis libraries
+dnl ==============================
+AC_ARG_ENABLE(vorbis, [  --enable-vorbis         build vorbis plugin. (autodetected)],
+	      [], enable_vorbis=yes)
+if test x$enable_vorbis = xyes ; then
+    AM_PATH_OGG(have_ogg=yes, have_ogg=no)
+dnl some automakes does not support inclusions here!
+    if test x$have_ogg != xyes; then
+	enable_vorbis=no
+    else
+	AM_PATH_VORBIS([], enable_vorbis=no)
+    fi
+fi
+
+
+dnl =====================
+dnl Check for MAD library
+dnl =====================
+dnl always prepare configure scripts
+dnl
+dnl ok I'm getting MAD from the autotools behaviour
+dnl and because of this  libmad is not any more configure
+dnl simply becuase it makes so many troubles it's not worth to fight with
+dnl
+dnl ( cd $srcdir/plugins/libmad/libmad/
+dnl   if test ! -h acinclude.m4 ; then rm -f acinclude.m4 2>/dev/null ; ln $srcdir/../../../acinclude.m4 ; fi
+dnl   test -f configure || $srcdir/../../../autogen.sh $with_acdir)
+dnl AC_CONFIG_SUBDIRS(plugins/libmad/libmad)
+
+AC_ARG_ENABLE(mad, [  --enable-mad            build MAD MPEG3 audio decoder plugin. (default=yes)],
+	      [], enable_mad=yes)
+MAD_LIBS=
+if test x$enable_mad = xyes; then
+    AC_ARG_ENABLE(libmad, [  --enable-libmad         use system MAD library. (autodetected)],
+		  [], enable_libmad=yes)
+    MAD_LIBS="-lmad"
+    save_LIBS=$LIBS
+dnl FIXME AC_CHECK_LIB(mad, mad_stream_init, [], [ MAD_LIBS=""; enable_libmad=no ])
+    enable_libmad=no
+    LIBS=$save_LIBS
+fi
+AC_SUBST(MAD_LIBS)
+
+dnl =========================
+dnl Check for DivX4 libraries
+dnl =========================
+AC_ARG_ENABLE(divx4, [  --enable-divx4          build divx4 plugin http://avifile.sf.net. (autodetect)],
+	      [], enable_divx4=yes)
+AC_ARG_ENABLE(divxbin, [  --enable-divxbin        open divx libs runtime. (default=no)],
+	      [], enable_divxbin=no)
+if test x$enable_divx4 = xyes; then
+    AM_PATH_DIVX(AC_DEFINE(HAVE_LIBDIVXDECORE, 1, [Define if you have 'divxdecore' library (-ldivxdecore).]), [],
+    		 AC_DEFINE(HAVE_LIBDIVXENCORE, 1, [Define if you have 'divxencore' library (-ldivxencore).]), [])
+fi
+
+
+
+dnl ======================
+dnl Check for XviD library
+dnl ======================
+AC_ARG_ENABLE(xvid, [  --enable-xvid           build old xvid plugin http://www.xvid.org. (autodetected)],
+	      [], enable_xvid=yes)
+if test x$enable_xvid = xyes; then
+    AM_PATH_XVID(AC_DEFINE(HAVE_LIBXVIDCORE, 1, [Define if you have old 'xvidcore' library (-lxvidcore).]),
+		 enable_xvid="no "; AC_MSG_RESULT(
+[--- Sources to build XviD xvidcore library can be found at http://www.xvid.org])
+    )
+fi
+
+dnl ======================
+dnl Check for XviD4 library
+dnl ======================
+AC_ARG_ENABLE(xvid4, [  --enable-xvid4          build xvid1 plugin http://www.xvid.org. (autodetected)],
+	      [], enable_xvid4=yes)
+if test x$enable_xvid4 = xyes; then
+    AM_PATH_XVID4(AC_DEFINE(HAVE_LIBXVIDCORE4, 1, [Define if you have 'xvidcore' ver 1.0 library (-lxvidcore).]),
+		  enable_xvid4="no "; AC_MSG_RESULT(
+[--- Sources to build XviD xvidcore library can be found at http://www.xvid.org])
+    )
+fi
+
+
+dnl =======================
+dnl Configure ffmpeg plugin
+dnl =======================
+AM_PATH_FFMPEG
+
+dnl use_nasm=
+dnl  not needed right now
+dnl AC_CHECK_PROG(use_nasm, nasm, yes, no)
+dnl
+dnl if test x$use_ffmpeg = xyes && test x$use_x86opt = xyes && test x$use_nasm != xyes; then
+dnl	echo "No nasm -> disabling ffmpeg support for now"
+dnl	use_ffmpeg=no
+dnl fi
+
+
+dnl HAVE_GL=1
+dnl AC_CHECK_HEADER(GL/gl.h,, HAVE_GL=)
+dnl if test "HAVE_GL" ; then
+dnl AC_CHECK_LIB(GL, glClear, , HAVE_GL=, $X_LDFLAGS -lX11 -lXext $X_EXTRA_LIBS -lm)
+dnl fi;
+
+dnl if test "HAVE_GL" ; then
+dnl GL_LDFLAGS="-lGL -lGLU"
+dnl AC_SUBST(GL_LDFLAGS)
+dnl AC_DEFINE(HAVE_OPENGL, 1, [Define if you have 'GL' & 'GLU' libraries (-lGL -lGLU).])
+dnl fi;
+
+dnl ===================
+dnl Configure libmmxnow
+dnl ===================
+dnl Note: this library is curently unused
+dnl AC_CONFIG_SUBDIRS(libmmxnow)
+dnl AC_MSG_CHECKING([configure in libmmxnow])
+dnl ( cd $srcdir/libmmxnow/
+dnl   test -f configure || ../autogen.sh $with_acdir )
+dnl AC_MSG_RESULT([done])
+
+AC_ARG_ENABLE(samples, [  --enable-samples        build samples (avicap, ...). (default=yes)],
+	      [], enable_samples=yes)
+
+dnl kde is currently unsupported
+dnl AC_ARG_ENABLE(kde, [  --enable-kde            build kde sample programs. (default=yes)],
+dnl	      [], enable_kde=yes)
+
+
+dnl =============================
+dnl Check if linux kernel devices
+dnl should be build
+dnl =============================
+
+dnl this require usable kernel headers
+AM_PATH_LINUX(/usr/src/linux, enable_linux=yes, enable_linux=no)
+
+AC_ARG_ENABLE(mga_vid, [  --enable-mga            build mga_vid driver. (autodetected)],
+	      [], enable_mga_vid=yes)
+if test x$enable_mga_vid = xyes ; then
+    if test -c /dev/mga_vid -o -c /dev/misc/mga_vid ; then
+	if test ! -f /usr/src/linux/include/linux/modversions.h ; then
+	    enable_mga_vid=no
+	    AC_MSG_RESULT([mga_vid can not find modversion.h])
+	else
+	    AC_MSG_RESULT([building mga_vid device])
+	fi
+    else
+	enable_mga_vid=no
+    fi
+fi
+
+dnl ===============
+dnl Configure vidix
+dnl ===============
+AM_PATH_VIDIX
+
+dnl we do not need this code now - FFMPEG no longer uses nasm
+dnl but I am leaving it here just for the case we would need it
+dnl in the future
+dnl AC_MSG_CHECKING(whether to use --tag=CXX with libtool)
+dnl  TAGCXX="--tag=CXX"
+dnl  ${srcdir}/libtool "$TAGCXX" -n --mode=compile gcc test.c > /dev/null 2>&1 || TAGCXX=
+dnl  if test -z "$TAGCXX" ; then
+dnl    AC_MSG_RESULT([no])
+dnl  else
+dnl    AC_MSG_RESULT([yes])
+dnl  fi
+dnl AC_SUBST(TAGCXX)
+
+dnl Some platforms needs this to build some necessary parts of code
+CPPFLAGS="$CPPFLAGS -I\$(top_srcdir)/include"
+
+AC_ARG_ENABLE(fpic, [  --disable-fpic          no -fPIC for shlibs. (use --without-pic where available)],
+	      [], enable_fpic=yes)
+LTNOPIC=""
+if test x$enable_fpic = xno ; then
+    grep "prefer-non-pic" libtool && LTNOPIC="-prefer-non-pic"
+fi
+AC_SUBST(LTNOPIC)
+
+CFLAGS=$COPTFLAGS
+CXXFLAGS=$CXXOPTFLAGS
+
+if test x$enable_release != xyes -o x$enable_profiling = xyes ; then
+    CFLAGS=`echo $CFLAGS | sed -e s/-O[[0-9]]//g -e s/-fomit-frame-pointer//g`
+    CXXFLAGS=`echo $CXXFLAGS | sed -e s/-O[[0-9]]//g -e s/-fomit-frame-pointer//g`
+    FFMPEG_CFLAGS=`echo $FFMPEG_CFLAGS | sed -e s/-O[[0-9]]//g -e s/-fomit-frame-pointer//g`
+    if test x$enable_profiling = xyes ; then
+	AC_MSG_RESULT([profiling enabled - DO NOT USE FOR NORMAL OPERATIONS])
+    dnl GCov does not like our C++ - figure out why
+    dnl PROFFLAG="-fprofile-arcs -ftest-coverage"
+    dnl this is for my yet unreleased kprof profiler
+	PROFFLAG="-finstrument-functions "
+    fi
+    dnl CFLAGS="-g $PROFFLAG"
+    dnl CXXFLAGS="-g $PROFFLAG"
+    dnl FFMPEG_CFLAGS="-g $PROFFLAG"
+else
+    CFLAGS=`echo $CFLAGS | sed s/-g//`
+    CXXFLAGS=`echo $CXXFLAGS | sed s/-g//`
+    FFMPEG_CFLAGS=`echo $FFMPEG_CFLAGS | sed s/-g//`
+fi
+
+WIN32_CFLAGS=`echo $CFLAGS | sed s/-fomit-frame-pointer//g`
+AC_SUBST(WIN32_CFLAGS)
+
+lt_major_version=`libtool --version 2>&1 | head -1 | sed 's/\(.*\ \)\([[0-9]]*\.[[0-9]]*\.[[0-9]]*\)\(.*\)/\2/'`
+lt_minor_version=`echo $lt_major_version | cut -d . -f 2`
+lt_micro_version=`echo $lt_major_version | cut -d . -f 3`
+lt_major_version=`echo $lt_major_version | cut -d . -f 1`
+dnl echo LT  $lt_major_version $lt_minor_version $lt_micro_version
+
+AM_CONDITIONAL(AMM_USE_QT, test x$with_qt = xyes )
+AM_CONDITIONAL(AMM_USE_SDL, test "$with_sdl" = yes)
+AM_CONDITIONAL(AMM_USE_SUN, test x$enable_sunaudio = xyes )
+AM_CONDITIONAL(AMM_USE_OSS, test x$enable_oss = xyes)
+AM_CONDITIONAL(AMM_USE_A52, test x$enable_a52 = xyes)
+AM_CONDITIONAL(AMM_USE_A52BIN, test x$enable_a52bin = xyes)
+AM_CONDITIONAL(AMM_USE_AC3PASS, test x$enable_ac3passthrough = xyes)
+AM_CONDITIONAL(AMM_USE_DIVX, test x$have_divx_decore = xyes -o x$have_divx_encore = xyes )
+AM_CONDITIONAL(AMM_USE_DIVXBIN, test x$enable_divxbin = xyes)
+AM_CONDITIONAL(AMM_USE_LIBMAD, test x$enable_libmad = xyes )
+AM_CONDITIONAL(AMM_USE_MAD, test x$enable_mad = xyes )
+AM_CONDITIONAL(AMM_USE_MP3LAMEBIN, test x$enable_lame_bin = xyes)
+AM_CONDITIONAL(AMM_USE_MP3LAME, test x$enable_lame = xyes)
+AM_CONDITIONAL(AMM_USE_VORBIS, test x$enable_vorbis = xyes )
+AM_CONDITIONAL(AMM_USE_WIN32, test x$enable_win32 = xyes)
+AM_CONDITIONAL(AMM_USE_XVID, test x$enable_xvid = xyes)
+AM_CONDITIONAL(AMM_USE_XVID4, test x$enable_xvid4 = xyes)
+AM_CONDITIONAL(AMM_USE_JPEGLIB, test x$have_jpeglib = xyes )
+AM_CONDITIONAL(AMM_USE_AVICAP, test x$build_avicap = xyes )
+AM_CONDITIONAL(AMM_USE_V4L, test x$enable_v4l = xyes )
+AM_CONDITIONAL(AMM_USE_AVIRECOMP, test x$build_avirecomp = xyes )
+AM_CONDITIONAL(AMM_USE_SAMPLES, test x$enable_samples = xyes )
+AM_CONDITIONAL(AMM_USE_FT2, test x$enable_freetype2 = xyes )
+AM_CONDITIONAL(AMM_USE_MGA_VID, test x$have_mga_vid = xyes )
+AM_CONDITIONAL(AMM_USE_VIDIX, test x$enable_vidix = xyes )
+AM_CONDITIONAL(AMM_USE_LINUX, test x$enable_linux = xyes )
+AM_CONDITIONAL(AMM_USE_FAST_BUILD, test x$enable_fast_build = xyes )
+AM_CONDITIONAL(AMM_LINK_SHARED, test $lt_major_version -ge 1 -a $lt_minor_version -ge 4 -a $lt_micro_version -ge 3 )
+
+AM_CONDITIONAL(AMM_FF_A52BIN, test x$enable_ffmpeg_a52bin = xyes)
+AM_CONDITIONAL(AMM_FF_FAAD, test x$have_faad = xyes )
+
+AM_CONDITIONAL(AMM_FF_ALPHAOPT, test x$enable_alphaopt = xyes)
+AM_CONDITIONAL(AMM_FF_ARMOPT, test x$enable_armopt = xyes)
+AM_CONDITIONAL(AMM_FF_MIPSOPT, test x$enable_mipsopt = xyes)
+AM_CONDITIONAL(AMM_FF_MLIBOPT, test x$enable_mlibopt = xyes)
+AM_CONDITIONAL(AMM_FF_PPCOPT, test x$enable_ppcopt = xyes)
+AM_CONDITIONAL(AMM_FF_PS2OPT, test x$enable_ps2opt = xyes)
+AM_CONDITIONAL(AMM_FF_SH4OPT, test x$enable_sh4opt = xyes)
+AM_CONDITIONAL(AMM_FF_SPARCOPT, test x$enable_sparcopt = xyes)
+AM_CONDITIONAL(AMM_FF_X86OPT, test x$enable_x86opt = xyes)
+
+dnl Arts plugin disabled - it is unusable anyway
+dnl artsc_config_test_path=$prefix/bin:$exec_prefix/bin:$KDEDIR/bin:$PATH
+dnl AC_PATH_PROG(kde_artscplug_compiles,artsc-config,no,$artsc_config_test_path)
+
+dnl if we found it here set variable
+dnl if test x$kde_artscplug_compiles != xno -a x$enable_kde = xyes ; then
+dnl    ARTSC_CONFIG=$kde_artscplug_compiles;
+dnl    kde_artscplug_compiles=yes
+dnl else
+dnl    kde_artscplug_compiles=no
+dnl fi
+
+dnl this is needed for a standalone mpeglib
+dnl it should compile without KDE installed
+dnl but if we find arts we need the include
+dnl path for it.
+
+dnl if test x$kde_artscplug_compiles = xyes; then
+dnl    ARTSC_INCLUDE=`${ARTSC_CONFIG} --cflags`
+dnl    AC_MSG_RESULT([arts includes... $ARTSC_INCLUDE])
+dnl    AC_SUBST(ARTSC_INCLUDE)
+dnl    ARTSC_LIBS=`${ARTSC_CONFIG} --libs`
+dnl    AC_MSG_RESULT([arts libraries... $ARTSC_LIBS])
+dnl    AC_SUBST(ARTSC_LIBS)
+dnl    AC_SUBST(LIBDL)
+dnl fi
+AM_CONDITIONAL(AMM_USE_ARTSC, test x$kde_artscplug_compiles = xyes)
+
+last_cvs_update=`find . -name Entries -printf '%Ty%Tm%Td-%TH:%TM\n' | sort | tail -1`
+if test $? -ne 0 -o -z "$last_cvs_update" ; then
+    # probably no gnu date installed(?), use current date
+    # or this is release
+    last_cvs_update=`date +%y%m%d-%H:%M`
+    AVIFILE_BUILD="RELEASE"
+else
+    AVIFILE_BUILD="CVS"
+fi
+AVIFILE_BUILD="$AVIFILE_BUILD-$AVIFILE_MAJOR_VERSION.$AVIFILE_MINOR_VERSION.$AVIFILE_MICRO_VERSION-${last_cvs_update}-$GCC_VERSION"
+AC_SUBST(AVIFILE_BUILD)
+
+dnl mpglib/Makefile
+dnl ffmpeg/libavfilter/Makefile
+dnl libpp/Makefile
+
+AC_OUTPUT(
+ Makefile
+ admin/Makefile
+ ffmpeg/Makefile
+ ffmpeg/libavformat/Makefile
+ ffmpeg/libavcodec/Makefile
+ ffmpeg/libavcodec/alpha/Makefile
+ ffmpeg/libavcodec/armv4l/Makefile
+ ffmpeg/libavcodec/i386/Makefile
+ ffmpeg/libavcodec/liba52/Makefile
+ ffmpeg/libavcodec/libpostproc/Makefile
+ ffmpeg/libavcodec/mlib/Makefile
+ ffmpeg/libavcodec/ppc/Makefile
+ ffmpeg/libavcodec/ps2/Makefile
+ ffmpeg/libavcodec/sh4/Makefile
+ ffmpeg/libavcodec/sparc/Makefile
+ ffmpeg/libavutil/Makefile
+ drivers/Makefile
+ drivers/libdha/Makefile
+ drivers/libdha/bin/Makefile
+ drivers/libdha/kernelhelper/Makefile
+ drivers/libdha/oth/Makefile
+ drivers/libdha/sysdep/Makefile
+ drivers/vidix/Makefile
+ drivers/vidix/drivers/Makefile
+ lib/Makefile
+ lib/aviplay/Makefile
+ lib/aviread/Makefile
+ lib/aviwrite/Makefile
+ lib/common/Makefile
+ lib/subtitle/Makefile
+ lib/video/Makefile
+ plugins/Makefile
+ plugins/libac3pass/Makefile
+ plugins/libaudiodec/Makefile
+ plugins/libdivx4/Makefile
+ plugins/libffmpeg/Makefile
+ plugins/libmad/Makefile
+ plugins/libmad/libmad/Makefile
+ plugins/libmp3lamebin_audioenc/Makefile
+ plugins/libmp3lame_audioenc/Makefile
+ plugins/libmp3lame_audioenc/lame3.70/Makefile
+ plugins/libmpeg_audiodec/Makefile
+ plugins/libvorbis/Makefile
+ plugins/libwin32/Makefile
+ plugins/libwin32/audiodec/Makefile
+ plugins/libwin32/loader/Makefile
+ plugins/libwin32/loader/dmo/Makefile
+ plugins/libwin32/loader/dshow/Makefile
+ plugins/libwin32/loader/wine/Makefile
+ plugins/libwin32/videocodec/Makefile
+ plugins/libxvid/Makefile
+ plugins/libxvid4/Makefile
+ bin/Makefile doc/Makefile doc/avicap/Makefile debian/Makefile m4/Makefile
+ player/Makefile
+ include/Makefile
+ include/version.h
+ libavqt/Makefile
+ samples/Makefile samples/misc/Makefile samples/mjpeg_plugin/Makefile
+ samples/qtrecompress/Makefile samples/qtvidcap/Makefile
+ samples/qtvidcap/scripts/Makefile
+ samples/artsplug/Makefile
+ avifile-config avifile.spec avifile.pc )
+
+USED=""
+
+dnl brutal hack for an old libtool which does not support -prefer-non-pic
+dnl might fail on some systems which really needs -fPIC code
+if test "$enable_fpic" = "no" -a -z "$LTNOPIC" ; then
+    for i in `find . -name libtool`
+    do
+	sed -e 's/^pic_flag=/#pic_flag=/g' $i >$i.tmp
+	mv ${i}.tmp $i
+    done
+fi
+
+touch admin/depcomp >/dev/null 2>&1
+dnl touch libmmxnow/depcomp >/dev/null 2>&1
+dnl touch plugins/libmad/libmad/depcomp >/dev/null 2>&1
+
+AC_MSG_RESULT([
+Note: If you have installed/removed some package in your system
+      do NOT forget to remove config.cache file before using configure!
+Configuration for avifile ${AVIFILE_BUILD}
+Compiler C:	  ${CC} ${CFLAGS}
+Compiler C++:	  ${CXX} ${CXXFLAGS}
+Install path:	  ${prefix}
+Qt:		  $with_qt
+Sdl:		  $with_sdl
+Xft:		  $enable_xft
+Oss audio:	  $enable_oss
+Sun audio:	  $enable_sunaudio
+Mga_vid:	  $enable_mga_vid
+Plugins:
+  ac3passthrough  $enable_ac3passthrough  (with SBLive only)
+  divx (dec/enc)  ${have_divx_decore}/${have_divx_encore} (DivxNetworks divx4linux)
+  xvid		  $enable_xvid  (DivX4, XviD)
+  xvid4		  $enable_xvid4  (DivX4, XviD)
+  ffmpeg	  yes  (DivX ;-), OpenDivX, MJPEG, AC3)
+  ffmpeg faad     $have_faad  (AAC) (runtime $enable_ffmpeg_faadbin)
+  os motion jpeg  $have_jpeglib  (MJPEG)
+  win32 	  $enable_win32  (DivX, WM7/8/9, DV, MJPEG, Ati, Asus,...)
+  mad		  $enable_mad  (MPEG Layer I/II/III)
+  vorbis	  $enable_vorbis
+  lame runtime	  $enable_lame_bin
+])

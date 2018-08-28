@@ -1,0 +1,177 @@
+configure.in:941 profiling
+
+known bugs or problems or misbehaviour of avicap:
+
+* general: sometimes avicap freezes X at startup (alex,0.7.x)
+* recording: A/V-delay in written files (alex,0.7.x)
+* recording: segments not at keyframe
+* codecs:
+  - divx 3.11 : can't set bitrate, he records with 910kbps
+  - divx 3.11 VKI: can't set bitrate, he records with 1500kbps
+  - ffmpeg: does not record any video
+  - strong colors 'flicker' when recording in yv12 and divx3.11
+* general: overlay  is often on top of other windows
+* timertable: problem when recording is around datechange
+* epg: drawing bugs
+
+
+
+bug:when picture properties come up with timertable recording
+    video recording stops?
+bug:if recording goes on to the next day, it isnt stopped
+bug: the first recording in every day&channel doesnt get added
+
+bug: avicap crashes after timertable recording with mini-window,
+	when miniwindow gets closed
+fix: Qt2.0/3 compatible
+fix: re-layout timertable/config
+feature: zapping mode
+feature: zapping while recording
+option: set channel at startup when untuned
+feature: web interface
+fix: zapping breaks recording
+fix: window close breaks recording
+feature: asymmetrical rec. sizes/custom sizes
+fix? compare get_clips with mplayer/xawtv
+fix? overlay mode
+fix? is get_clips() called every time it would be necessary?
+option: beep on framedrop
+feature: epg interface
+fix: stop using char buf[] in timertable
+fix: every day should be automatic
+fix: more filename-completion modes
+fix: segment() should respect dirpool too
+
+never overwrite existing files:
+	lib/aviwrite/AviWrite.cpp Segment() init()
+	capproc.cpp:614 segment()
+
+
+a/v-delay:
+
+CVS capproc.cpp	:538 timestamp_shift
+		:738 audio_error
+
+0.6.0 capproc.cpp:570  audio_error
+
+dsp.cpp:sync()
+
+v4lxif.cpp:559 gsync, VIDIOCSYNC
+
+
+----------------
+
+aviplay_impl.h:
+
+class AviPlayer: public IAviPlayer2
+    static void* constructThread(void* arg);
+    void* constructThreadfunc();
+    void construct();
+    int lockThreads(const char *name = 0);
+    void unlockThreads(void);
+    int checkSync(ThreadId);
+    int drawFrame(bool aseek = true);
+    void syncFrame();
+    void changePriority(const char* taskName, int add, int schedt = 0);
+
+    float getVideoAsync();
+    bool dropFrame();
+    void setQuality();
+
+    void* videoThread();
+    void* audioThread();
+    void* decoderThread();
+    static void* startVideoThread(void* arg);
+    static void* startAudioThread(void* arg);
+    static void* startDecoderThread(void* arg);
+   avm::vector<IVideoRenderer*> m_VideoRenderers; // we could draw image to more places
+    PthreadTask* m_pVideoThread;   // performs video output and sync
+    PthreadTask* m_pAudioThread;   // performs audio output and sync
+    PthreadTask* m_pDecoderThread; // performs video decompression and cachi
+
+
+
+aviplay.h:
+
+class IAviPlayer
+
+class IAviPlayer2: public IAviPlayer
+{
+
+IAviPlayer* CreateAviPlayer(const char* filename, int bitdepth,
+			    const char* subfile = 0, unsigned int flags = 0,
+			    // vcodec & acodec are going to be supported
+			    const char* vcodec = 0, const char* acodec = 0);
+IAviPlayer2* CreateAviPlayer2(IPlayerWidget*, void* dpy, const char* filename,
+			      const char* subname, unsigned int flags = 0,
+			      // vcodec & acodec are going to be supported
+			      const char* vcodec = 0, const char* acodec = 0);
+
+
+class IVideoRenderer : public IImageAllocator
+{
+    /**
+     * Issues the request to draw the image in the window memory
+     * might be empty when direct rendering is being used
+     */
+    virtual int Draw(const CImage* data)                        = 0;
+IVideoRenderer* CreateFullscreenRenderer(IPlayerWidget*, void* dpy,
+					int width, int height, bool sub = false);
+/**
+ * Creates SDL video renderer for YUV data in format yuv_fmt.
+ * If it fails ( e.g. because yuv_fmt is not supported by X server
+ * and VideoRenderer::allow_sw_yuv==false ), returns pointer to
+ * 'ordinary' fullscreen renderer and puts 0 into yuv_fmt.
+ */    
+IVideoRenderer* CreateYUVRenderer(IPlayerWidget*, void* dpy,
+				 int width, int height,
+				 fourcc_t yuv_fmt, bool sub = false);
+/*
+VideoRenderer* CreateXvYUVRenderer(PlayerWidget*, void* dpy,
+				   int width, int height,
+				   fourcc_t yuv_fmt, bool sub = false);
+ */
+
+
+static inline VideoRenderer* CreateFullscreenRenderer(avm::IPlayerWidget* pw, void* dpy,
+						      int width, int height, bool sub = false)
+{
+    return avm::CreateFullscreenRenderer(pw, dpy, width, height, sub);
+}
+
+static inline VideoRenderer* CreateYUVRenderer(avm::IPlayerWidget* pw, void* dpy,
+					       int width, int height,
+					       fourcc_t yuv_fmt, bool sub = false)
+{
+    return avm::CreateYUVRenderer(pw, dpy, width, height, yuv_fmt, sub);
+}
+
+#endif // X_DISPLAY_MISSING
+
+
+aviplay.cpp:
+
+IAviPlayer* CreateAviPlayer(const char* filename, int bitdepth, const char* subname,
+                            unsigned long flags,
+			    const char* vcodec, const char* acodec)
+{
+    return new AviPlayer(filename, bitdepth, subname, flags,
+			 vcodec, acodec);
+}
+
+class AviPlayer2: public AviPlayer, public IPlayerWidget
+{
+    IPlayerWidget* m_pPW;
+    void* m_pDpy;
+    int m_iResizeCount;
+    int zx, zy, zw, zh;
+public:
+    AviPlayer2(IPlayerWidget* pw, void* _dpy,
+	       const char* filename, const char* subname,
+               unsigned int flags,
+	       const char* vcodec, const char* acodec)
+	:
+    AviPlayer(filename, GetPhysicalDepth(_dpy), subname, flags,
+	      vcodec, acodec)
+	,m_pPW(pw), m_pDpy(_dpy), m_iResizeCount(1),
+        zx(0), zy(0), zw(0), zh(0)

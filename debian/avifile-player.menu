@@ -1,0 +1,8 @@
+?package(avifile-player): \
+	needs="x11" \
+	section="Apps/Viewers" \
+	icon="/usr/share/avifile-0.7/test.xpm" \
+	title="Aviplay AVI/ASF/WMF player" \
+	longtitle="Aviplay AVI/ASF/WMF player" \
+	command="/usr/bin/aviplay" \
+	hints="Video,Player"

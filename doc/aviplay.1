@@ -1,0 +1,125 @@
+.TH "aviplay" "1" "12 February 2003" "Zdenek Kabelac" ""
+.SH "NAME"
+aviplay \- QT\-based movie player
+.SH "SYNOPSIS"
+.B aviplay
+.RI [options]\ [ \ files\  | \ URLs\  ]
+.SH "DESCRIPTION"
+.B aviplay
+is a QT\-based player for various avi, asf, mpeg4 movie files.
+Avifile project creates library that allows programs
+to read and write compressed AVI/ASF files (Indeo Video, DivX :\-), etc.)
+under Unix OS. (De)compression is performed with various plugins
+(included Win32 DLLs for x86 OS) if native codec is not available.
+Win32 libraries have to be downloaded separately. Primarily the ffmpeg
+project is used for codecs and also for stream parsing. Over the
+time it's possible the project will mostly blend into ffmpeg.
+
+.SH "FEATURES"
+.TP 
+* low CPU usage (movies playable even P200MMX)
+.TP 
+* smooth video (using threads and frame precaching)
+.TP 
+* supports streamed .asf files
+.TP 
+* audio resampling suppport
+.TP 
+* modular design
+
+.BR 
+.SH "OPTIONS"
+\fB\-h \-\-help\fR
+Show help message
+.TP 
+\fB\-c \-\-codec\fR [help]
+Set codec options (use help to see options for this parameter)
+.TP 
+\fB\-s \-\-size\fR <\fIwidth\fR:\fIheight\fR>
+Start playing movie at dimensions X * Y.
+.TP 
+\fB\-f \-\-fullscreen\fR
+Start playing movie in fullscreen.
+.TP 
+\fB\-f \-\-maximize\fR
+Start playing movie in maximized mode (i.e. preserve current resolution).
+.TP 
+\fB\-\-seek\fR <\fIposition\fR>
+Seek to given position in movie.
+.TP 
+\fB\-sub \-\-subtitle\fR <\fIfilename\fR>
+Use give file as the source for subtitles.
+.TP 
+\fB\-subcp \-\-subtitle_codepage\fR <\fIcodepage\fR>
+Select codepage for subtitles. They are internaly encoded into UTF\-8.
+See iconv(3) for available codepages. Codepage "default" means
+current default encoding in system. Example of codepages:
+CP1250, ISO8859\-2, default.
+.TP 
+\fB\-subfont \-\-subtitle_font\fR <\fIfontname\fR>
+Select font for subtitles. At this moment only X11 fonts are
+supported (either in traditional "\-misc\-*" or TTF notation)
+.TP 
+\fB\-ac \-\-audio\-codec\fR <\fIcodecname\fR>
+Prefered codec to be used for movie audio decoding.
+Use with "help" to see available audio codecs.
+.TP 
+\fB\-vc \-\-video\-codec\fR <\fIcodecname\fR>
+Prefered codec to be used for movie video decoding.
+Use with "help" to see available video codecs.
+.TP 
+\fB\-\-rc\fR
+Enables remote control (stdin|stdout).
+.TP 
+
+.BR 
+.SH "SHELL variables:"
+.B WIN32_PATH
+\- can be used to override library path /usr/lib/win32 which holds
+MS Windows binary dll codecs.
+
+.B AVIPLUGIN_PATH
+\- can be used to override library path /usr/lib/avifile which holds
+avifile plugins.
+
+.B AVIPLAY_MUTE_AUDIO
+\- if set shows just video track
+
+.B AVIPLAY_MUTE_VIDEO
+\- if set plays just audio track
+
+.B AVIPLAY_NOSYNC
+\- do not synchronize audio and video track
+
+.B HTTP_PROXY
+
+.B WRITE_ASF
+\- write asf file received over the network to file (/tmp/*.asf)
+
+
+.SH "NOTE"
+Press the About button in aviplay's GUI for more details about the usage
+and configuation.
+
+Aviplay automaticaly searches for subtitle file with the
+same name as the original ".avi" file but 
+with .sub, .SUB, .srt, .SRT, .txt, .TXT, .smi, .SMI suffix.
+
+For Debian users: After the discussion with the autor I have came to
+the conclusion that GSM codec is legaly distributed under GPL terms
+since this piece of code was donated to the project by the original author
+which was using it in the non\-GPL project xanim.
+
+.SH "SEE ALSO"
+http://avifile.sourceforge.net for the original source and main CVS archive
+for binary codecs.
+
+http://mplayerhq.hu for mplayer \- an excelent player with more options
+and supported formats
+
+.SH "AUTHORS"
+.TP 
+Original author: Eugene Kuznetsov <divx@euro.ru>
+.TP 
+Current developer: Zdenek Kabelac <kabi@users.sourceforge.net>
+

@@ -1,0 +1,83 @@
+
+mga_vid  -  MGA G200/G400 YUV Overlay kernel module
+
+	Author:
+		Aaron Holtzman <aholtzma@ess.engr.uvic.ca>, Oct 1999
+
+	Contributions by:
+		Fredrik Vraalsen <vraalsen@cs.uiuc.edu>
+		Alan Cox <alan@lxorguk.ukuu.org.uk>
+                Zdenek Kabelac <kabi@users.sf.net>
+
+(Notes for usage with aviplayer you will at the end of this file)
+
+--------- This are original README before it has been modified --------
+               for the usage with avifile player
+
+
+                       WARNING  -----  WARNING
+
+This code messes with your video card and your xserver. It will probably
+lock up your box, format your hard drive, and cause your brand new g400 
+MAX to spout 6 inch flames. You have been warned.
+
+                       WARNING  -----  WARNING
+
+What does this code do?
+
+	 mga_vid is a kernel module that utilitizes the Matrox g200/g400 video 
+	 scaler/overlay unit to perform YUV->RGB colorspace conversion and
+	 arbitrary video scaling.
+
+	 mga_vid is also a monster hack.
+
+How does mga_vid work?
+
+	This kernel module sets up the BES (backend scaler) with approriate values
+	based on parameters supplied via ioctl. It also maps a chunk of video
+	memory into userspace via mmap. This memory is stolen from X (which may
+	decide to write to it later). The application can then write image data
+	directly to the frame buffer (if it knows the right padding, etc).
+
+
+How do I know if mga_vid works on my system?
+
+	There are test applications called mga_vid_test_g400 and mga_vid_test_g200.
+	Use the appropriate one for your card. This test code should draw some
+	nice 256x256 images for you if all is working well.
+
+--------------------------------------------------------------------------
+
+And here are some notes about how to use this driver with Aviplayer
+
+First - Aviplayer doesn't use any hardware registry trashing call from this
+driver - it just turn of interrupt generation for Vertical Blank Interrupt
+when its opened for reading. (so Xv extension should be working even
+when you close aviplayer).
+
+So the whole usage of this driver is to wakeup process waiting in read
+operation when VBI event comes in.
+
+This is used also for video synchronization timing (and its the best way
+(and I would also say the only one) to provide smooth video.
+
+Compilation should be quite easy - you just need to use kernel 2.4
+(as driver is using tasklets which are not present in 2.2 kernel - it
+should not be that hard to rewrite this driver to support also 2.2 kernel
+but I'm lazy to do this - so if you want to sent me a patch for this
+just go ahead)
+
+Use this command to create driver dev entry point :
+
+mknod /dev/mga_vid c 178 0 
+
+(you could also use devfs - it should be supported by aviplayer)
+
+and the rest shuold be easy - aviplayer shuold be able to detect presence
+of such device and use it - and you could enjoy the perfect smooth video
+on your computer (OK only with MGA card for now)
+
+But if you know how to wait for VBI on your card and you are able to
+write some line of kernel code - you should be able to easily extend
+current mga_vid driver - I assume it will be soon renamed to vbi_drv
+anyway.

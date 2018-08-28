@@ -1,0 +1,60 @@
+  Avifile for DEBIAN
+ ---------------------
+
+ * Ffmpeg plugin is able to decompress DivX and many other formats
+   without the need off Windows codecs!
+   Also it's currently by far the FASTEST decoder I know!!
+
+ * Unofficial Debian packages which might be useful for many users could
+   be found here - use this apt line:
+   
+   deb ftp://ftp.nerim.net/debian-marillat/ unstable main
+   deb-src http://perso.wanadoo.fr/debian/ unstable main
+
+   Should contain Win32 codecs and other various packages which
+   users might find very usable 
+
+ * Debian binary distribution COULD NOT contain any binary encoder for MP3
+   encoding - Thompson is charging each distributor of such thing
+   $25000 per year - I doubt anyone would donate money to Debian project
+   for such purpose so do not expect this will change anytime soon :)
+
+ * But on the other hand from 2001/07/11 we have new plugin - libmp3lamebin
+   So if you will compile Lame project for yourself and install the binary
+   library libmp3lame.so into /usr/lib or /usr/local/lib you could use
+   mp3 encoding capability of avirecompress tool.
+     Lame project could be found here:  http://lame.sourceforge.net/
+
+ * We also could not distribute binary codecs (Windows DLLs) - these
+   are useful for playing most of .avi/.asf streams you will find.
+   Most probably you will need to download them from the Internet
+   so look at the following links for them:
+     http://avifile.sourceforge.net
+     http://mplayerhq.hu
+
+ * Fast OpenDivX plugin is now also part of this package - but you
+   will need to download DivX4linux package for yourself and install
+   it localy - in the future we may provide package for this library.
+   This is URL for version which has been used to build to plugin:
+   http://avifile.sourceforge.net/divx4linux-20020418.tgz
+
+ * Also separate instalation of Xvid plugin is necessary
+   Again - I suggest Christian Marillat's site
+   Please NOTE: You need to install latest Xvid 1.0 library which
+   has different API, if you want to use older version, separate
+   compilation is needed.
+
+ * Currently you could not easily select which plugin you actually want
+   to use - this will be hopefully resolved later...
+   (see the homepage how to select plugin right now)
+   You can drag & move codec with the mouse in Config/Decoder window
+   though it's kind of hard work...
+
+ * According to this http://www.netbsd.org/Letters/20010803-dolby.html
+   there could be potentially some problems with AC3 decoding routines.
+
+ * Debian packages are now split in such a way that user might install
+   only those codecs he really needs (so if you do not want to install
+   extra vorbis libraries you don't have to)
+
+Zdenek Kabelac <kabi@debian.org>

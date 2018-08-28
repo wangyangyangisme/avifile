@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# .deb building helping script
+#
+# I'm using this script to build signed debian package
+# so I do not have to remember this command line
+
+# force adding tgz
+#dpkg-buildpackage -d -sa -pgpg -rfakeroot
+
+CFLAGS="-O2 -ffast-math -fomit-frame-pointer" CXXFLAGS="-O2 -ffast-math -fomit-frame-pointer" FFMPEG_CFLAGS="-O4 -ffast-math -fomit-frame-pointer" dpkg-buildpackage -sa -pgpg -ICVS -I.cvsignore -rfakeroot
+
+# dpkg-buildpackage -pgpg -rfakeroot
+
+#
+# for adding new entry in the changelog database
+# debchanges
+#
+
+# For build just debian packages (unsigned, useful for testing)
+# fakeroot debian/rules binary-arch
+#
+
+# tar zcf avifile_0.6.0.orig.tar.gz avifile-0.6.0
+# tar zcf avifile_0.6.0.orig.tar.gz --exclude=CVS avifile-0.6.0
+
+# Uploading new files to Debian ftp server
+# dupload --to anonymous-ftp-master avifile*.changes
+
+# 
+# try to remove
+#
+# rel.text
+#
+# objdump --headers --private-headers -T 
+#

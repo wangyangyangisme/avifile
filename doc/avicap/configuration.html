@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Avicap Configuration</title>
+                    
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+  <body>
+     
+<h2>Configuring Avicap</h2>
+   <br>
+         docu by: Alexander Rawass (<a
+ href="mailto:alexannika@users.sourceforge.net">alexannika@users.sourceforge.net</a>)<br>
+        if anyone can write a better documentation - please do it and tell
+ me<br>
+    <br>
+   To configure Avicap, press the right mouse button and select 'Configure' 
+ from the pop-up menu.<br>
+   <br>
+   If overlay mode is enabled, the overlay TV-picture may be drawn above
+the  menues, so can't read/use them.<br>
+   Best is, to go to the very right of the TV-window and click right mouse
+ there, so the menu will pop up beside the TV window.<br>
+   <br>
+   The configure dialog will show these Tabs:<br>
+   <br>
+     
+<ul>
+     <li>Device<br>
+   you can set up your v4l device here, select video input, color mode, capturing 
+ size and color space</li>
+     <li>File</li>
+           
+  <ul>
+       <li>Destination file<br>
+   this will be the default destination file if you do 'Capture Avi'</li>
+       <li>never overwrite existing files<br>
+   &lt;does not work fully yet&gt;</li>
+       <li><a href="#dirpool">Directory Pool</a><br>
+   you can add directories there that you want to use for your recordings</li>
+       <li>Segmentation<br>
+   you should always use segmentation, because the filesystem you might use 
+ might not allow files greater than 2 or 4MB or whatever<br>
+   I've set the segmentation size to 1900000 Kb (1.9GB), so I can be sure 
+that  the files work fine on linux as well as my windows-partitions</li>
+           
+  </ul>
+     <li>Video</li>
+           
+  <ul>
+       <li>Video Compression Format<br>
+   you can select between different video-encoders and there options, when
+ you press 'Change'</li>
+       <li>Video frame rate</li>
+           
+  </ul>
+     <li>Audio</li>
+           
+  <ul>
+       <li>Audio compression format<br>
+   is not yet implemented<br>
+   you can only record to uncompressed PCM audio, you have to recompress
+the  audio later with tools like qtrecompress, mencoder or transcode or else</li>
+       <li>Audio format</li>
+           
+  </ul>
+     <li>Limits</li>
+           
+  <ul>
+       <li>you can limit the duration and file size of your recordings<br>
+   I might advise you to leave these options unchecked, but others might
+think  different<br>
+   if you want to record for a specific time, better use the programmable 
+timertable<br>
+   to limit the size of the file, so that your HD doesn't overflow, better
+ use segmentation together with the Directory Pool</li>
+           
+  </ul>
+     <li><a href="shutdown_resume.html">Shutdown &amp; Resume</a><br>
+   here you can allow Avicap to shutdown/poweroff and poweron/reboot your 
+computer  automatically<br>
+   read here in full length about the <a href="shutdown_resume.html">shutdown 
+ &amp; resume modes</a><br>
+   read this, if you want to know about the options to <a
+ href="shutdown_resume.html">configure shutdown &amp; resume</a></li>
+  <li>other</li>
+  <ul>
+    <li>Log to file<br>
+all important actions get logged into ~/.avm/avicap-userlog.log<br>
+you have to restart avicap for changes to have effect</li>
+    <li><a href="#password_lock">Password Lock</a><br>
+here you can set the Lock password or lock avicap<br>
+if Avicap is locked, programs which are blocked by the EPG cannot be watched<br>
+    </li>
+  </ul>
+     
+</ul>
+   <br>
+     
+<h3><a name="dirpool"></a>Directory Pool</h3>
+   The direcory pool is a list of directories, where you want Avicap to save 
+ your recordings.<br>
+   <br>
+   Enter the name of a directory and select, how much space should be always 
+ free on this device, then click 'add'<br>
+   <br>
+   The directory will be shown in the Direcory pool table, along with the 
+keep-free  setting and the currently free disk space.<br>
+   <br>
+   You can enable or disable each entry per checkbox, disabled entries will 
+ not be used for saving.<br>
+   <br>
+   With these checkboxes, you can easilty disable a directory for now and 
+turn  it on back later.<br>
+   <br>
+   To actually use the DirPool feature, you have to learn about the 'special 
+ way' Avicap uses to select how your files are named, and in which dir they 
+ go:<br>
+   <br>
+     
+<h4><a name="naming_files"></a>Naming your files</h4>
+   Avicap saves files in different ways, depending on the way you name them 
+ (either in the Configure/File/File Destionation dialog or in the Timertable/Filename 
+ entry:<br>
+     
+<ul>
+     <li>absolute or relative paths (filename starts with either '/' or '.')<br>
+   the file will get written to that absolute or relative path, like you'd
+ expect it<br>
+   the filename might get changed if you enabled 'never overwrite existing
+ files'<br>
+   examples:            
+    <ul>
+       <li>/home/alex/video/record/movie.avi</li>
+       <li>/windata/record/movie.avi</li>
+       <li>./movie.avi</li>
+       <li>./subdir/movie.avi</li>
+             
+    </ul>
+   </li>
+ 
+</ul>
+ 
+<ul>
+   <li>filename has no path and ends on .avi<br>
+   avicap will select the <a href="#best_directory">'best' directory</a>
+from  the dirpool and write the file into that direcory<br>
+   examples:</li>
+           
+  <ul>
+       <li>movie.avi &nbsp; &nbsp; &nbsp; &nbsp;-&gt; /path/from/dirpool/movie.avi</li>
+       <li>movie123.avi &nbsp; &nbsp; -&gt; /another/path/from/dirpool/movie123.avi<br>
+       <br>
+     </li>
+           
+  </ul>
+     <li>filename has got no path and hasn't got an .avi ending<br>
+   avicap will select the 'best' directory from the dirpool<br>
+   avicap will append the current date as '-yymmdd-hhmmss.avi' to the filename<br>
+   examples:</li>
+           
+  <ul>
+       <li>movie &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-&gt; /path/from/dirpool/movie-030401-190000.avi</li>
+       <li>movie347beta &nbsp; &nbsp; -&gt; /another/path/from/dirpool/movie347beta-030402-201500.avi<br>
+       <br>
+     </li>
+           
+  </ul>
+     <li>no filename at all<br>
+   avicap will select the 'best' directory from the dirpool<br>
+   avicap will name the file 'avicap-yymmdd-hhmmss.avi' , depending on your 
+ date<br>
+   use this to never care for filenames any more<br>
+   no example ;-)</li>
+     
+</ul>
+ <br>
+ Warning:<br>
+ If you use absolute or relative paths, the dirpool doesn't get used and
+Avicap also doesn't check for free space on disk or segements to different
+directory<br>
+     <br>
+ When you use the dirpool, avicap will try to find a directory with enough 
+free space and then segments there.<br>
+ <br>
+ It is recommended to not use absolute/relative paths at all.<br>
+ <br>
+     
+<h4><a name="best_directory"></a>How Avicap finds the 'best' directory</h4>
+   Avicap will select the directory from the dirpool as 'best' , where Avicap 
+ has the most free space to write to.<br>
+   <br>
+   Avicap respect the 'keep free' setting, and will stop recording into that 
+ directory if the 'keep free' limit is reached.<br>
+   Avicap will then try to select another dir from the dirpool, and continue 
+ the current recording by segmenting it.<br>
+ <br>
+ &lt;noy yet&gt; If Avicap cannot find free space anymore, avicap will abort 
+the current recording and disable all other recordings, then it will go into 
+shutdown (if selected).<br>
+   <br>
+   <br>
+   
+<h3><a name="password_lock"></a>Password Lock</h3>
+The password lock is a feature for parents, who don't have the time to care
+about their children and simply park them before the TV (or rather Avicap),
+so they don't have to communicate with their children.<br>
+<br>
+If you don't want to care what your children are watching, or if you have
+better things to do than be with your children, you can use the password
+lock to simply forbid your children to watch any TV shows you don't like
+them to watch.<br>
+<br>
+<h4>Setting up your unix system for use with password lock</h4>
+<br>
+First, you need separate accounts for parent 'parent' and child 'child'.<br>
+<br>
+Install avicap as root like you normally do.<br>
+<br>
+Now change the owner of your /dev/video device to 'parent' and make sure
+that your children have no access to /dev/video at all.<br>
+<br>
+Then make sure that the home dir of 'parent', the dir ~parent/.avm and especially
+the files<br>
+~parent/.avm/default and ~parent/.avm/avicap-regexps<br>
+are not readable (or writable) for your children.<br>
+<br>
+Then change (as root) the owner of the avicap binary (usually /usr/local/bin/avicap
+) to 'parent' and set the setuid-bit on the binary.<br>
+<br>
+That way, when avicap is started, it runs as user 'parent'<br>
+<br>
+Now start avicap as parent.<br>
+<br>
+Go to config/others and do 'Set Password'<br>
+<br>
+You get prompted for a password, enter it twice and click the button.<br>
+<br>
+Then click 'press to lock'.<br>
+<br>
+After that, Avicap will get locked, with those effects:<br>
+<ul>
+  <li>the epg window will start up</li>
+  <li>on a channel switch, avicap will verify what program/show is currently
+running on this channel.</li>
+  <li>if the current program is blocked in the EPG, avicap will not allow
+to switch to that channel</li>
+  <li>avicap won't allow free editing of the regexps file (deleting blocked
+regeps is not possible)</li>
+  <li>avicap won't allow changing of the EPG provider</li>
+  <li>avicap won't allow unlocking unless password given</li>
+  <li>at a restart of avicap, avicap is still locked</li>
+</ul>
+Your children can now use Avicap to watch TV, but it is not possible for
+them to switch to a blocked channel.<br>
+<br>
+WARNING: the timertable has still full access to all channels YET!!<br>
+<br>
+You have to have a valid EPG provier, you should have sensible regexps for
+blocking, and you should make sure that the epg xml date is updated at least
+every day.<br>
+<br>
+If the epg data doesn't get updated, or if avicap cannot find the epg xml
+file, the lock will not be able to block channels any more.<br>
+<br>
+Make also sure that your children also cannot read/write the epg xml data
+and the nxtvepg data directory etc<br>
+<br>
+<br>
+Security thoughts:<br>
+<ul>
+  <li>your children could download, compile, run or use other TV software<br>
+BUT since /dev/video is setuid of 'parent', only TV software which runs as
+root or 'parent' can access the video device, and your children have to get
+root access for that</li>
+  <li>the password is saved into the file ~parent/.avm/default unencrypted
+(yet)<br>
+BUT, if the permissions of 'parent' and its subdirs are okay, it is not possible
+for your children to read or write this file</li>
+  <li>the regexps in ~parent/avicap-regexps can also not be edited or read
+without special permissions</li>
+  <li>you should set the umask of 'parent' to secure values<br>
+  </li>
+</ul>
+If you've got ideas to improve security or a flaw in the password lock feature,
+tell us.<br>
+<br>
+</body>
+</html>

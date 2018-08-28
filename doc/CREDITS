@@ -1,0 +1,29 @@
+Main avifile developers:
+   Zdenek Kabelac <kabi@users.sourceforge.net> (active developer)
+   Eugene Kuznetsov <divx@euro.ru> <cypher@users.sourceforge.net>
+   Alexander Rawass <alexannika@users.sourceforge.net>
+   Heinrich Langos <heinrich@users.sourceforge.net>
+   Hiroshi Yamashita <piro@users.sourceforge.net>
+
+Build with the following parts from other project sources:
+
+plugins/libwin32/loader/      :  mostly taken from Wine project ( http://www.winehq.com )
+plugins/libaudiodec/gsm*      :  XAnim sources, see plugins/libaudiodec/xa_gsm.c for precise copyright
+plugins/libmpeg_audiodecoder/ :  'splay' MP3 player, by Jung woo-jae
+plugins/libac3pass/	      :  emu10k1 CVS tree -  Juha Yrjölä <jyrjola@cc.hut.fi>
+plugins/libmp3lame*/	      :  lame developers
+ffmpeg/	      		      :  ffmpeg developers (creator - Gerard Lantau,...)
+lib/aviread/asfinput.cpp      :  partially from ASFRecorder ( http://members.tripod.com/asfrecorder )
+plugins/libvorbis/	      :  based on work of mplayer team - especialy Felix 'Atmosfear' Buenemann
+                                 also the gstream vorbis support has been checked
+
+Many patches from different people - to name just few:
+
+Miguel Freitas <miguel@cetuc.puc-rio.br> for pushing me to finish DirectShow
+                loader in plain C - also I've used ideas from his rewrite
+Rainer Lay <Rainer.Lay@informatik.uni-erlangen.de> - misc patches for some utilities
+Arkadiusz Miskiewicz <misiek@pld.ORG.PL> (autoconf,...)
+Mathew Kanner <mat@cnd.mcgill.ca> (FreeBSD,...)
+Juergen Keil <jk@tools.de>  (Solaris i386 patches)
+Jakub Jelinek <jakub@redhat.com>  (resolving some problems with gcc)
+Yue Shi Lai <ylai@linuxmail.org> (patch fo VfmEx based on mplayer code created by Atmosfear)

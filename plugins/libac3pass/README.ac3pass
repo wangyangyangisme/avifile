@@ -1,0 +1,83 @@
+
+
+        A C 3   p a s s - t h r o u g h     H O W T O
+
+!!!NOTE!!!:
+This plugin is intended to be used only by those who own the 
+audio device which is capable to recive AC3 audio data stream via
+digital line. If you want to listen AC3 though your sound card 
+DO NOT USE this plugin - instead put ahead some AC3 decoding plugin
+(at this moment FFMPEG AC3 decoder)
+
+
+Some notes about usage of AC3 passthrough with aviplay:
+
+Files: ac3-iec958.c ac3-iec958.h play-ac3.c   are copied from emu10k1 CVS
+
+AC3 pass-through has been developed and tested only with
+my quite old SBLive card together with Dolby Digital AV receiver 
+Yamaha RX-V42ORDS within 1 day and I do not have regular access to this
+device - if there is bug - you will have to help me to fix it !!
+
+For AC3 signal transmition 5m long 75ohm standard coaxial cable has been used 
+(just that you should know you don't really have to buy expensive
+metal cable or even optical cables for such thing - you want to transfer
+just few bits - they will not look better with optical cable - and bitrate
+is just 384kbps.
+
+Last test has been made with kernel:
+2.4.19-pre7 and emu10k1 driver from sourceforge (emu10k1.sf.net) 
+CVS 2001/08/17 
+
+
+Previous check and original development 2001/08/17
+For this day - 2001/08/19 - the Dolby Digital control led is signalizing
+that AC3 5.1 is correctly delivered to and played by AV device
+The code is based on 'play-ac3' line command tool which could
+be found in emu10k1 CVS tree (and copy is present here as well so
+you could check if your setup is working correctly with just pure
+ac3 stream.)
+
+
+You should always try to download and use the latest driver 
+and tools from emu10k1 CVS tree!!!
+
+You can find them at http://emu10k1.sourceforge.net
+(originaly developed at http://opensource.creative.com)
+(There is big chance it will contain less bugs - 
+as of 2001/08/19 its definitely causing some SMP deadlocks in 2.4.9 locks)
+also 2.4.19-pre6 doesn't seems to work properly and computer lock
+if pcm signal is used again after ac3 passthrough usage.
+
+
+So now how it work with aviplay: 
+
+  - select AC3 pass-through audio decoder
+    (for this moment you will probably have to remove  ffmpeg plugin 
+    as you could not pick decoder that easily for not - this will change soon)
+  - select OSS audio renderer  
+    (the only one which supports AC3 passthough code in
+    (SDL driver should be automaticaly skiped in this case)
+    (manual change is not that easy - open ~/.avirc   find line:
+       AviPlayer AudioRenderer = 8 [ Binary ] SDL,OSS
+    and switch order of OSS and SDL and save the file - later you should
+    be able to use config dialog for this)
+
+  cd plugins/libac3pass
+  make load    (this should initialize emu10k1 driver with ac3 pass-through
+                code - you need to have emu-config & emu-dspmgr  utils for
+                emu driver properly installed - don't forget to place
+                ac3pass.bin to /usr/local/share/emu10k1/
+                
+                basically you should read some info about how to get
+                ac3 passthrough working in the emu10k1 source tree)
+
+  after all this has been done - just use your avi with AC3 stream
+  and it should hopefully work.
+
+  I know its not easy - but I've been unable to play AC3 stream with
+  M$WinME at all - so it's better then nothing 
+  - also with xine you will have to mostly do the same thing.
+
+--
+Zdenek Kabelac <kabi@users.sourceforge.net>   26. Apr 2002

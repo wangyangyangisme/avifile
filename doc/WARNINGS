@@ -1,0 +1,61 @@
+lib/loader/ext.c:440
+    
+    User can reserve big chunk of memory by calling VirtualAlloc with flag RESERVE
+and later calls to VirtualAlloc specifying parts of this region are guaranteed to 
+succeed. This doesn't perfectly fit into mmap() implementation of VirtualAlloc. 
+Current implementation loses memory allocated this way.
+
+lib/loader/externals.c:699
+
+MultiByteToWideChar Win32 call is unsupported.
+
+lib/loader/externals.c:289
+
+bManualReset flag for CreateEventA Win32 call is unsupported.
+
+lib/loader/externals.c:341
+
+WaitForSingleObject Win32 call may be implemented incorrectly.
+
+lib/videocodec/VideoDecoder.cpp:27
+
+It is not known exactly which FOURCC's should be decoded by 'old' MPEG-4 dll.
+
+lib/loader/externals.c:727
+
+Win32 semaphores are supported incorrectly. Do not try to use VideoDecoder objects
+ in different threads simultaneously.
+
+lib/aviplay/audio.cpp:206
+
+I don't know how to determine delay between write() and actual sound output for ESD
+ 0.2.8 ( 0.2.15 does not work for me ).
+
+lib/avifile/AviRead.cpp:128
+
+No AVI frame flags other than KEYFRAME are supported because of limited VirtualDub read
+handler structure. 
+
+lib/avifile/AviRead.cpp:263
+
+AviReadStream::SetOutputFormat() is not implemented.
+
+lib/avifile/AviWrite.cpp:83
+
+AVI writer copies some values in main AVI header from corresponding fiels in 1st
+video stream header. I don't know what should I put there if there are no video
+streams at all.
+
+lib/audiodecoder/adpcm/adpcm.cpp:23
+
+IMA ADPCM audio decoder was only tested with one stereo file.
+
+lib/avifile/AVIReadHandler2.cpp:382
+
+AviReadHandler2::Header() is not implemented. AviReadFile::GetFileHeader() won't
+work for files opened with this handler.
+
+lib/avifile/AVIReadHandler2.cpp:1075
+
+VirtualDub warned user about broken file here. What should I do?
+

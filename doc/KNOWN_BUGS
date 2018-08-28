@@ -1,0 +1,9 @@
+Problem with color depth detect on Riva 128 ( true color ).
+
+Indeo Video 5.0 codec refuses to encode 32-bit data.
+
+Player does not allow to choose non-ISO-8859-1 fonts for
+subtitles. Solution: upgrade to Qt 2.2.4.
+
+All programs crash during loading on some platforms. Can be solved
+on client-side by upgrading libstdc++ library.

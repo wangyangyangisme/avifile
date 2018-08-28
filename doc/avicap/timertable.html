@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Avicaps Timertable</title>
+                                  
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+  <body>
+         
+<h2>Avicaps Timertable</h2>
+     <a href="avicap.html">back to Avicap Index</a><br>
+ <br>
+     docu by: Alexander Rawass (<a
+ href="mailto:alexannika@users.sourceforge.net">alexannika@users.sourceforge.net</a>)<br>
+      if anyone can write a better documentation - please do it and tell
+me<br>
+     <br>
+     This timertable window implements a programable VCR-like mode into avicap.<br>
+     <br>
+     In the timertable window, you can edit/control the recordings which
+avicap   will do automatically.<br>
+     <br>
+   
+<ul>
+    <li><a href="#start_timertable">Start the timertable mode</a> &nbsp;&nbsp;</li>
+    <li><a href="#editing_controls">Editing controls</a> &nbsp;&nbsp;</li>
+    <li><a href="#checkboxes">Enable and disable entries per checkboxes</a>
+ &nbsp;</li>
+    <li><a href="#start_timer">Start the timer</a> &nbsp;</li>
+    <li><a href="#sanity_check">Sanity Check</a> &nbsp;<br>
+  </li>
+  <li><a href="#shutdown_mode">Shutdown mode</a> &nbsp;&nbsp;</li>
+    <li><a href="#logout">Logout with Avicap</a> &nbsp;&nbsp;</li>
+    <li><a href="#my_way">How I use the timertable</a> &nbsp;</li>
+   
+</ul>
+   
+<h3><a name="start_timertable"></a>Start the timertable mode</h3>
+  When you start avicap with 'avicap', the timertable window will be inactive.<br>
+  To use the timertable, you have to click on 'Timertable' in the menu.<br>
+  After you've started the timertable, it will remain active, even if you 
+close the timertable window.<br>
+  <br>
+     At first startup, you'll see an empty table at the top of the window,
+ below  you'll find buttons labeled 'new', 'modify' and 'remove'<br>
+     <br>
+     'new' will create a new entry in the timertable and show the editing 
+controls.<br>
+     <br>
+   
+<h3><a name="editing_controls"></a>Editing Controls</h3>
+  With the editing controls, you can set:         
+<ul>
+       
+</ul>
+<ul>
+  <li>When to record (only once or every day/weekday)<br>
+  </li>
+  <li>Date and Time when to start the recording</li>
+       <li>the Time when to end the recording</li>
+       <li>the channel used for recording</li>
+       <li>the filename to save your recording into</li>
+       <li>a description of your recording</li>
+         
+</ul>
+If you set the 'when' combobox to 'every', you can select in the 'day' combobox
+which days (every day or every weekday) - the date is ignored with 'every'<br>
+<br>
+If you select 'once', you have to enter the correct date.<br>
+<br>
+At present, it is not possible to select a different codec for each recording, 
+  they all use the codec specified in the avicap configuration.<br>
+     I hope I can change that in the future.<br>
+     <br>
+     When you've set the correct parameters, press the 'modify' button to 
+commit   it actually in the table at the top.<br>
+     Be aware that you have to click 'modify' to accept the parameters.<br>
+<br>
+When using 'every', the date you might have entered will be ignored, instead
+the next correct date is entered in the table.<br>
+<br>
+If you click another table-entry instead, your modifications for the old
+  will be lost.<br>
+     <br>
+     Press 'remove' if you want to remove an entry.<br>
+     <br>
+   
+<h3><a name="checkboxes"></a>Enable and disable per checkboxes</h3>
+  You have to activate the checkbox to the left of an entry to enable it
+for   recording.<br>
+     A disabled checkbox means, that this entry will not be recorded.<br>
+     This is useful, for daily or weekly recording, etc<br>
+     If you see that a daily recording clashes with another, you can temporarily
+disable it for the next day/week, and turn it back on later.<br>
+<br>
+   
+<h3><a name="start_timer"></a>Start the timer</h3>
+  Press 'Start Timer' to start the timer in recording mode.<br>
+     You cannot start the timer if there are no pending recordings.<br>
+     <br>
+     If there are pending recordings, the label on the button will show 'Stop 
+  Timer'.<br>
+     Press to stop the timer.<br>
+     The timer can only be disabled in-between different recordings, but
+not   while a recording is running? &lt;question: is this sane?&gt;<br>
+     <br>
+     If you have started a recording with 'Capture AVI' from the main menu
+ directly,  this recording will be aborted if a recording programmed with
+the timertable  needs to be done.<br>
+     <br>
+<h3><a name="sanity_check"></a>Sanity Check</h3>
+Avicap will do 'Sanity Check' on your recordings.<br>
+<br>
+If two recordings conflict with each other, Avicap will display this conflict
+in the status display.<br>
+Avicap will display only the first conflict found - there may be more, be
+warned!<br>
+<br>
+If Avicap reports a sanity check, better modify the times or disable one
+of the conflicting recordings.<br>
+<br>
+If you don't correct these insane recording settings, Avicap will stop the
+first recording brutally to start the second (conflicting) one.<br>
+<br>
+It's your own fault them, if you don't care about the sanity of your recordings
+;-)<br>
+<br>
+   
+<h3><a name="shutdown_mode"></a>Shutdown mode</h3>
+  If you activate the 'shutdown' checkbox, your system will go to shutdown 
+ after a recording has been done.<br>
+     This behaviour can be disabled completely by configuring avicap to 'never 
+  shut down system' in the general avicap configuration dialog.<br>
+     <br>
+     Avicap can also shutdown/poweroff your system after a recording and
+resume/reboot   it just before the next recording, implementing a real power-saving
+VCR like  mode, where your computer is off in-between recordings.<br>
+     <br>
+   
+<h3><a name="logout"></a>Logout with Avicap</h3>
+  If you want to enable this resume/shutdown, you HAVE to 'quit' per Avicaps
+  shutdown routine.<br>
+    Don't log out of X and shutdown the normal way anymore.<br>
+    Use this way:<br>
+    <br>
+    1. Edit the timertable settings for the next recording, and start the 
+timer.<br>
+    2. As long as you want to work with your computer, leave Avicap in background
+  running.<br>
+    3. If you want to power-off your computer (maybe because you've got to
+ go  to bed after a long programming session, just like me right now ;-)),
+ close  all other applications, get Avicap in the foreground, and set the
+'shutdown'  checkbox.<br>
+    4. If your recording is more than &lt;boottime&gt;+&lt;gracetime&gt;
+in  the future, Avicap will pop a requester telling you that it will shut
+down,  counting down.<br>
+    Ignore it.<br>
+    5. After some time, Avicap will set the nvram and call the shutdown-script<br>
+    6. Your system will be sent into shutdown<br>
+    7. It will re-boot again<br>
+    8. And get's powered down soon after booting<br>
+    9. and then, some time, the RTC alarm will power-on again and your system
+  will reboot, starting X and avicap in timermode, waiting for your recording<br>
+    <br>
+   Read here about <a href="shutdown_resume.html">Avicaps  shutdown&amp;resume 
+ capabilities</a>.<br>
+     <br>
+    <br>
+   
+<h3><a name="my_way"></a>How I use the timertable along with the shutdown
+ &amp; resume mode</h3>
+  I've programmed my timertable for the next two weeks with all the stuff 
+I  wanna see, Avicap will be running on my computer in background while I 
+am  working with it, and when I do a power-off I am sure that Avicap will 
+power-on  itself when it feels the need to watch TV itself ;-)<br>
+   <br>
+   It's like sort of an external brain, I don't have to think about TV for
+ the next two weeks, cause Avicap will do that for me if I am awake or asleep 
+ :-)))<br>
+   <br>
+  &lt;Humor&gt;<br>
+    And if I don't have time to watch the session that Avicap has recorded,
+ why worry?<br>
+  Avicap has watched it, so why should I watch it again?<br>
+  I think it is just neccessary that anyone watches TV, and it's probably 
+also a good education for my computer if he can watch TV for himself ;-))))<br>
+  &lt;/Humor&gt;<br>
+   <br>
+  <br>
+ <br>
+</body>
+</html>

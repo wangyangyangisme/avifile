@@ -1,0 +1,3 @@
+EXTRA_DIST = pci.db
+
+MAINTAINERCLEANFILES = Makefile.in

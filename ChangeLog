@@ -1,0 +1,1481 @@
+2004/10/05
+* ok the last release has one stupid bug in subtitle reader - fixed
+  copying of subtitle lines where emptyline weren't copyied.
+* as usually ffmpeg is regulary updated
+
+2004/06/04
+* yep - the time is running, everyone is using mplayer so who actully cares,
+  but still it's worth to mention that some bug in threading was
+  fixed with 2.6 kernels and aviplay usage
+* Xft subtitles are now rendered with line breaking so if the line
+  is too long, overlaping words are moved to the next line - this should
+  be probably convigurable option we will see
+* ffmpeg is contiuosly updated - but for now the framerate logic
+  is changed way too offect so it doesn't currently work
+
+2003/07/10
+* nothing really inovative - mostly just ffmpeg gets update
+  main purpose is to make a new Debian/SF release
+
+2003/06/08 - alexannika@users.sourceforge.net
+* new exp. multichannel view
+* press [ or ] to change number of tiles
+* press + or - to change speed of channel switch
+
+2003/06/06 - alexannika@users.sourceforge.net
+* added files samples/qtvidcap/frequencies.{c,h} (taken from xawtv)
+* added frequencies.{c,h} to samples/qtvidcap/Makefile.am
+* avicap now uses v4l->setFreq() to set frequency
+* recording continues while you can zapp around
+
+2003/06/05 - alexannika@users.sourceforge.net
+* sdl-renderer doesn't crash anymore
+* menu & some keys work in sdl window
+* you can switch between overlay/preview/sdl
+
+2003/06/02 - alexannika@users.sourceforge.net
+* avirec shows correct time
+
+2003/05/30 - alexannika@users.sourceforge.net
+* minor fixes
+
+2003/05/26 - alexannika@users.sourceforge.net
+* removed my savename code from
+  lib/codeckeeper.cpp
+* disabled the savename code in vidconfig.cpp/capproc.cpp
+  the code is still there, but no named codecs are used
+* no named codecs till I have the new version written
+* removed the bogus constructor from lib/aviplay/aviplay_impl.h
+* improved a little bit the sdl renderer
+* fixed the avirec problem
+* compiles with qt2.3.2 and without qt
+
+2003/05/25
+* still more cleanup & speedup for automake
+* more headers moved to avm_ prefix usage
+* headers are now stored within avifile0.7
+
+2003/05/17
+* again played a bit with configure script - cleanup
+  support for divxbin has been added
+
+2003/05/11
+* cleaned some parts of avicap
+* partly enable ffmpeg encoding support - works but not yet properly
+* wow - we could really play SVQ3 via ffmpeg
+* AAC should be working as well
+  >> name codecs should be replaced with something more universal
+
+2003/05/10 - alexannika@users.sourceforge.net
+* fs-fenderer: yv12 gets negative picture, yuy2 works
+* funny channel dependent cpu-usage
+
+2003/05/09 - alexannika@users.sourceforge.net
+* experimental! fullscreen/sdl/avicap-renderer
+* added files samples/qtvidcap/fullscreen_renderer.{cpp,h}
+
+2003/05/07 - alexannika@users.sourceforge.net
+* user can now use 'named codecs'
+
+2003/05/01 - alexannika@users.sourceforge.net
+* avicap_de.qm gets installed to $(datadir)/avifile/i18n
+* documentation gets installed to $(datadir)/avifile/doc
+* added AUTHORS file to topdir
+* README INSTALL COPYING AUTHORS ChangeLog gets installed to
+  $(datadir)/avifile
+* added global.h,huffman.h,layer12.h,layer3.h,version.c
+  to plugins/libmad/libmad/Makefile.am (tarball didn't compile)
+
+2003/05/01 - alexannika@users.sourceforge.net
+* german translation of avicap done by Jochen Puchalla
+
+2003/04/30 - alexannika@users.sourceforge.net
+* more strings to translate
+* slightly improved epg drawing
+
+2003/04/30 - alexannika@users.sourceforge.net
+* segmenting evaluates the dirpool
+* file gets segmented into another dir when keepfree>freespace
+* audio/video error & timeshift get shown in avicapwnd
+* updated documentation
+
+2003/04/29 - alexannika@users.sourceforge.net
+* prepared for translation
+* added samples/qtvidcap{avicap.pro,avicap_de.ts,avicap_de.qm}
+* keyframe bug fixed
+  *thanks* to Jochen Puchalla again :-)
+
+2003/04/27 - alexannika@users.sourceforge.net
+* avicap does synchfixes again
+  *thanks* to Jochen Puchalla for his help & inspiration
+
+2003/04/25 - alexannika@users.sourceforge.net
+* slight improvements to the timertable
+
+2003/04/22 - alexannika@users.sourceforge.net
+* paranoid logging with -DAVICAP_PARANOID
+* user logging to ~/.avm/avicap-userlog.log
+
+2003/04/20
+* implemneted support for I410 (used by ffmpeg indeo decoder)
+* fixed Raw Uncompressed Bitmap support (it's stored with even columns
+  for odd widths)
+
+2003/04/16 - alexannika@users.sourceforge.net
+* timertable: 'every' recordings get now updated automatically
+* you can't switch channel to blocked programs
+* new config tab 'other'
+* other tab: password/child lock
+* other tab: log to file checkbox (not yet functional)
+
+2003/04/15 - alexannika@users.sourceforge.net
+* epg faster redraw
+* guide can now show range upto 3 days
+* preliminary zoom (not yet working correctly)
+
+2003/04/15
+* nothing really impressive - just syncing with ffmpeg and cleaning few
+  minor issues
+
+2003/04/14 - alexannika@users.sourceforge.net
+* epg browser highlights program which are running 'now'
+* epg browser get updated from timertable when next/current
+  recording has changed or any recording modified
+* epg browser gets redrawn every minute (it's slow yet)
+
+2003/04/13 - alexannika@users.sourceforge.net
+* regexps get now written to ~/.avm/avicap-regexps
+* epg-channel-id's for all providers the same
+* you can change provider (but have to restart avicap yet)
+* epgwindow interacts with timertable, you can put recordings from
+  epgwindow into the timertable
+* recordings from the timertable will show up shaded in the epg browser
+* press middle button & move mouse to move display around
+* regexp-edit separate window
+* updated epg documentation
+* epg browser compiles with Qt2.3.2 now
+
+2003/04/12 - alexannika@users.sourceforge.net
+* epgwindow regexps now much faster and usuable
+
+2003/04/11 - alexannika@users.sourceforge.net
+* epgwindow highlights program under mouse correctly
+* epgwindow highlight/blocks programs by regexp
+* fixes for Qt2.3.2, no epg yet
+
+2003/04/09 - alexannika@users.sourceforge.net
+* config for epgwindow
+* disabled build of standalone 'epgbrowser'
+
+2003/04/06 - alexannika@users.sourceforge.net
+* improved epgwindow
+
+2003/04/06 - alexannika@users.sourceforge.net
+* added samples/qtvidcap/epgwindow.cpp/h (widget)
+* added samples/qtvidcap/epgbrowser.cpp (standalone browser)
+* added doc/avicap/epg.html
+* added samples/qtvidcap/TODO (my personal TODO-file)
+* implemented an EPG-display/browser for Avicap
+* also standalone browser 'epgbrowser'
+* avicap/timertable compiles and works with Qt2.3.2
+* disabled epg for Qt<300 (I'll look at those errors later...)
+
+2003/04/03 - alexannika@users.sourceforge.net
+* fixed bug in kv4lsetup, kv4lsetup -t=1 or -t=2 works now
+* timertable now recognizes when user stops a programmed recording manually
+* timertable now also starts recordings if the start time is in the past
+  but the stop time is yet in the future, also now
+* timertable now stops a programmed recording if a second programmed
+  recording is now to start
+* the start/stop date columns get now sorted correctly
+* timertableitems in the past cannot be enabled
+* DirPool widget added to Configure/File tab
+* Avicapwnd now also displays free disc space
+* timertable uses DirPool
+* mini-button for Avicapwnd
+* added doc/avicap/configuration.html
+* timertable entries now get colored
+* 'every day/monday...sunday' feature in timertable
+* avicapwnd has got mini-button -> mini-display
+
+2003/03/30 - alexannika@users.sourceforge.net
+* fixed bug in reading/writing timertable settings
+* zapp through channels with cursor-up/down
+* channels are numbered now in the menus
+* keys 1-9 can be used to select channels (if not xawtv keys)
+* added 'Shutdown&Resume' tab to config dialog
+* feature 'shutdown&resume' for timertable
+* added ConfigFile::Save() to lib/common/Config.cpp/h
+* added RegSave() to lib/common/Registry.cpp/h
+* added RegSave() declaration to include/configfile.h
+* Configuration is now saved to file when modifying it
+* use 'avicap -timer' to start timer automatically
+* window-caption will display channel nr and name
+* imported avifile/doc/avicap (html user docu)
+* imported avifile/samples/qtvidcap/scripts (root shell scripts)
+* elapsed time is displayed in hh:mm:ss in avicapwnd.cpp
+* file size is displayed in MB in avicapwnd.cpp
+* never overwrite existing files option
+
+2003/03/19
+* support for Float attribute - hopefully it should be backward compatible
+* disable some annoying FFMPEG debug messages
+
+2003/03/14
+* hmm - forget to check Xft support - it had been disabled by accident
+
+2003/03/11
+* recovered support for older libtool which doesn't allow to link
+  shared lib into another shard lib
+
+2003/03/10
+* qt-dir  changed to  qt-prefix
+* fixed few other minor problems with configure
+* started to implement support for ffmpeg options
+
+2003/02/19
+* mostly fixing minor bugs and focusing more on ffmpeg
+* among stupid bugs has been the one which has caused compilation
+  hasn't been using CPU flags by default (hmm sometimes it's probably
+  worth to check things in standard environment)
+* another Debian sync
+
+2003/01/30
+* fixed small bug in configure causing usage of FT2 include everywhere
+
+2003/01/26
+* added some code to play to the last byte from the OSS audio buffer
+
+2003/01/20
+* fixed some compilation problem
+
+2003/01/17
+* fixed timestamp for b-framed divx & ffmpeg
+  (using brute force method - sorting timestamp and giving them
+  to outgoing frames and this works for avi & mpeg)
+
+2003/01/08
+* mainly squashing many outstanding bugs so it will be a bit
+  more usable
+* subtitles should be now working again (-subcp for selection iconv
+  codepage)
+
+2002/12/03
+* supporting every third frame from mpegs
+  (libavformats is somewhat mysterious here)
+
+2002/11/27
+* continue with cleanup - looks now more simple
+* fixed mms streaming from TV Nova again
+
+2002/11/26
+* some architectural redesings/cleanups/simplifications in aviread
+
+2002/11/25
+* full DMO support
+
+2002/11/20
+* simplifying some parsers and readers to match better ffmpeg
+* yep Win32 DMO works (it was very stupid bug which has blocked its
+  functionality)
+
+2002/11/17
+* implemented support for OSS mixer so volume slider does something useful
+* ok redesigned some timing things - should be now simplier
+
+2002/11/13
+* hmm it's interesting how the bugs tends to repear in some
+  parts of the source code :) so fixed quite a few problems
+  with incorrectly played movies
+* added support for 411P colorspace for some NTSC DV movies
+  decompressed via ffmpeg
+* simplier and faster timing routines (again - interesting
+  how much could be saved by removing few virtual method calls)
+
+2002/11/11
+* during weeked played a bit more with ffmpeg
+* fixing some bugs introduced with some latest cleanups
+
+2002/11/07
+* hmm relase 0.7.17 seemed to be a little bit more buggy then I've
+  expected for some users - now reported bugs have been at least
+  fixed (and did I mentioned who do not report bugs can't expect such
+  bugs will be solved fast)
+* working on new Subtitle rendering which should also be able to use
+  freetype2 library directly (end eventually draw text into the
+  movie - now when there is Crop support this might be usefull)
+* also FontDialog is somewhat less functinal then it used to be
+  (yet this is known issue at this moment - no need to report)
+
+2002/10/31
+* hmm I'm somewhat forget about this log
+* ok now we support WMA decoding via
+* Cropping is now support for RGB modes as well
+* options are now better supported (yet it's not finished)
+* ffmpeg now allows to set few options at runtime
+  (direct mode 1 rendering is amongs them)
+* speaking about ffmpeg - there is new simplier code to handle
+  ffmpeg codecs - and lot of them has been added
+* as usually lot's of fixes
+
+2002/10/01
+* number of improvements and fixes
+* support for multiple filename list
+* fixes for avicat
+* DMO isn't usable - very hard...
+
+2002/09/13
+* released 0.7.16 version
+* working on DMO support (aka WM9)
+
+2002/09/09
+* more vidix fixes (and played a bit with mga)
+
+2002/09/05
+* vidix works somehow for 'root' user now
+  (though now root user is actually forced to use vidix)
+  this might be disabled for next few releases until some
+  reasonable usable UI will be made for this.
+
+2002/09/03
+* fixed few bugs in an old mp3 decoder so it should be a little bit
+  more stable
+
+2002/09/02
+* added some patch to avoid crashes with wm8 and gcc-3.2
+
+2002/08/31
+* added gamma correction also for X11 renderer
+
+2002/08/16
+* fixed reading of windows position
+
+2002/08/12
+* fixed some memory leak in rgb conversion/rendering
+  (this isn't really tested - 99% of time I'm using YUV)
+* fixed some stupid bugs in YV12 I420 conversions (I420 is now
+  a little bit better supported)
+* slightly fixed capturing code - shouldn't crash at least
+
+2002/08/07
+* removed usage of %Ld from library
+  - looks like freebsd has some serious problems with this one
+* fixed ffmpeg libav Makefile and configure so grab.c isn't compiled
+* fixed stupid bug in ReadStreamA where return 0 has been used
+  instead of break - caused memory leak during seek
+* fixed another 'seek' memory leak issue with libmad usage
+
+2002/08/06
+* improved audio VBR support
+* some fixes for freebsd (no complains - no fixes)
+
+2002/08/04
+* lowered memory usage for avi reading
+
+2002/08/01
+* support of download of multiple video streams
+  (video_stream > 128 - good value to use would be 255)
+
+2002/07/31
+* ok now I could finaly watch TV Nova archive :) without any
+  major problems with seeking and without problems in decoding
+  URLs in received headers from server which has broken configuration.
+* fixed some remaining major bugs in seeking code now it's
+  quite nice to use.
+
+2002/07/30
+* still improving networking code
+* fixing stupid bug in mmx detection and avirec parameter printing
+* minor fix for one subtitle type (better handling of broken files)
+
+2002/07/28
+* cleaning asf code - but still it's not very good
+* cleaning code to make it again compilable without AVM_COMPATIBLE
+
+2002/07/25
+* reworked Asf network reading code - futher changes will come
+  so I could finaly select those things I'd like to actually
+  hear & view
+* applied two patch files by
+  borders for TV by Jindrich Makovicka <makovick@kmlinux.fjfi.cvut.cz>
+  Theme selector by Tomas Konir <moje@molly.vabo.cz>
+  for aviplay (this should be probably made
+  a little bit more universal and usable for avirecompress
+  and avicap - FIXME later)
+
+2002/07/24
+* cleaning some code mainly in player
+* better support for streamed files - should be a little bit more
+  comfortable now
+
+2002/07/20
+* fixed bug which has been non existent audio streaming for
+  streams without audio tracks
+
+2002/07/19
+* some fixes for codecs sorting as now it's a little bit more complicated
+
+2002/07/18
+* added  new way to retrieve CodecInfo list
+  CodecInfo::Get - it takes few option to get some selected codecs
+  which will match some criterium
+  It might cause some minor incompatibilies as video_codecs and
+  audio_codecs are no longer sorted and have the same order over the
+  whole program live (as they are used for referencies it's order
+  can't be changed - it would cause mysterious ugly problems)
+* fixed some stupid ugly bug which might have caused weird
+  crashes during aviplay reconfiguration.
+* codecs are now selected only from those which are usable for
+  currently played movie - if you want to see all of them
+  run aviplay without movie.
+* played a bit with QSplitter class
+
+2002/07/16
+* added some code to repair incorrect mp3 headers
+* more safe code which throws away non-mp3 packets in mp3 stream
+
+2002/07/11
+* fixed some seeking problem with ffmpeg
+
+2002/07/10
+* added --disable-fpic options for disabling compilation with -fPIC flags
+  on systems with older autotools (users of newer auto* tools should
+  use --without-pic)
+* more fixes for avirecompress - it seems to be working again a little bit
+  (yet I wouldn't recommed it's usage at this moment)
+
+2002/07/09
+* fixed some stupid bugs with sound seeking (alignment has been ignored
+  for WMA audio tracks - bad idea)
+* fixed some compilation problems
+* code now contains code for playing streams via ffmpeg libav library
+  but it's not yet usable
+* some fixes for avirecompresor
+* divx4linux now plays old divx files again
+
+2002/07/03
+* removed some more throws from the code so it's more safe for
+  optimalized compilations with broken gcc compilers (aka 2.95.4)
+  (sometimes I get the felling their main intention is to eliminate
+  the usage of C++ completely because the bugs are far more scary then
+  normal user might think of and users do not use the latest version
+  of gcc compiler)
+
+2002/06/27
+* cleaned ASF->Asf class naming together with iterators
+
+2002/06/26
+* started to cleanup win32 loader part - to be more portable
+  across player with fewer modifications necessary
+
+2002/06/25
+* checked support for mjpeg and fixed many bugs and problems
+  so these files are now playable by ffmpeg  (or sometimes
+  by OS Mjpeg plugin - (now internaly renamed as ijpg to match
+  mplayer terminology)
+
+2002/06/22
+* thrown away throws in plugins
+
+2002/06/18
+* more asf interator cleanup
+* enabled WMV1 support in ffmpeg
+* fixed AC3 reading bug (sometimes too small buffers were used)
+
+2002/06/18
+* few more fixes in ReadDirect - checking quality of avi copy with
+  avirecompress - still it's broken
+
+2002/06/13
+* fixing some memory leaks/probs discovered by valgrind detector (very nice)
+* a bit restructuralized sources in aviread so it's more logical
+
+2002/06/11
+* asf stream reading in packets
+* cleanup of some test sources so automake1.6 will be quiet
+
+2002/06/09
+* started reorganization of stream reader - will be made in several steps
+  for now avi stream reading in packets
+
+2002/06/06
+* reverted to original <0 topside-down - it's documnted and there is
+  no real reason to change so leaving it as is - expect no
+  all bitmapinfo formats returns  upside-down format at least
+* fixed stupid bug with open file dialog opening
+* better xfree3.3.6 lock-free toggle-fullscreen
+* saving few more clocks by removing some memcpy in audio renderer
+* also using MMXEXT for stride memcopy to get better transfer speed
+
+2002/06/03
+* changing upside/down logic for BitmapInfo - I hope there
+  is no application which would be using/interpreting internal
+  values directly
+
+2002/05/31
+* spending some time with ffmpeg optimalizations to gain few more CPU
+  cycles
+* finaly added support draw called in ffmpeg
+
+2002/05/21
+* still removing some useless parts of code to make the code cleaner
+* fixing some various minor problem which arised during this cleanup
+* added extra check to get even faster seeks (I hope no one will
+  complain that we are to slow now :)
+
+2002/05/19
+* significantly simplified code for scheduling - removed various junk
+  from this code which has accumulated over the time and is no longer
+  necessary
+* fixed various  'read from stream' issues
+* rechecked my collection of buggy avi samples - interesting how many bug
+  has managed to reappear - they were fixed again
+
+2002/05/08
+* fixed resampling support
+* few Makefile updates so there should be less problems with mixed
+  Qt instalation and library linking
+
+2002/05/07
+* fixing some code path in audio decoding - so another memcpy is saved
+  (though it's been quite small - like 1200b)
+  still mp3 decoding seems to be delayed by some 0.1sec
+  but at least now it's consistent for both OSS & SDL audio renderers
+* fixed some problems with pinnacle video clips and dwStart in video stream
+* fixed another problem with configure and Qt detection - now
+  --with-qt-dir is prefered to QTDIR
+
+2002/05/02
+* fixed some threading problems - so it should be relatively safe to
+  resize picture even in RGB mode
+* fixing some names for postprocessing - now it's everywhere lowercase
+* support for Qt3.0 font selection by Tomas Konir <moje@molly.vabo.cz>
+
+2002/05/01
+* again modified SDL audio renderer - (OSS is now default is SDL
+  probably could never give predictable results) - but as for
+  now it looks quite good
+* restored some older smoother time modification in video thread -
+  so the smooth video is back
+* started to modify avirecompress to support some more options
+  like YV12 or two pass encoding - for now avirecompress is a little
+  bit broken (I a guess it's more then just a little ;))
+
+2002/04/29
+* fixed few newly discoverd issues with configure add added
+  support for  --with-xvid-prefix
+* spent some time on adding options for XviD & Divx4 plugins
+  - yet XviD is not correct so fat
+  - feature added to divx4 are most probably only available to Pro version
+    which is not yet accessible for linux (if ever will be...)
+* avirecompress now also compiles with Qt2.0
+  (though the GUI looks quite strange - if anyone know how to
+  removed those huge empty spaces - let me know)
+* avicap has few GUI fixes so it's fully resizable - also graph bars
+  now will show something nice
+* checked and fixed compilalation for g++-3.1
+* fixed some annoying bugs in audiorenederes which were waiting too much
+  with the lowquality audio streams (problems with radio listening)
+* also stream reader has some minor problems with threaded reading
+  - fixed, but the fix looks a bit wierd - FIXME better
+
+2002/04/26
+* prepared new relase - fixing some remaining configuration issues
+  I hope this time it will be finaly good release
+
+2002/04/23
+* fixing some C++ exception compilation problems - avoid usage of
+  function throw(FatalError)  even when you are sure there will be
+  no other exception generated by this function - produce bad code
+  also I'd like to note here help of my friend and his idea
+  to check -fsjlj-exceptions  g++ option
+* fixed a/v sync a bit better - now it works so perfect I'm actually
+  quite impressed myself :)
+* few more cleanups in configure
+
+2002/04/21
+* using liba52
+* some minor bugs resolved
+
+2002/04/20
+* still fixing some macros in configure and using some standard names
+  like HAVE_LIBSDL
+* checking  AC3 passthrough usability and fixing few issues with OSS
+  render (we can't reset device - it will stop ac3 audio playback
+  and there are few other most probably sblive emu driver faults)
+* fixing few memory leaks in the library
+
+2002/04/16
+* fixing fixing fixing and again fixing - will this ever and ???
+  anyway now the debian build produces correct package for potato
+  system
+* fixed some reported problem (i.e. avirec,  in some
+  Makefile some files were missing - annoying if you have used CVS
+  snapshot
+
+2002/04/14
+* fixed AC3 decompressor initialization
+* large cleanup of configure.in & acinclude.m4
+  now Qt should be checked more precisely
+* fixing few minor bugs in avirecompressor
+* hopefully correctly restored a/v sync calculation
+
+2002/04/11
+* cleaning configration process - e.g. now should again work
+  compilation without X  (--without-x)
+  so programs which do not require Xfree might save addition
+  of xfree libraries
+* running perl am_edit script only on specific Makefile.in files
+* fixing few bugs with images conversion
+* removed stupid BitmapInfo pointer - useless mem allocation
+* rename CVS to avifile - (both names are however still valid
+  sp user still could use avifile-0.6)
+
+2002/04/09
+* a lot of minor change to be compatible with SDL 1.0.0
+  of course there is no Xv rendering but it works
+* fixing couple of wrong overloaded methods
+* some modification to be Qt2.0 compatible - but it's not that
+  easy - but player is already compilable with it
+  though without configuration dialog
+
+2002/04/07
+* support for .srt subtitles which doesn't have free empty lines
+* fixed aviplay's config for subtitle async time
+* fixed coredump for AC3 passthrough (which is not yet checked if it works)
+* added support XV Atoms settings (hw contrast, brightness,...)
+* cleaned library and plugins code so it compiles without backward
+  compatible defines - samples & player still needs it.
+* fixed memleak in some audio renderer extract path
+* fixed some bugs in a complicated audio decoding path
+* removed static variables from SDL video renderer
+
+2002/04/04
+* fixing some remaing reported problems
+* added qring template class so we could use it intead of slightly inefficient
+  vector classes for various buffers
+* implemented 'show previous frame' with backspace - slow by might be usable
+
+2002/03/30
+* another major cleanup and fixup of reading classes - it looks like now
+  all my asf & wmv files are precisely played without any problems
+  (especialy vanderer.wmv clip was hard to fix)
+* add few more magical tricks to properly play even files with
+  seriously damaged audio headers (like famous CoyteUgly.ogg)
+* few more GUI updates
+
+2002/03/26
+* major GUI updates - finaly first shared Qt object
+* fixing some gcc3.0 compilation bugs
+* a lot of minor tweaks and fixes in other places
+  (e.g. eliminated  iv32 encoder - causes memory trashing)
+
+2002/03/23
+* fixed detection of stream EOF - we were ignoring last frame in avi stream
+* fixed some stupid bug instroduced in last commit with avm_stl.h
+
+2002/03/17
+* make some fixes to prevent stack overwrite with -fstack-check
+* discovering some GCC problems with  throw handling - we shouldn't
+  probably use it at all as this seems to be horrible broken in
+  all known to me GCC compilers - as soon as optimalization is turned on
+  the weird thing begin to happen - with -fno-defer-pop and !not! using
+  -march=i686 mostly solve this problem however the problem seems to
+  be serious
+* improving ldt_setup - adapting xine's method - but we are currently
+  unable to use it as currently two different threads might want
+  to decompress video frames
+
+2002/02/29
+* a lot of minor fixes in the video buffering rewrote - now it's
+  finaly works as expected - was hard work...
+* autoquality now works also without buffering - of course it's not
+  as good as with buffers but it works.
+* playing some more with ffmpeg - expect some major changes in this
+  area.
+
+2002/01/21
+* a lot of fixes in the field of asf parsing - code starts to look a bit
+  more readable - but still it's far a way from the understandibility...
+* few more tweaks to handle better some timestamps
+
+2002/01/10
+* well a lot of changes in the progress
+* currently the avifile is slightly broken - library is evolving itself a bit
+* some major changes for now:
+  - everything is being moved into avm:: namespace
+  - also any C declaration should be prefixed with avm_
+  - buffering has been removed from video decoders - but this introduced
+    some new problems which are not so easy to solve
+  - currently buffering is being made diferenly video queue was moved into
+    VideoStream parser (and might be controlable from outside - so not
+    only aviplay could use direct rendering mechanism - but the API
+    is not yet stable)
+* feature of this month - ASF streaming support has been improved a lot
+  (actually it mostly works)
+* for now I'm not sure if more bugs have been fixed or introduced as
+  a lot of classes have been modified
+
+2001/12/19
+* more fixed over the whole source code
+* now the segmentation should work again and should be possible to
+  do some buffering and splitting at keyframes
+* we are now playing on PPC as well - fixing avi playing was easy,
+  asf required some more modication
+* avicap supports Xawtv settings - usable via menu or with hotkey
+
+2001/12/07
+* some more cleanups in win32.c code
+
+2001/12/04
+* various fixes for dropping and autoquality - again - all I could say -
+  if user will not complain I'll not most probably notice
+
+2001/12/02
+* spent many many hours on locating and finaly fixing the remaining problem
+  with acelp codec (the thing which almost noone is probably using anyway :)
+  But after all it FINALY works.
+  Also AVID works for decoding.
+* started rewrite of avifile main classes - yeah I know programs who
+  are using avifile library likes these changes :) - but the good thing
+  so far is - you do not need to modify single line of you code - as
+  I'm providing backward compatible defines  structures - just binary
+  compatibility seems to be rather a sci-fi so far :) but trust me the change
+  is necessary to properly support all the setting we need to support
+  - yet you can't see this code in CVS
+
+2001/11/29
+* fixed couple problems introduced with Makefile cleanup
+* fixed stupid bug in subtitles creation - currios why almost nobody
+  noticed this problem (big thanks goes to Lukas)
+
+2001/11/27
+* heavy cleanup of Makefile.am rules
+* DivX4 DirectShow should work again
+* fixed some compilation issues for old egcc
+
+2001/11/25
+* more fixes to newly converted DirectShow code in plain C
+* acel.net codec loads in both - .ax & .acm form, but none of them seems
+  to be operating normaly
+* fixed few remaining problems with Mp3 header detection (bug in tables)
+
+2001/11/18
+* made avicap look more like real application - moving, resizing,...
+* some fixes for YUV colorspaces in win32 dll encoding
+* fixed YV12 encoding with DivX4 plugins (avicap showed quite a few bugs
+  at this field - but I do not have really that much time to fix
+  everything instantly - especialy when I do not know about the problem!)
+
+2001/11/15
+* fixed many minor bugs across the code (curious why nobody complained -
+  maybe I'm the only one who is still using this :)
+* fixed some bug with direct data reading from stream
+* updated avicap
+* ReadDirect has now another parameter - to get first frame flag
+
+2001/11/13
+* fixed few bugs in win32 code - VP31 shouldn't corrupt memory
+  (was dealocating some Heap twice)
+* few quick fixes in avicap so it will work
+* updated fillplugins.h for win32 - enabled MWV1 ZLib Mszh for compression
+  (thought these old codecs are quite useless anyway :)
+  disabled Morgan jpeg & DivX for encoding to prevent mysterious segfaults
+  these codecs are causing
+
+2001/11/11
+* fixed some more details in Mp3 detection  (reading more samples)
+* ASF will continue with index reconstraction when some bad packets are found
+* implementation for AUDIO_CHANNEL
+* saving some bits of memory
+
+2001/11/08
+* Dirk Mueller joined our team and will do some work on GUI interface
+* also some outstanding problem with Qt3.0 popup menu problem was fixed
+  (with Trolltech support)
+
+2001/11/04
+* slightly updated API - but backward compatible function remains in headers
+  I'll try to do any future API changes get handled this way as API
+  seems to be getting into its stable phase...
+* OSS sound audio render now also supports time tracking of video stream
+  and is actually more precise then SDL audio renderer - I've no
+  idea how to get precise time of currently played buffer
+
+2001/11/02
+* few more compatibility/compilation fixes for older systems
+* using  GetSrcSize more precisely to get better timing for VBR audio streams
+* garbage coolection reenable for Global mallocs with mouch simplier
+  method and without any slowdown
+
+2001/10/31
+* swaped function names for be/le calls
+* disable garbage collection for Global mallocs in libwin32 -
+  VP31 allocates 11000 memory chunks - and after this it gets free
+  we need probably a tree to store memory referencies as linked list
+  isn't a good choice for this
+
+2001/10/30
+* removed check for movie chunk - so another set of broken files should
+  be playable
+* slightly modified routine for mp3 stream detection - will not fail
+  if mp3 header could not be found and will use stream header
+
+2001/10/28
+* fixing memory leaks in libwin32 (hard task to catch them all...)
+* changing some internals in write/read avi
+  (maily to be less big-endian dependent)
+* avm::vector will behave more like std::vector  (operator=, copy constructor)
+* seeking audio stream more closely to video track - useful when avi stream
+  has very large chunks with audio (e.g. 256KB)
+
+2001/10/23
+* added several functions into encoder API - now it's possible to create audio/video
+  encoder objects and AVI streams using CodecInfo as a reference.
+* fixed some bugs in avirecompress
+
+2001/10/21
+* added high quality MPEG audio decoder MAD
+* fixed ugly bug in AVI stream reading causing some problems with
+  certain MPEG streams
+* added keyboard control for Saturation/Brightness,Hue,Constras
+  compatible with Xawtv (F1/F2, F5/F6, F7/F8, F9/F10)
+  (some people believes sliders s*s, but they are not reporting
+  this problem :) - of course it was 10 minute work to add this :)-
+
+2001/10/20
+* some updates in configure.in and installing plugins without version-info
+
+2001/10/15
+* fixed some outstanding bugs - like wrong Eof detection for broken streams,
+  or missing initialization of Async or Volume properties.
+* moved Locker to common so other programs might use just
+  aviread, common subdirs if they do not need player or writer part
+
+2001/10/14
+* quite a few changes in libwin32 driver
+* fixed bug which prevented setting non direct show driver
+* added few more options to couple codecs
+
+2001/10/10
+* fixed keyframe for recompress and placed video stream
+  as the first one in avirecompress
+
+2001/10/08
+* fixed some ugly bugs probably introduces by me long time ago in win32
+  registry so now they are working in the way one would expect
+* fixed DivX4.0 setting so they are also correctly stored in registry
+
+2001/10/08
+* Eugene made DivX4 Win32 codec quite usable
+* change a little behaviour in threads - now it waits in aviplayth
+  decoder instead of videodecoder directly when buffers are full
+* some cleanup of libwin32 so mplayer team could be a little bit more happy :)
+* more and more fixes in stl->avm conversion
+
+2001/10/03
+* some small steps towards multiplatform compilation
+* quite big automake cleanup
+* another set of header cleanups
+
+2001/10/02
+* fixed missing mbox initialization
+* CodefInfo & AttributeInfo is now derived from BaseInfo
+  - use methods  GetName()  GetAbout()  instead of accessing private members
+* some improvements in win32 loader  - handles  divx.dll for decoding/encoding
+
+2001/09/30
+* type cleanup - using  uint_t in most places - eliminated Unsigned, size_t
+* fixed couple crashes during deinitialization of aviplay
+* fixed endless loop in asf seeking
+* added our own very simple and basic implementation for two used STL
+  classes - vector & string - compiles much faster and especialy
+  debugging object files are much smaller
+
+2001/09/28
+* fixed some serious bugs in dropping algorithm
+* cleaned some includes and classes to minimalize usage of bloated STL
+  this should speedup compilation
+
+2001/09/26
+* VfwEx for vp31vfw.dll works now - based on the work of mplayer team
+
+2001/09/24
+* update in whole a-v synchronization for both asf and avi streams
+
+2001/09/23
+* cleaned some new warnings
+* slightly reworked event filter so its part of class
+* fixed resizing - takes into account subtitles size
+* another bug - using dwStart for index
+
+2001/09/20
+* few minor (memory eating) bugs introduced with last update has been fixed
+* updated ffmpeg sources
+* patch from Jurgen Keil amongs other thing fixes wrong TSC detection in win32
+
+2001/09/16
+* fixed stupid bug in function overload of AviReadStreamA::GetTime()
+
+2001/09/15
+* fixed crash with avicap - so it should work
+  mjpeg & huffyuv are only used for decoding
+* fixed deadlock in stream read for some very broken avi file
+* fixed missing init call in Ogg/Vorbis pluggin
+* fixed memcpy for video image in ffmpeg plugin
+* repaired threading - now works much more reliable and doesn't use
+  EVENTTHREAD from SDL which seems to cause busy loop on some systems
+* fixed DIVX video stream index reconstruction
+* removed avifmt.h - now its private header file
+  use StreamInfo when you need info about stream
+
+2001/09/08
+* Workaround for playback of AVI files with nonzero dwSampleSize in video stream header
+* Rearranged subtitle suffixes test order
+
+2001/09/04
+* vorbis plugin operates - without seeking
+  3 magical numbers discovered in mplayer source
+  big thanks and hello to Felix who reads our Changelog
+  for his work on ogg/vorbis decoding
+* autodetection of ogg/vorbis libraries
+
+2001/09/02
+* more work on libmmxnow
+* failed to build working vorbis decoder plugin - the test files seems
+  to have unlogical content - so unless I'll find some better descrition
+  we have to live without this plugin for now
+* cleanup in the source code
+
+2001/09/01
+* smarter FileStream class which should allow faster rescaning of damaged files
+* adding few more const pointers
+
+2001/08/31
+* cleaning some problems reported on the list - autogen.sh
+  recompilaction problems
+* solved stupid bug in CPU consuming SDL thread - used wrong return value
+
+2001/08/29
+* spend another day with video scheduler - now it has just three lines
+  (why have I discovered this earlier???)
+  should be giving very good results in X11 and Xv accelerated mode
+* discovered potencial slowdown code in SDL library
+  - SDL_Delay(1) in src/events/SDL_events.c around the line 120
+  should be rather SDL_Delay(100)  otherwice this loop eats CPU a lot
+  - not a problem when there are two processors - but noticable
+  when just one has to be running (that's why I've not noticed this problem)
+  SOLUTION for now - replace Delay and recompile - for now I've no idea
+  what we could be doing wrong that we hit this problem - maybe it's
+  real bug in SDL ??? (solved)
+
+2001/08/26
+* initial work on mmxnow library
+* improve AviPlayer initilization
+* added loading support for reading external audio channel from second file
+
+2001/08/25
+* minor tuning of scheduler - checking larger delay
+* DVSD support (fallbacks to dvsd)
+* removed QMARK, DMARK, DropFrame, shortened buffers for precaching
+* video scheduling again improved - noticable with huge images rendered
+  with x11 renderer without any hardware acceleration
+* ported big part of pthread calls to use our internal Mutex/Cond/Thread
+  implementation (Locker.h) - adaptation to SDL locks should be possible
+  just with replacement of Locker.cpp later
+* cleanup of thread - more safety for Free/NetBSD systems
+* Max Autoquality - for DS_VideoDecoder & DivX
+
+2001/08/24
+* allowed usage of SW YUV overlay emulation - very useful for
+  ffmpeg which supports only YV12 surface
+* many fixes in renderer part - updating fonts in runtine and other
+  nice features should basicaly work
+
+2001/08/21
+* yet another minor change in scheduler - but "there is something about xine"
+  which tells me we can still be better...
+
+2001/08/20
+* fixed another stupid cut&paste bug - used video listbox instead of audio
+* fixed couple other problems in the run-time configuration update
+
+2001/08/19
+* fixed information messages - for kbps using 1000 instead of 1024 as with KB
+* added AC3 passthrough pluggin which really plays Dolby Digital!
+  (-> I do not have any other player except play-ac3 which plays ac3 stream)
+  (ok I know - there is not many DivX with AC3 and we do not play vob
+  but anyway - it's nice :)
+* fixed few problems with AudioQueue to accept ac3 passthrough stream
+
+2001/08/17
+* continual cleanup of Win32 subsystem - to be more portable - goal
+  is to allow mplayer team to use exact same copy of unmodified source.
+* some updates in headers - using "name.h"  instead of <name.h> for our
+  headers - its better for dependency generators
+
+2001/08/13
+* Huge update in AviPlayer class - moving towards much easier runtime
+  configuration - everything should be fully modifiable in runtime
+  (For now you could at least switch renderer (x11 & xv) but
+   note the whole replacement is usually without soundskip!)
+* fixed ASF parsing (Ann Lee - Two Times.asf)
+* skip to next key frame is not performed if the last one passed
+* added ordering of decoders - for now its still not that easy to
+  select codec - but you could do it.
+* player shows the time of seek bar, as obviously user wants to know
+  to which time he is seeking
+* fixed couple gcc3.0 things
+
+2001/08/08
+* large set of various minor improvements in configure and autogen.sh
+* much better library versioning
+* ffmpeg CVS update
+* renamed few programs
+    qtrecompress -> avirecompress
+    qtvidcap -> avicap
+    benchmark -> avibench
+
+2001/08/04
+* decoding ALaw & uLaw audio tracks
+* using AC3 decoding from FFMPEG
+  (seems to there are few modified ac3 libraries available - mplayer seem to
+  be using different version - probably heavily optimized - but as it doesn't take
+  to much CPU we stay with the current version for a moment - API seems to be differnet
+* autoquality implemeneted into OpenDivX (or should I say ClosedDivX :)
+  anyway this code is about 25% faster and it works with autoquality
+* during cleaning bugs and improving functionality of benchmark fixed
+  some bug in detection of Eof in Avi stream
+* benchmark will now give also similar number as you could get from benchmarking
+  mplayer (just to be sure we are still faster :) for now with -direct -yuv -
+  but buffered mode seems to be slower - maybe there is something on the
+  fastmemcpy...
+* renderer disables mouse after 1sec of inactivity in aviplayer window
+2001/08/04
+* fixed problem with 0 frame numbering
+  actual information about the current frame are available after ReadFrame
+  (e.g. Time, Position,...)
+* huge set of improvements in qtrecompress - now it really works
+  (with few filters which are not available in VirtualDub :))
+
+2001/08/03
+* subtitle code update (support for SAMI - .smi)
+* cleanup of various makefiles (suggest by some users)
+* Debian package slightly modified
+
+2001/07/22
+* TrueType Font Rendering (using Xft extension - with the help of Lukas Hejtmanek)
+* smarter DirectRendering mode - should work all the time with necessary conversions
+
+2001/07/21
+* very extensive cleanup of conversion modes of images
+* cleaned some hacks in Win32 VideoDecoder class
+* added some hack for correct playing of several not very used codecs
+  like huffyuv, asv1, asv2, vcr2
+* large speedup of C-version routines for conversion  RGB 24b->16b
+
+2001/07/18
+* fixed bug in Subviewer reader
+* fixed two memory leaks discovered by mprotector
+* added support for few more codecs
+
+2001/07/17
+* lots of code cleanup
+* started to cleanup some types - transformation to uint32...
+* some fixies in DirectShow code
+* fixed several MAJOR bugs in qtrecompressor - now it even works - though
+  it's still rather a toy application and I would not advice to use it for
+  any serious thing yet
+* ffmpeg 0.4.4
+* autoconf2.50 compatible - anyone dissagree ???
+
+2001/07/14
+* another speedup of resumpling code - should be now very efficient
+* -ljpeg for avimake
+
+2001/07/11
+* added libmp3lamebin plugin which as able to load libmp3lame at runtime
+
+2001/07/10
+* 4 times faster resampling - using just interger arithmetic
+* scanning WIN32_PATH, /usr/lib/win32, /usr/local/lib/win32 paths for dll
+
+2001/07/09
+* able to use ffmpeg library - version 0.4.3 is now in avifile CVS
+  - original CVS seems to be now the tree of the mplayer.
+  for now we could use it to play OpenDivX - it could also play DivX :-)
+* minor redesing of videodecoder API - now we have Start/StopInternal
+* cleaned mjpeg_plugin
+* started to clean DirectShow directory to make it C-compilable
+  (so it could be used by mplayer and others...)
+* also made quite a few cleanups in other places
+* fixed WIN32_PATH support
+* added AVIPLUGIN_PATH shell variable
+* fixed AVIPLAY_MUTE_VIDEO, AVIPLAY_MUTE_AUDIO
+* few fixes for debian
+
+2001/06/28
+* another change in constants in scheduler
+* interface change! - GetHeader(void* header, size_t n)
+
+2001/06/26
+* Locker.h and VideoDPMS.h are now public
+* fixed few problems in frame elimination in video decoder class
+
+2001/06/23
+* complete rewrite of players' thread - is it now FreeBSD safe ??
+  - also we are no longer using avi_usleep for audio synchronization and
+  instead we use timed condition which has adwantage that we have
+  immediate hangup when thread is sleeping
+* added NextFrame aviplay method - usable with 'Return' key in aviplayer
+* implemented initial 'hacked' support for better priority handling
+  - if you set uid.gid to root.root together with 'suid' bit,
+  that video thread will use -10 priority for better timing - however
+  BIG WARNING is here - you are using closed-source windows binary dll
+  codecs - during their execution aviplayer is using user uid & gid
+  - however you never know what could happen!
+* for this reason it looks like the best is to lower the priority if
+  audio & video decoding threads so video thread gets its needed CPU when
+  necessery.
+
+2001/06/21
+* complex GUI update for configuration of aviplayer
+  (some of buttons now even works in runtime so you don't have to restart
+  player - ok I know - still not perfect...)
+* resampling is now more usable as it could do far more things then
+  just pure 44kHz resampling - so why not making it fully usable - its even
+  nice feature
+* version-info - library has now number 0.0.6  (level 0  version 0.6)
+* another streaming bug fixed - so we play more asf stream over the net
+
+2001/06/20
+* fixed & tuned resampling to remove clics for unsigned char audio stream
+  (but some check for the overflow would help us too)
+* extended stream info added (check movie property)
+
+2001/06/18
+* some deadlocks in audio renderer - SDL_LockAudio now works somehow better
+  but it is still not usable
+* no longer processing keyboard events which belongs to other applications
+* fixed resampling - that was really stupid bug and not that easy to fix
+  but the result is very good
+
+2001/06/18
+* minor updates in network asf - it just works - but it's still crashing a lot
+* staying compatible with qt2.X
+* added hack for NVidia cards - autodetected by looking for NVIDIA-GLX
+  extension - could be forced on by setting
+  export AVIPLAY_NVIDIA_ENABLE=1
+  or off with this shell command executed before aviplayer gets started
+  export AVIPLAY_NVIDIA_DISABLE=1
+
+2001/06/16
+* a lot of fixes in asf parsing code - finally we are able to detect end of
+  the file properly
+* redesigned and simplified event handling in aviplayer
+* a-v sync is now 100% better than it ever was
+* maximize return to its previous size when switching off fullscreen
+* hopefully fixed problem with mpg sound which could occasionaly get broken
+* GUI updates
+* added keys '[', ']' to modify a-v sync - (adds, subs 0.1 sec)
+* UNIQUE frame-dropping technique - now even very slow computers could
+  be used to view movies in audio-video sync !!!!
+
+2001/06/12
+* more keyboard updates
+* added methods for setting getting video renderers in aviplay class
+  (set is however unimplemented so far)
+* reading video modes and making them available in maximize modes
+
+2001/06/11
+* improved player keyboard handling - seeking is better & faster again
+* GetFrame is using Lock instead of usleep - faster reaction
+
+2001/06/08
+* redesigned whole ToggleFullscreen & Resize system - now it should work
+  reliable, fast and without strange locking problems (at least I hope so)
+  Pressing 'm' key is now the best thing you could do to view the move
+* added support for SubRip subtitles
+* l3codeca.acm - windows mp3 dll library seems to be working now!
+* quick resizing with keys: 1 (0.5x), 2 (1x), 3 (2x)
+* fixes in audio synchronization
+* fixed YV12 drawing (swaped 2nd & 3rd plane)
+* benchmark supports YV12
+
+2001/06/05
+* hardly played with synchronization
+  we can now resize window  without stopping playing!!!
+  (try this with other players :)
+
+2001/05/30
+* fixed couple deadlocks in AudioRenderer
+* fixed Uncompressed video decoder
+* added autorepeat for SDL
+
+2001/05/28
+* slowly adding support for direct rendering
+* again general rewrite of scheduler - simplier and more efficient
+* of course the complex part did not dissappeared - its now
+  in audio renderer - which is being constantly modified
+  so OSS & Sun are currently not supported until they will be fixed
+  to match complexity of SdlAudioRenderer
+
+2001/05/19
+* as some more issues have been resolved in the audio time calculation
+  we could now have much more simple and precise video image scheduling
+  A-V is in in milisecond range - just check (export AVIPLAY_DEBUG=1)
+* reconstructing even seriously broken .avi files
+  you could really split two .avi files and then join them in any order
+  - you just need the correct initial header
+* few changes in qtrecompress GUI
+* bugfix: some codecs needs previous image to be stored in the new decoded image
+* supporting more flags for benchmark utility:
+  -seek, -frame, -length
+
+2001/05/15
+* played a bit with DPMS code - now it should be compilable even on older systems
+* tuned Dropping algorithm
+
+2001/05/13
+* removed memorymut - replaced with two utility functions - memory_un/lock()
+* aviplay.h: Set/GetSubAsync -> Set/GetSubtitlesAsync
+  InitSubtitles is now public function (well not full usable at this
+  moment)
+
+2001/05/12
+* New VIDEO IMAGE scheduler - its giving excelent result to me
+  - however my machine is quite powerful SMP computer so this needs
+  to be test with other types of machine (btw - mplayer has made lately
+  some progress in this area too - and we have to be better :))
+* reconstruction of index on broken DivX movies - now checks for KeyFrames
+  (inspired by mplayer code)
+* reading from avistream is now more endinadness independent - but this
+  probaly has to be checked in the real small endian machine.
+
+2001/05/08
+* significant speed for large movies - memory is now
+  protected when doing large memory transfers so we are
+  not loosing the speed too much ion this case - was hard to
+  figure out and current solution is not very nice - its rather a hach
+* changed  drawFunc - they are now replaced with list of video renderes
+  yet function to add them on the fly are missing for now - will
+  be resolved later - expect some interface changes in this area
+
+2001/05/06
+* timing changed more - so more ASF files are played correctly
+  if anyone has something we are playing completely wrong - let me know
+* VBUFSIZE is now in the class which implements IVideoDecoder and
+  is quite easily changable - maybe configurable option in future...
+
+2001/05/05
+* !!IMPORTANT!! general update of several public interfaces
+  (changes are not that big - but probably require simple updates,
+  I wanted to make these changes before library get used by more projects)
+  - unification of various method names doing same thing
+  - SeekTime replaces Seek(double) - it better visible what's going on
+  - GetEndPos -> GetLength
+  - GetEndTime -> GetLenghtTime
+  - LengthTime -> GetLenghtTime
+  - Length -> GetLength
+  - FormatSize -> GetFormatSize
+  - FourCC -> GetFourCC
+  - Prev/Next/NearestKeyFrame -> Get*
+  - ToNext/PrevKetFrame -> SeekToNext/PrevKeyFrame
+  - SetRealtime -> SetDecodingMode
+  - config_entry -> ConfigEntry
+  - GetDrop, GetQuality -> GetAvgDrop, GetAvgQuality
+* new code for timing ASF files
+* added QualityAuto & PreserveAspect in RegAccess
+* many changes across the whole source base because of this
+* implemented Preserve Aspect Ratio
+* implemented CPU Quality checkbox (still missing setting Quality after Off)
+* fixed bug with killHandler destruction - caused crashes with broken videostreams
+* found & fixed deadlock in Mpeg layer3 decoding
+  (now just writes: MP3 Stream reinitialized!  and reinitialize decoder)
+* we are again playing Video free avi/wma/asf streams.
+* fixed deadlock case in AviMediaReadStream::find
+
+2001/05/04
+* fixed playing of asf files with variable frame rate - e.g.
+  when frame should stay on the screen for longer time
+  current solution allows immediate seeking
+* more changes to videodecoder interface class
+  few things have been made private and I suppose more change will
+  be made within this class - if you are building your own decode
+  watch closely these updates.
+* fixed some bugs when Videostream is not present
+
+2001/05/01
+* code cleanup
+* now progress bar shows correct info for direct show DivX
+* clenaup of members of videodecoder class
+* some updates for Spark i386 architecture
+* VideoDPMS is now separate class
+
+2001/04/30
+* fixed and rewrote destruction of aviplayer class (now its more clean)
+* adding several methods to win32.c so huffyuv codecs almost works
+* rewrote & fixed reading .SRT subtitles (takes less space)
+  also this will be moved to separate class file - also
+  the support for SMI subtitles will be added soon
+* add few more keystrokes to aviplayer to be compatible with movie window
+* fixed and repaired wrong image time reading - we were reading time
+  information for the next image and also it was causing unpleasent
+  effect on the image redrawing when mouse enters the window - its
+  the only reasonable way to simulate expose event for this moment - now
+  its almost unnoticable.
+* support for DivX VKI - DIV5, DIV6 - user has to install these libraries:
+  divxcvki.ax & divxcvki.dll
+* implemented several new functions in win32 to make huffyuv work better
+  so far RGB variant is upside-down in player and corretly in qtrecompress
+  YUV variant looks OK in player and is upside-down in qtrecompress
+* variuous fixes in qtrecompress - but for this moment is still pretty
+  much broken piece so I would still advice to use VirtualDub.
+* many other minor bugfixes - like missing -O2 flag in configure.in,
+* fixed uggly bug in videodecoder - we have to use mutex in this case
+* we should be now nearly as fast as mplayer I believe
+
+2001/04/27
+* fixed compilation some inline for RedHat broken g++ compiler
+* reversed wrong idea for using DIV5 & DIV6
+
+2001/04/26
+* fixed another problem with audio - it looks like its not the right thing
+  to divide rate by dwSampleSize - sometimes there are weird values
+  anyway for now it works - better fix will come later
+* modified slightly renderer - remember data only in mutexed part -
+  otherwice it might lead to possible race
+* we are playing huffyuv - for now upside-done in player - but
+  qtrecompress show normal image - this will be fixed
+* fixed few problems with ACEL incorect initialization - it still doesn't
+  work but at least its not crashing.
+
+2001/04/25
+* fixed bug in audio playing - missing division by dwSampleSize
+* fixed bug with destroying AviPlayer2 object - setting m_bQuit there
+* Cursor keys Up/Down means 1m forward backward in the movie
+  (similar semantic to mplayer - to not confuse people)
+* added few fourCC for DivX VKI we will see if this helps
+* played a bit with renderer so it should refresh images better
+
+2001/04/22
+* fixed bug introduced by me for software scaling
+* added few more calls to PlayerWidget - refresh, maximize
+* also extended renderer class for refresh call - we are now
+  finaly able to refresh/resize image in pause mode too
+* slightly modified maximize - it goes to fullscreen mode automagicaly
+  yet it might look slightly weird when the window has to be resized first
+  as it first switch to fullscreen for the current size,
+  that it resizes to the new size and finaly switches to this
+  new screen mode - weird I know, but quite stable for X11
+* news keys - 'f' - fullscreen, 'm' - maximize, 'space' - pause
+* left mouse click - pause
+
+2001/04/20
+* changed video decoder interface to separate caching code from
+  actual decoding. Now nearly all caching code is situated in
+  lib/common/impl_video.cpp ( useful for writing new video decoder
+  plugins, also more logical ).
+* fixed a bug in asf parser code which prevented local .asf files
+  from playing.
+* removed arts plugin & software motion jpeg decoder from distribution
+  ( they are unusable anyway ). Fixed a few small linking problems.
+
+2001/04/16
+* complete rewrite of Cache.cpp - now should be quite efficient
+  (should be almost zero wasted time now)
+* fixed couple of fast scrolling problems - now should no longer
+  scroller switch frames by itself - actually I've tried hard
+  to get this to the perfection - does anyone notice any problems
+  with aviplayer scroller ?? please let me know
+  (similar scrolling will be backported to recompressor later)
+* fixed most of problems when doing pause - audio should now continue
+  at the point it has stopped
+* fixed detection of audio stream - also buffered time is now included
+  into calculation so the audio is not being stopped several seconds
+  before the actual end of video
+* made couple changes to be more gcc3.0 compatible - however
+  this compiler seems to be seriously broken these days and
+  needs way to much memory to compile classes with member values
+  which are classes again (pointers are OK)
+  also for some weird reason std::string as a member value is also
+  some kind of brake barrier for this compiler
+
+2001/04/07
+* another set of gcc3.0 compatibility patches (by Dirk Mueller)
+* started to support /dev/misc/mga_vid (not yet finished)
+
+2001/04/07
+* continued with cleaning of audio classes
+* added few more locks into video renderer
+* fixed problem with opening menu in fullscreen window
+* using smaller amount of precached images (15)
+  (rewritten some part of videodecoders)
+* popup menu for midle mouse button and about menu is created only once
+* fixed bug in ReadString - def_string has not been copied
+* fixed couple bugs in qtrecompres - should not by cycling and should
+  be showing some images at least
+* played a bit with qtvidcap - modified some parts of the gui to be
+  fully resizable
+
+2001/03/31
+* heavy cleaning in many files - creating a lot of new files during this process
+* fixed problems which has prevented compilation with optimized of Win32 loader
+* fixed loop bug in qtrecompress
+* mpeg decoder has to be compiled with optimalization because of inlines!
+* started to add more types - like fourcc_t
+* modified IVideoDecoder - m_bh is now just pointer to memory which
+  is copy if format - this way we support longer BITMAPINFOHEADER structures
+  yet few problems still remains
+* some modification to configure.in
+* possibly fixed problem with asynchronous sound (not so sure for now however)
+  but this problem problem has to be checked more deeply
+  for now I've just checked SDL Audio renderer
+* changes some mimetype for artsc (to fix debian bugreport)
+
+2001/03/26
+* Quality progress bar should give some meaningful status for DivX movies
+* another change in time scheduler
+* fixed couple destructors so we are getting less coredumps on program exit
+* tried to add huffyuv codec - still doesn't work
+* fixed few problems with configure.in - should be able to build without SDL
+* few more updates for gcc3.0 compatibility
+
+2001/03/21
+* few changes to make compilation of avifile on RedHat with broken gcc
+  more comfortable (so it doesn't take hours to compile one .cpp file)
+
+2001/03/19
+* quality setting from command line stays across movie change
+* cleanup of huge amount of gcc -pendantic warnings (mainly in lib)
+* slightly changed behavior of slider - when paused you should see the image
+  with slider movement
+* added working Xv render - but it has few reason for segfaults so
+  it currently available only by code editing
+* played heavily with the solution for image flickering
+  nice solution seems to be my new modified version of mga_vid
+  device taken from mplayer - but we use only code for interrupts
+  and we rather use this device as interrupt generator - which is clean
+  and its highly possible that this will hit mainstream kernel sometimes
+  in the future
+  currently mga_vid driver is provided with the avifile package - user
+  has to recompile device itself
+* few more fixes in the behaviour of GUI (switching between image size)
+* fixed some problems with subtitles (but they should be reworked later)
+* fixed and added some noticing messages were some problems with resize appears
+* unified volume_func (using quadratic steps for now)
+* applied patch for SUN audio on solaris by Juergen Keil <jk@tools.de>
+
+2001/03/12
+* started to use unsigned long in most seek commands (4GB compatibility)
+  this is a big change in the interface and probably few bugs
+  are still left in the code
+  also writing code was not yet modified!
+* cleaned some interface header files
+* added volume slider and mute button
+* added quality progres bar (its not yet fully operational -
+  support for auto quality selection is not finished)
+* YV12 doen's work - FIXME
+* SDL double buffer doesn't work - FIXME
+
+2001/03/12 created file <kabi@i.am>

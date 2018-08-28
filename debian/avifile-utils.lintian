@@ -1,0 +1,11 @@
+avifile-utils: setuid-binary usr/bin/kv4lsetup 4755 root/root
+avifile-utils: menu-icon-missing /usr/share/avifile-0.7/test.xpm
+avifile-utils: menu-icon-missing /usr/share/avifile-0.7/test.xpm
+avifile-utils: binary-or-shlib-defines-rpath ./usr/bin/avibench /usr/X11R6/lib
+avifile-utils: binary-or-shlib-defines-rpath ./usr/bin/avicap /usr/X11R6/lib
+avifile-utils: binary-or-shlib-defines-rpath ./usr/bin/avicat /usr/X11R6/lib
+avifile-utils: binary-or-shlib-defines-rpath ./usr/bin/avirec /usr/X11R6/lib
+avifile-utils: binary-or-shlib-defines-rpath ./usr/bin/kv4lsetup /usr/X11R6/lib
+avifile-utils: binary-or-shlib-defines-rpath ./usr/bin/avimake /usr/X11R6/lib
+avifile-utils: binary-or-shlib-defines-rpath ./usr/bin/avitype /usr/X11R6/lib
+avifile-utils: binary-or-shlib-defines-rpath ./usr/bin/avirecompress /usr/X11R6/lib

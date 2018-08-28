@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Avicap EPG Electronic Program Guide</title>
+                    
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+  <body>
+     
+<h2>Avicaps EPG Electronic Program Guide</h2>
+   <br>
+   <a href="avicap.html">back to Avicap Index</a><br>
+     <br>
+         docu by: Alexander Rawass (<a
+ href="mailto:alexannika@users.sourceforge.net">alexannika@users.sourceforge.net</a>)<br>
+          if anyone can write a better documentation - please do it and tell
+  me<br>
+    <br>
+   Avicap's EPG display can display EPG information that has been saved in
+ the xml 'xmltv' format.<br>
+   <br>
+   This format is supported for linux and analogue TV by those projects:<br>
+     
+<ul>
+     <li><a href="http://nxtvepg.sourceforge.net/">nexTView EPG Decoder 'nxtvepg'</a> 
+ &nbsp;</li>
+     <li><a href="http://sourceforge.net/projects/xmltv/">xmltv project</a> 
+ &nbsp;</li>
+     
+</ul>
+   I've only tested it with nxtvepg.<br>
+   <br>
+     
+<h3>Preparing nxtvepg for usage with Avicap</h3>
+   You have to download and install the latest nxtvepg package.<br>
+   <br>
+   Make sure that you TV card is correctly configured (with kv4lsetup), then 
+ start nxtvepg.<br>
+   Avicap or any TV apps should better not run while nxtvepg is running??<br>
+   <br>
+   nxtvepg will start searching your xawtv channels for EPG providers.<br>
+   <br>
+   If found, it will start aqcuiring the EPG data via the vbi blank between 
+ each TV frame.<br>
+   This will take some time, this process is rather slow.<br>
+   <br>
+   Let it run for some time.<br>
+   <br>
+   Then exit nxtvepg.<br>
+   <br>
+   Now get nxtvepg to produce a xml-output of it's aqcuired data, that is 
+readable  by avicaps EPG-browser, like this:<br>
+   <br>
+   nxtvepg -dump xml -provider &lt;hex of provider&gt; &gt;/tmp/epg.xml<br>
+   <br>
+   To know about the hex number of the epg provider, open up the 'view statistics' 
+ window in nxtvepg, and look for the hex num after 'CNI'.<br>
+   <br>
+   It's probably a good idea to read the nxtvepg documentation at this point.<br>
+   <br>
+     
+<h3>Avicaps EPG browser</h3>
+   If you click 'Electronic Program Guide' in your Avicap menu, the EPG module 
+ will start and open up its window.<br>
+  Per default, the EPG data will be read from /tmp/epg.xml , but you can
+change  that in the epg config dialog.<br>
+  Depending on the size of your EPG data file and on your number of regexps,
+ it may take some seconds til the window comes up.<br>
+  <br>
+   
+<h4>EPG Browser window</h4>
+  On the left side is a channel table - this is yet not functional.<br>
+  <br>
+  In the middle you'll see the EPG guide of today, a display that looks like
+ the tables in your movie guide (or, at least like mine ;-)).<br>
+  If you're not seeing any data, you should click 'EPG Config' and configure
+ your EPG data file.<br>
+  <br>
+  In the top strip, you can change the day you are currently seeing.<br>
+  <br>
+  With 'Toggle Display' you switch from guide display to table display.<br>
+  <br>
+  The table display is rather unusuable imho, better not use it.<br>
+  <br>
+  'EPG Config' starts the EPG configuration.<br>
+  <br>
+  'Edit Regexps' opens the regexp editor, where you can edit regexps to highlight
+ or block programs by name.<br>
+  <br>
+   
+<h4>EPG Configuration</h4>
+  At first use, you should set the 'EPG xml filename' to the xml data file
+ of the provider you want to use.<br>
+  Any changes in this field need a restart of Avicap to have effect. Yet.<br>
+  <br>
+  When the EPG module has found a correct EPG xmltv file, it will display 
+a list<br>
+  'EPG Provider to Avicap channel mappings'<br>
+  <br>
+  The EPG module doesn't know, which epg channel is which avicap channel, 
+so you have to select the correct channels there, to have your EPG guide be
+displayed in correct order.<br>
+  <br>
+  You can also select the color, with which the EPG strip of that channel 
+will be colored.<br>
+  I recommend rather light colors, like you can see in the screenshots.<br>
+  <br>
+  The spinboxes 'day starts at' and 'day ends at' are yet not functional.<br>
+  <br>
+  With 'recording starts/ends N mins before/after program' you can select 
+the time margin, that gets sent to the timertable, when you add recordings 
+from the EPG display to the timertable.<br>
+  <br>
+  <br>
+   
+<h4>EPG Display/Guide Display</h4>
+  If you're EPG config is correct, you will see in the middle of the EPG
+window  the guide display.<br>
+  <br>
+  It looks like a TV guide, it's also nicely colored if you select sane colors.<br>
+  <br>
+  If you move your mouse around, you can see the full description of the
+program  at the bottom of the guide display.<br>
+  <br>
+  If you press the middle mouse button and hold it, you can move the display
+ around to where you like it.<br>
+  <br>
+  If you press the right button, a popupmenu will show up, see below.<br>
+  <br>
+  If you have set regexps, then highlighted programs will (currently) appear
+ in green, blocked programs in &nbsp;near-black (nearly unreadable).<br>
+  <br>
+  If you have a pending recording in the timertable, it will also show up 
+with a blue shading across the timespan, where the recording will happen.<br>
+  <br>
+   
+<h4>Guide Popup Menu</h4>
+   In the popupmenu, you can add the current selected program to your highlight-
+ or blocklist, and you can also add the program to the list of pending recordings
+ in the timertable.<br>
+  <br>
+   
+<h4>Regexps, Regexp Edit, blocking and highlighting programs</h4>
+  With Avicaps EPG module, you can use regular expressions to highlight or
+ block programs by title name or description string.<br>
+  <br>
+  Press 'Edit Regexps' in the EPG window, and the Regexp edit window will 
+appear.<br>
+  <br>
+  In the textedit, you can edit your regexps by hand, like in a text-editor.<br>
+  <br>
+  The regexps have following syntax:<br>
+  <br>
+  [#](title:|desc:|both:)(block:|high:)regexp<br>
+  <br>
+  Huh? For example, these are valid epg regexps:<br>
+   
+<ul>
+    <li>title:high:.*Star.Trek.*<br>
+  will highlight all program which have 'Star Trek' or 'Star-Trek' etc in 
+their title.</li>
+    <li>desc:high:.*Doris.Day.*<br>
+  wil highlight all programs which have the string 'Doris Day' or alike in
+ their description.</li>
+    <li>title:block:^X.Files$<br>
+  will say goodbye to one of my most despised series in TV</li>
+    <li>desc:block:.*Scully.*<br>
+  will do that and even more</li>
+    <li># title:block:whatever<br>
+  will do nothing, cause # at the start of a line is a comment<br>
+    </li>
+   
+</ul>
+  Note: we're using Qt's QRegexp here, they are regexps, not wildcards, so
+ you should know what you do.<br>
+  <br>
+ I recommend you to use a normal text-edit to edit the regexps, that's easier
+and more comfortable than in the 'Edit Regexp' window.<br>
+<br>
+The Regexp file is ~/.avm/avicap-regexps<br>
+<br>
+If you press 'Re-read regexps', the EPG module will re-read this file from
+disk (after you've changed it in an external editor)<br>
+<br>
+<h4>What I do with these blocking features</h4>
+I am using the blocking features of Avicap's EPG display to not know and see
+violence in TV at all any more, I've completely blocked all those (mostly 
+american) series, where the audience can enjoy itself by watching people in
+fear, running for their lives, and can amuse themselves with pictures where
+the blood runs from the walls, and people get cut in half for the enjoyment 
+and amusement of YOU, the viewer.<br>
+ <br>
+ Currently, I've blocked 78 series in german TV this way.<br>
+ <br>
+ Soon, this will include a password lock.<br>
+ <br>
+  <br>
+  <br>
+  <br>
+ <br>
+</body>
+</html>

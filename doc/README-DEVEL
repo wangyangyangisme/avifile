@@ -1,0 +1,245 @@
+
+--- 1. Overview of library services ---
+
+Plugin-based architecture that provides access to audio & video
+compressors/decompressors for a wide range of formats.
+
+Interfaces for reading from AVI & ASF files, with and without implicit
+decompression.
+
+Interfaces for writing to AVI files, with and without implicit compression.
+
+Object that provides core of movie player for supported file types.
+
+--- 2. Subdirectories ---
+
+include/:			All header files which may be needed for 
+				programmer to use the library.
+				
+plugins/:     			Main set of codec plugins.
+plugins/libwin32/: 		Win32 DLL loading plugin.
+plugins/libaudiodec/:		Audio decoder plugins for a few formats.
+plugins/libmpeg_audiodec/:	MPEG layer-1..3 audio decoder plugin
+plugins/libmp3lame_audioenc/:	MPEG layer-3 audio encoder plugin
+plugins/libmp3lamebin_audioenc/:MPEG layer-3 audio encoder plugin loaded
+                                at runtime using libmp3lame
+
+lib/:				Core library.
+lib/common/:			Set of utility functions and implementations
+				of non-pure methods in plugin interfaces.
+lib/aviread/:			Implementation of AVI & ASF readers.
+lib/aviwrite/:			Implementation of AVI writer.
+lib/aviplay/:			Implementation of AVI/ASF player.
+				
+player/:			Movie player.
+samples/:			Various tools & examples of using library.
+
+--- 3. Coding style conventions ---
+
+ All methods of public interfaces are named in MFC style ( one or
+more concatenated words, each word beginning with CAPITAL letter );
+for example, IAviPlayer::SetColorSpace() or CImage::Width(). On the opposite,
+internal function names start with lowercase letters
+ ( AviPlayer::getVideoAsync() ).
+Class member variables begin with capital letters and are prefixed with m_
+and with appropriate type information:
+p pointer
+b bool
+u unsigned
+c char
+s short
+i 32-bit integer ( int, long )
+l 64-bit integer ( long long )
+f float
+d double
+ Code is indented in BSD style with 4-space tabs. Short if() expressions
+may be written in one line, as in 'if(...) return; '.
+ For imported parts of project ( such as lame mp3 encoder ) original coding
+style is left untouched.
+
+--- 4. Using codecs ---
+
+ All codec object creation functions are declared in include/creators.h. To
+avoid possible naming collisions, they were put into namespace Creators.
+Decoder creation functions take pointer to compressed format description
+structure ( which is WAVEFORMATEX for audio and BITMAPINFOHEADER for video;
+both are declared in include/formats.h ). Encoder creators take pointer
+to structure that describes uncompressed format and so-called FOURCC - 
+which describes desired compression format.
+ All of them look through the list of registered plugins and try to find
+the codec matching request. They return pointer to initialized object on 
+success and 0 on failure.
+ When codec object is not needed any more, use one of Free* functions from
+include/creators.h to destroy it. It frees all data structures and decrements
+usage count of the plugin that provided the codec.
+ Each codec interface includes function GetCodecInfo(). It returns reference
+to CodecInfo structure with all known information about codec ( such as: is it
+video or audio codec, does it support both encoding & decoding, etc. ) 
+ Many codecs have 'attributes' which affect their performance, quality, etc.
+These attributes can be enumerated using fields of CodecInfo structure. 
+Attributes should be set before codec object starts operation. They can
+be read and written with Creators::GetCodecAttr/Creators::SetCodecAttr.
+Once set, these values will be stored in config file and reused every 
+time codec is initialized.
+
+--- 5. Video codecs specifics ---
+
+ Some video codecs support run-time setting of attributes ( during the encoding
+or decoding process ). For example, video decoder may suggest the option to
+do post-processing with different levels of quality independently on each frame, 
+or to adjust brightness of picture. This video decoder will inherit from
+interface IRtConfig ( declared in include/videodecoder.h ). Do a dynamic_cast
+on received interface to determine if it's the case. 
+ Initial value for run-time attribute will be read from config file. If you 
+want to permanently change it, do two calls - to Creators::SetCodecAttr and to
+IRtConfig::SetValue with the same attribute name.
+ Video decoders can produce data in any of the following formats: RGB 16-bit
+( color weights 555 & 565 ), 24-bit, 32-bit, YUY2 and YV12. User can specify
+desired format in call to IVideoDecoder::SetDestFmt(). However, internal video
+decoder logic does not always support all these formats. For these cases library
+provides a set of conversion functions between all supported formats. It is
+optimal in terms of efficiency when the decoder itself performs the conversion
+( it is especially important for conversions into YUV formats ). For this purpose,
+video decoders have method GetCapabilities(), which can be used to determine
+internal capabilities of decoder.
+ Video decoders take a special attribute - 'flip' to the constructing function.
+'True' here means that decoder shouldn't flip vertically picture. By default decoder
+produces flipped picture: it allows to do simple memcpy() to X11 screen. 
+Unfortunately, not all encoders are able to compress 'flipped' video formats,
+which are indicated by negative value in biHeight field of BITMAPINFOHEADER
+structure.
+
+--- 6. Audio decoders specifics ---
+
+ Audio decoder objects convert input compressed data into raw PCM ( 16-bit 
+signed low-endian, suitable for	feeding to /dev/dsp ). Unlike with video decoders,
+there's generally no need here to start/stop conversion because it's usually 
+done on per-sample basis and samples are independent from each other.
+
+--- 7. Audio encoders specifics ---
+
+ Area of audio encoding is not well developed. There's only one experimental
+audio encoder plugin, based on Lame MP3 encoder v. 3.70.
+
+--- 8. ASF and AVI reading ( without decompression ) ---
+ 
+ Direct ASF, MMS and AVI reading interface is described in include/ReadHandlers.h.
+Reader object is created with CreateAVIReadHandler() ( for AVI ) and 
+CreateASXReadHandler() ( for ASF family ).
+ CreateAVIReadHandler() is synchronous. It either returns pointer to valid 
+reader object, or throws an exception in one of formats from include/except.h.
+ On the other hand, opening of ASF file may be an asynchronous operation.
+That is, constructor only performs sanity checking on the file name, starts 
+actual opening process ( in another thread ) and returns successfully. You should
+periodically call IMediaReadHandler::isOpened() until it returns true, which
+means that opening process has finished. After that, you can determine if it
+was successful by calling IMediaReadHandler::isValid().	
+ MMS URL or local ASX file may point to the 'redirector' - XML file that
+includes copyrights, file information, etc. and other URLs. Call 
+IMediaReadHandler::isRedirector() after isOpened() and isValid() returned true 
+to determine if it's the case.
+ After successful opening of non-redirector file you can read data from its
+streams through IMediaReadStream* interfaces. You don't need to destroy
+them manually when they are not needed any more, and multiple requests
+for the interface to the same stream will return the same pointer.
+
+--- 9. ASF and AVI reading with implicit decompression ---
+
+ This interface is described in include/avifile.h. Reader object is created
+with CreateIAviReadFile(). This function has the same semantics as object
+creators from previous section. It tries to open passed URL as a local AVI file,
+if it fails, as an ASF, and it it fails too, throws an exception.
+ To read the data, use IAviReadStream interface. It acts as a 'wrapper' to
+IMediaReadStream and I[Video|Audio]Decoder. To start reading uncompressed data,
+call IAviReadStream::StartStreaming(). It returns 0 on success and negative
+value if it fails to create decoder object.
+ Audio data should be read using IAviReadStream::ReadFrames() and video data - 
+using IAviReadStream::GetFrame() and IAviReadStream::ReadFrame().
+
+--- 10. AVI writing ---
+
+ This interface is also described in include/avifile.h. You can either use
+implicit compression ( by writing into streams returned with 
+IAviWriteFile::AddAudioStream() & IAviWriteFile::AddVideoStream() ) or write
+directly into file ( IAviWriteFile::AddStream() ). File headers will be
+updated and written to the disk each 1000 accesses to streams to minimize
+damage of hardware or software failure. When writing is finished, delete the
+object; it writes final version of headers, appends an index chunk and closes
+the file.
+ The library is able to write 'segmented' AVI files. It is a convenient way
+to work-around 2 Gb file size limit which exists both because of AVI format
+specification misfeature and because of limitations of most Linux kernels 
+( >2Gb files are properly supported only in 2.4 series ). When such object is
+created, you pass the file size limit as an argument to constructor. Each time
+physical file grows beyond that size, library automatically closes it, changes
+the name and starts a new one.
+
+--- 11. Movie player core ---
+
+ Movie player core is declared in include/aviplay.h. It suggests two choices.
+If you want to do all GUI-related work by yourself, use interface IAviPlayer.
+You'll have to pass to the core a pointer to draw function which will be called
+when there's a need to draw new frame. Library will do all internal work, such
+as opening file and ( if needed ) audio device, synchronizing audio with video,
+etc. You will handle initialization, changing media ( in case of ASF redirectors ),
+passing events from keyboard/mouse to the library and drawing.
+ The second choice is to allow library to do drawing. Use interface IAviPlayer2
+for it. If you want to have video output, establish the connection with X server
+and pass the connection handle (Display*) to the library through construction
+function. Library will accept NULL handle, which will mean that there'll be no
+video output.
+
+--- 12. Plugin system ---
+
+ Important feature of the library is its ability to automatically discover
+and use plugins with predefined interface to perform compression/decompression
+of data. Plugins have to be dlopen()'able libtool libraries ( linked with -module
+flag ) and be installed in predefined directory. By default it's /usr/lib/win32,
+it can be changed during compilation ( with --with-win32-path configure 
+parameter ) or after installation ith WIN32_PATH environment variable. Each
+plugin exports several functions, which are defined and described in 
+include/plugin.h.
+ Plugin system is not tightly bound to avifile. One can compile and use its plugins
+without core library. 
+If you want to write your own plugin that can be used by avifile, take a look at
+the opendivx plugin sample ( it can be found at http://divx.euro.ru/download.htm ).
+It is made completely independent of avifile. You will notice that it includes a 
+subset of avifile headers, ~40k total, which describe all necessary types and 
+interfaces.
+ Using these plugins by themselves is also possible. You'll have to do the following:
+1) Copy API/ and common/ directories from opendivx plugin into your project.
+Link your application against code in common/.
+2) Search the plugin directory for files with .la extension. Parse them to find
+line "dlname='...'". Dlopen() corresponding shared library.
+3) Make sure that API versions of plugin and your code are the same.
+4) Call exported functions of plugin to create codec objects.
+
+--- 13. Image conversion speeds ----
+
+ Numbers are approximate CPU cycles per pixel and measured on non-MMX processor
+for 640x480 random image without overflows. Source format is the determined by 
+the row. For typical 600 MHz processor 100 cycles/pixel correspond to 20 frames
+per second with 640x480 image. Your numbers may differ, depending on processor
+family, memory speed, etc.
+ Many of these conversions can possibly be optimized ( so far the only
+MMX-optimized conversion is RGB15->RGB16 ).
+
+Without flipping:
+	RGB15	RGB16	RGB24	RGB32	YUY2	YV12
+RGB15	10	20	31	67	101	84	
+RGB16	68	10	31	66	103	83	
+RGB24	36	35	15	34	68	52	
+RGB32	63	63	27	20	96	79	
+YUY2	133	135	113	159	10	19	
+YV12	133	132	97	132	20	7	
+
+With flipping:
+	RGB15	RGB16	RGB24	RGB32	YUY2	YV12
+RGB15	10	18	30	76	101	82	
+RGB16	70	10	30	78	101	84	
+RGB24	41	40	15	46	68	53	
+RGB32	72	66	26	19	96	79	
+YUY2	138	137	98	142	10	18	
+YV12	135	134	95	140	20	7	
+
+	 				    Last modified; January 21, 2001

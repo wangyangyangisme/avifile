@@ -1,0 +1,171 @@
+
+
+  This library contains several modules, connected into hierarchical
+structure, Very frequently an error that has happened in lower-level
+module results in breaking the functioning of some ( or all ) parent
+modules. These error states can be conveniently handled by technique
+called 'exception handling'. It's relatively rarely used part of C++
+standard, and some time ago it was unsupported by popular compilers.
+Here I'll describe briefly how to use exception handling to correctly
+deal with errors in programs on top of Avifile, as well as basics of
+it for those without proper education in this area.
+
+1. EXCEPTION HANDLING BASICS
+
+  One basic idea is an 'exception object' - an object that's created
+when exceptional state occurs. Then it's 'thrown' - program repeatedly
+unwinds stack, moving from function to function until either exception
+is catched or program reaches top of stack. In latter case by default
+program aborts ( though one can override default action ). Throwing,
+catching exceptions and creation of exception objects is done by 
+programmer, so he can decide what kind of data will be contained
+in exception object. It is convenient for this object to contain 
+description of error and module which caused it.
+
+Look at first sample. It shows how to throw an exception and how to catch it.
+
+FILE* f;
+try
+{
+    f=fopen("./my.file", "rb");
+    if(f==NULL)throw "Error opening file";
+    //
+    // this code won't be executed if f is NULL
+    //....
+    //
+}
+catch(const char* string)
+{
+    //Perform failure handling
+    cerr<<string<<endl;
+}
+
+At line 4 we construct an exception object of type const char* and throw it. 
+All exceptions of this type that are thrown from inside try-block will be 
+immediately caught by catch(const char* string), and inside its block 'string'
+will have the value specified in throw statement.
+
+Slightly more advanced sample:
+
+FILE* f;
+void OpenFile() throw(const char*) // 'throw(...)' is optional
+{
+    f=fopen("./my.file", "rb");
+    if(f==NULL)throw "Error opening file";
+    //
+    //...
+    //
+}
+void MyFunc()
+{
+    try
+    {
+	OpenFile();
+	//
+	//...
+	//
+    }
+    catch(const char* string)
+    {
+	cerr<<string<<endl;
+    }
+}    		
+    
+  It does the same as first one.
+
+  There can be more than one 'catch' for each 'try', so you can handle
+different exception objects differently. 'catch(...)' catches ALL
+exceptions, without regard to their types.
+  You can add 'throw;' inside catch-block. It'll re-throw caught exception.
+  
+2. USING EXCEPTIONS
+
+  All files that will work with exceptions must include header <except.h>,
+which contains definition of main exception object types.
+
+  --- Catching exceptions ---      
+ 
+  Embrace all Avifile calls which can fail into try{} block. Add catch()
+for type FatalError&:
+  
+  try
+  {
+      pFile->OpenFile(argv[1]);
+      stream=pFile->GetStream(AviStream::Video, 0);
+  }
+  catch(FatalError& error)
+  {
+      //Here you can show message box with content from error.GetDesc()
+      //and re-throw exception if you can't handle absence of stream object
+  }
+  
+FatalError class has 4 members: Print(), PrintAll(), GetDesc() and GetModule().
+Print() prints name of module and error description to stderr. PrintAll() does the
+same, but also adds name of C++ source file and line where an exception was
+thrown. GetDesc() returns const char* pointer to error description, and 
+GetModule() returns name of failed module.
+
+   --- Throwing exceptions ---
+   
+  In addition to including <except.h>, #define string constant __MODULE__ in your
+source file to contain name of your module:
+    
+#include <except.h>
+#define __MODULE__ "MyProg"
+
+  Make sure that this definition is not overridden by any included later files.
+  Every time you face with an error which is fatal for your module, add line
+  
+  throw FATAL("....");
+ 
+  where "...." should contain error definition. 
+
+    
+  
+ 
+4. EXCEPTIONS VS ERROR CODES
+
+
+try
+{
+    CallSomeFunc();
+    CallSomeMoreFunc();
+    DoSomething();
+}
+catch(FatalError& error)
+{
+    error.Print();
+    destroy();
+}
+
+/**********
+    or:
+**********/    
+    
+int hr;
+hr=CallSomeFunc();
+if(hr!=0)
+{
+    cout<<"CallSomeFunc(): "<<ErrorDescription(hr)<<endl;
+    destroy();
+}
+else
+{
+    hr=CallMoreFunc();
+    if(hr!=0)
+    {
+	cout<<"CallMoreFunc(): "<<ErrorDescription(hr)<<endl;
+	destroy();
+    }
+    else
+    {    
+	hr=DoSomething();
+	if(hr!=0)
+	{
+	    cout<<"DoSomething(): "<<ErrorDescription(hr)<<endl;
+	    destroy();
+	}
+    }	
+}
+
+

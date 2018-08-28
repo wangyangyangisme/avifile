@@ -1,0 +1,34 @@
+MISC: 		A few short examples of using library.
+QTVIDCAP:	Video capture program.
+QTRECOMPRESS:	Video recompression program.
+
+
+AVI tools
+
+The Avifile package (http://divx.euro.ru/) provides a library of
+primitives for reading/parsing .AVI (Windows Media Player) video
+files.  There are a few obvious things (like displaying file info and
+concatenating files) that I wanted to do and which are pretty easy to
+do using this library.  Hence this package...
+
+
+There are currently 3 programs:
+
+avitype - For a set of .avi files, print a little display for each
+	  with the video/audio codecs, frame size, frame rate, etc.
+	  This display is not currently very clean or well organized.
+	  Somebody could enhance this quite a bit.
+
+avicat  - Take a set of .avi files and combine them into one single
+	  .avi file.  Specify output with a -o option or else
+	  "out.avi".  Assumes inputs are same format, otherwise bad
+	  things might happen...
+
+avimake - Take a set of .jpg images and turn them into a div3 movie.
+	  Output specified with -o, frame rate with -r.
+
+
+Hope this is useful to other folks.  Do with this code whatever you
+wish (i.e. public domain).
+
+Tom Pavel <pavel@alum.mit.edu>

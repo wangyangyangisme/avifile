@@ -1,0 +1,136 @@
+Source: avifile
+Section: graphics
+Priority: optional
+Maintainer: Zdenek Kabelac <kabi@debian.org>
+Standards-Version: 3.5.8
+Build-Depends: debhelper (>= 2.0), libqt3-mt-dev (>= 3:3.1.1-2), libsdl1.2-dev | libsdl1.1-dev | libsdl1.0-dev , libaudiofile-dev, libjpeg62-dev, libvorbis-dev, libogg-dev, libmad0-dev, libxft-dev, autoconf (>= 2.13-1), automake (>= 1.4-1) | automake1.7 | automake1.8 | automake1.4 , libtool, gettext, patch, netpbm | pnmtopng
+
+Package: libavifile-0.7c2
+Architecture: any
+Section: libs
+Suggests: avifile-player, avifile-utils, avifile-mad-plugin, avifile-mjpeg-plugin, avifile-vorbis-plugin, avifile-win32-plugin, avifile-xvid-plugin, avifile-divx-plugin
+Depends: ${shlibs:Depends}
+Replaces: libavifile0.7, libavifile0.7c102, libavifile-0.7c102
+Conflicts: libavifile0.7, libavifile0.7c102, libavifile-0.7c102
+Description: shared libraries for AVI read/writing
+ Library that allows programs to read and write compressed
+ AVI files (Indeo Video, DivX :-), etc.) under x86 Linux.
+ (De)Compression is performed with various audio/video plugins
+ (FFMpeg, MAD, Vorbis, Win32, ...).
+ Formats like mpeg, mov are partly supported.
+ For more info about usage of Win32, Lame and OpenDivX plugin
+ see README.debian.
+
+Package: libavifile-0.7-dev
+Architecture: any
+Section: devel
+Depends: libavifile-0.7c2 (= ${Source-Version}), libxft-dev, libxrender-dev
+Replaces: libaviplay, libavifile-dev, libavifile0.6-dev, libavifile0.7-dev
+Conflicts: libavifile-0.7c102 (<= 1:0.7.42.20050215-1), libavifile-dev, libavifile0.6, libavifile-0.6-dev, libavifile0.7-dev
+Description: development header files for libavifile
+ Contains the symlinks, headers and object files needed to compile
+ and link programs which use aviplay library.
+
+Package: avifile-mad-plugin
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}
+Description: MAD - MPEG audio plugin for libavifile
+ Plugin for decompression of MPEG-1 Layer I/II/III audio streams.
+ This mp3 decoder is known to give most precise results.
+
+Package: avifile-mjpeg-plugin
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}
+Description: MJPEG video plugin for libavifile
+ This package provides a plugin for the avifile library to de/encode
+ MJPEG video streams -  this implementation is rather slower and
+ serves just as a sample plugin implementation. Usage of ffmpeg or
+ win32 codecs is a better choice.
+ .
+ In general you do not need this plugin -
+ .
+ Homepage: http://avifile.sourceforge.net
+
+Package: avifile-vorbis-plugin
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}
+Replaces: libavifile0.7 (<< 0.7.26.20030121-1)
+Description: Vorbis audio plugin for libavifile
+ This package provides a plugin for the avifile library to decompress 
+ audio streams in Vorbis, which is a fully open, non-proprietary, 
+ patent-and-royalty-free, general-purpose compressed audio format.
+ .
+ You might want to install this package if you are using the avifile
+ video player and want to watch videos which provide audio using this
+ format.
+ .
+ Homepage: http://avifile.sourceforge.net
+
+Package: avifile-win32-plugin
+Architecture: i386 amd64
+Section: contrib/libs
+Depends: ${shlibs:Depends}
+Description: Win32 audio/video plugin for libavifile
+ This package provides a plugin for the avifile library to compress
+ and decompress audio video streams with the help of Win32 (i386) 
+ DLL libraries (codecs). Default location for them is /usr/lib/win32.
+ .
+ NOTICE:
+   Win32 codecs are NOT part of this package and have to be downloaded 
+   separately! See documentation or WWW pages for more details.
+ .
+ Homepage: http://avifile.sourceforge.net
+
+Package: avifile-xvid-plugin
+Architecture: any
+Section: contrib/libs
+Depends: ${shlibs:Depends}
+Description: XviD video encoding plugin for libavifile
+ Plugin for encoding DivX4 video.
+ NOTICE:
+   This plugin requires separate installation of libxvidcore 1.0 library
+   which is not a part of this package nor official Debian itself.
+   See documentation for more details.
+   In general you do not need this plugin.
+
+Package: avifile-divx-plugin
+Architecture: any
+Section: contrib/libs
+Depends: ${shlibs:Depends}
+Replaces: libavifile0.7 (<< 0.7.27.20030122-1)
+Conflicts: libavifile0.7 (<< 0.7.27.20030122-1)
+Description: Divx4Linux video de/encoding plugin for libavifile
+ Plugin for encoding DivX4 video.
+ NOTICE:
+   This plugin requires separate installation of libdivxdecore
+   and libdivxencore library which is not a part of this package 
+   nor Debian itself. See documentation for more details who
+   to obtain this library. 
+   In general you do not need this plugin.
+
+Package: avifile-player
+Architecture: any
+Priority: extra
+Section: graphics
+Suggests: avifile-mad-plugin, avifile-mjpeg-plugin, avifile-vorbis-plugin, avifile-win32-plugin, avifile-xvid-plugin
+Depends: ${shlibs:Depends}
+Description: video player for AVI/ASF/WMF files
+ Player for various AVI, ASF, WFM (with streaming support) files.
+ Separate local instalation of Windows DLL codecs might be needed
+ for the better usage of this player.
+ See README.debian for more information.
+
+Package: avifile-utils
+Architecture: any
+Priority: extra
+Section: graphics
+Depends: ${shlibs:Depends}
+Conflicts: avifile-samples
+Replaces: avifile-samples
+Description: utility programs using the avifile library
+ Qt-based AVI TV capturing, AVI recompression, benchmarking,
+ joining/cutting AVI files. These programs might have more bugs
+ as they are not as extensively developed as the player.

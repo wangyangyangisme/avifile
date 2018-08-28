@@ -1,0 +1,20 @@
+
+
+ In this document I'll try to cover the legal status of this project.
+
+
+ The most obvious problem is the fact that library uses closed-source 
+Win32 DLLs. It can be considered to be 'creating derived work' by
+including these DLLs into GPL'ed code. In other words, library may
+seem to be 'linked' with these proprietary binaries. That's actually 
+a fringe case - the strict definition of 'linking' does not exist yet.
+I prefer to think of the DLLs as 'plug-ins', which are separate from
+main library and voluntary to use. That's why I distribute binaries and 
+sources in different packages - you do not need binaries to compile library
+and even to run some test programs. One can someday rewrite DLLs using C/C++
+and thus make AVIFile library completely platform independent.
+
+ The DLLs themself are freeware - you can easily get them from lots of
+other places. Their licenses typically do not say anything explicitly
+about this way of using them. I believe there's nothing wrong in it.
+ 

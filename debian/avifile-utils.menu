@@ -1,0 +1,17 @@
+?package(avifile-utils): \
+	needs="x11" \
+	section="Apps/Viewers" \
+	icon="/usr/share/avifile-0.7/test.xpm" \
+	title="Avirecompress" \
+	longtitle="Avirecompress: Simple editor and recompressor for .avi files" \
+	command="/usr/bin/avirecompress" \
+	hints="Player"
+
+?package(avifile-utils): \
+	needs="x11" \
+	section="Apps/Viewers" \
+	icon="/usr/share/avifile-0.7/test.xpm" \
+	title="Avicap" \
+	longtitle="Avicap: Video grabber which uses aviplay library" \
+	command="/usr/bin/avicap" \
+	hints="Player"

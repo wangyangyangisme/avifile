@@ -1,0 +1,15 @@
+#!/bin/bash
+
+AVICAP_DIR=/etc/avicap
+
+echo $UID $EUID
+
+echo "the system will be going to reboot NOW"
+
+sleep 5s
+
+mkdir -p $AVICAP_DIR
+touch $AVICAP_DIR/first_shutdown
+
+/sbin/shutdown -t 10 -r now "Avicap shuts down system"
+
